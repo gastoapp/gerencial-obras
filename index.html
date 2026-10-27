@@ -568,7 +568,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v1.4 · 27/10';
+const APP_VERSAO = 'v1.5 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1007,20 +1007,23 @@ function metaRow(lbl, real, meta, lblMeta){
     <div class="mr-nums"><span>Realizado <b>${pct(real,2)}</b></span><span>${lblMeta} <b>${pct(meta,2)}</b></span></div></div>`;
 }
 
+/* brilho feito dentro do SVG (o Safari do iPhone ignora filter:drop-shadow em partes de um SVG) */
+let GLOW_N = 0;
+function glowDef(std){ const id = 'gw' + (++GLOW_N); return { id, def:`<defs><filter id="${id}" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="${std}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` }; }
 function ringHtml(lbl, v, color, sub){
-  const r = 38, C = 2*Math.PI*r, ok = v!=null && isFinite(v);
-  return `<div class="ring"><svg viewBox="-10 -10 112 112" role="img" aria-label="${esc(lbl)} ${ok?pct(v,2):'sem dado'}">
+  const r = 38, C = 2*Math.PI*r, ok = v!=null && isFinite(v), g = glowDef(3.2);
+  return `<div class="ring"><svg viewBox="-10 -10 112 112" role="img" aria-label="${esc(lbl)} ${ok?pct(v,2):'sem dado'}">${g.def}
     <circle cx="46" cy="46" r="${r}" fill="none" stroke="#1a2944" stroke-width="9"/>
-    ${ok?`<circle cx="46" cy="46" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*Math.min(v,1)).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 5px ${color})"/>`:''}
+    ${ok?`<circle cx="46" cy="46" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*Math.min(v,1)).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 46 46)" filter="url(#${g.id})"/>`:''}
     <text x="46" y="51" text-anchor="middle" style="font:700 17px var(--display);fill:var(--ink)">${ok?pct(v,1):'—'}</text></svg>
     <span class="rl">${esc(lbl)}</span><span class="rs">${sub||'&nbsp;'}</span></div>`;
 }
 
 function donutHtml(a, b, tot){
-  const r = 38, C = 2*Math.PI*r, fa = tot ? a/tot : 0;
-  return `<svg viewBox="0 0 100 100" width="118" height="118" role="img" aria-label="${a} próprios e ${b} empreiteiros">
-    <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--s2)" stroke-width="13" style="filter:drop-shadow(0 0 4px rgba(143,110,228,.5))"/>
-    <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--s1)" stroke-width="13" stroke-dasharray="${(C*fa).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)" style="filter:drop-shadow(0 0 4px rgba(26,163,196,.6))"/>
+  const r = 38, C = 2*Math.PI*r, fa = tot ? a/tot : 0, g = glowDef(2.4);
+  return `<svg viewBox="0 0 100 100" width="118" height="118" role="img" aria-label="${a} próprios e ${b} empreiteiros" style="overflow:visible">${g.def}
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--s2)" stroke-width="13" filter="url(#${g.id})"/>
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--s1)" stroke-width="13" stroke-dasharray="${(C*fa).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)" filter="url(#${g.id})"/>
     <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--surface)" stroke-width="13" stroke-dasharray="1.5 ${(C-1.5).toFixed(1)}" transform="rotate(-90 50 50)"/>
     <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--surface)" stroke-width="13" stroke-dasharray="1.5 ${(C-1.5).toFixed(1)}" stroke-dashoffset="${(-C*fa).toFixed(1)}" transform="rotate(-90 50 50)"/>
     <text x="50" y="52" text-anchor="middle" style="font:700 26px var(--display);fill:var(--ink)">${tot}</text>
@@ -1103,7 +1106,7 @@ function drawPrev(){
     const cy = top + lane*i + lane/2, ok = m.v <= P.BAC, col = ok ? 'var(--good)' : 'var(--crit)', cx = x(m.v);
     s += `<text x="${padL-10}" y="${cy+4}" text-anchor="end" style="font:600 12px var(--body);fill:var(--ink)">${esc(m.s)}</text>`;
     s += `<line x1="${x(P.BAC)}" x2="${cx}" y1="${cy}" y2="${cy}" stroke="${col}" stroke-width="3" opacity=".55"/>`;
-    s += `<circle cx="${cx}" cy="${cy}" r="7" fill="${col}" stroke="var(--surface)" stroke-width="2" style="filter:drop-shadow(0 0 6px ${col})"/>`;
+    const gd = glowDef(3); s += gd.def + `<circle cx="${cx}" cy="${cy}" r="7" fill="${col}" stroke="var(--surface)" stroke-width="2" filter="url(#${gd.id})"/>`;
     const right = ok ? cx - 11 : cx + 11, anc = ok ? 'end' : 'start';
     const flip = anc==='start' && cx+60>W, tx = flip ? cx-11 : right, ta = flip ? 'end' : anc;
     s += `<text x="${tx}" y="${cy+5}" text-anchor="${ta}" style="font:700 14px var(--display);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px">${nf2.format(m.v/1e6)}</text>`;
