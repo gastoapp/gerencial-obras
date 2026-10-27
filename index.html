@@ -360,7 +360,7 @@ body{background:radial-gradient(1200px 600px at 50% -200px,#13244a 0%,var(--bg) 
 .kpis,.kpis.flat{gap:8px;background:transparent;border:0;border-radius:0;overflow:visible}
 .kpi{border:1px solid var(--line);border-radius:14px;background:#0f1a2f}
 .kpi .lbl{font-size:10px;letter-spacing:.12em}
-.kpi .val{font-size:clamp(22px,2.2vw,28px)}
+.kpi .val{font-size:clamp(22px,2.2vw,28px);padding:10px;margin:-10px}
 .t-good{text-shadow:0 0 14px var(--glow-g)}.t-crit{text-shadow:0 0 14px var(--glow-r)}
 .fill.good,.mfill.good{box-shadow:0 0 10px var(--glow-g)}
 .fill.crit,.mfill.crit{box-shadow:0 0 10px var(--glow-r)}
@@ -380,14 +380,14 @@ body{background:radial-gradient(1200px 600px at 50% -200px,#13244a 0%,var(--bg) 
 @media (max-width:720px){.hero{grid-template-columns:minmax(0,1fr);gap:14px;padding:14px}}
 .h-main{display:flex;flex-direction:column;gap:4px;min-width:0}
 .h-main .lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.h-main b{font-family:var(--display);font-weight:700;font-size:clamp(40px,9vw,58px);line-height:.95;white-space:nowrap}
+.h-main b{font-family:var(--display);font-weight:700;font-size:clamp(40px,9vw,58px);line-height:1.1;white-space:nowrap;padding:6px 10px;margin:-6px -10px;overflow:visible}
 .h-main small{font-size:13px;color:var(--ink2)}
 .h-main small b{font:600 13px var(--body);color:var(--ink)}
 .h-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:0}
 @media (min-width:721px){.rings{min-width:330px}}
 .ring{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
-.ring svg{width:92px;height:92px;max-width:100%}
+.ring svg{width:108px;height:108px;max-width:100%;overflow:visible;margin:-8px 0}
 .ring .rl{font-size:11.5px;font-weight:600;color:var(--ink)}
 .ring .rs{font-size:11px;color:var(--ink2)}
 @media (max-width:720px){.panel .kpi{padding:10px 11px}.panel .kpi .val{font-size:21px}.panel{padding:12px}.kpis,.kpis.flat{gap:6px}}
@@ -971,7 +971,7 @@ function metaRow(lbl, real, meta, lblMeta){
 
 function ringHtml(lbl, v, color, sub){
   const r = 38, C = 2*Math.PI*r, ok = v!=null && isFinite(v);
-  return `<div class="ring"><svg viewBox="0 0 92 92" role="img" aria-label="${esc(lbl)} ${ok?pct(v,2):'sem dado'}">
+  return `<div class="ring"><svg viewBox="-10 -10 112 112" role="img" aria-label="${esc(lbl)} ${ok?pct(v,2):'sem dado'}">
     <circle cx="46" cy="46" r="${r}" fill="none" stroke="#1a2944" stroke-width="9"/>
     ${ok?`<circle cx="46" cy="46" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(C*Math.min(v,1)).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 46 46)" style="filter:drop-shadow(0 0 5px ${color})"/>`:''}
     <text x="46" y="51" text-anchor="middle" style="font:700 17px var(--display);fill:var(--ink)">${ok?pct(v,1):'—'}</text></svg>
