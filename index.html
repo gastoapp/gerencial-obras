@@ -599,7 +599,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v1.11 · 27/10';
+const APP_VERSAO = 'v1.12 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1852,6 +1852,12 @@ function renderOrcamento(el){
   <td>${usados.has(c.id)?'':`<button class="x" data-del-cat="${i}" aria-label="Excluir categoria">✕</button>`}</td></tr>`).join('')}
   </tbody></table></div>
   <div class="toolbar"><button class="btn sec" id="cat-add">+ Adicionar categoria</button></div>
+  <section class="panel" id="orc-imp">
+    <h3 class="sub">Importar orçamento</h3>
+    <p class="note">Use o relatório <b>Planilha Orçamentária</b> do ERP (.xlsx). O app pega as categorias de nível 4 (código de 11 dígitos) com Equipamento, Serviço e Material. Dá para atualizar esta obra ou criar uma obra nova.</p>
+    ${podeEditar()?`<label class="drop" for="arq-orc"><b>Escolher arquivo do orçamento</b><span class="muted">.xlsx</span><input id="arq-orc" type="file" accept=".xlsx,.xls" hidden></label>`:''}
+    ${orcImpHtml()}
+  </section>
   <section class="panel">
     <h3 class="sub">Colar orçamento do Excel</h3>
     <p class="note">Copie as colunas <b>Nível · Atividade · Equipamento · Serviço · Material</b> (como na aba ORÇAMENTO) e cole abaixo. Códigos que já existem são atualizados; os novos são criados.</p>
@@ -1897,6 +1903,9 @@ document.addEventListener('click', e => {
       await NUVEM.sb.from('go_solicitacoes').delete().eq('email', mail); toast(`${p?.nome||mail} liberado: ${PAPEL_TXT[t.dataset.como]}.`); carregarMembros(); }); return; }
   if (t.dataset.recusar) { NUVEM.sb.from('go_solicitacoes').delete().eq('email', t.dataset.recusar).then(({error}) => { if (error) toast(error.message); else { toast('Pedido recusado.'); carregarMembros(); } }); return; }
   if (t.id==='pd-check') { const u = NUVEM.user; NUVEM.user = null; entrar(u); return; }
+  if (t.dataset.orcmodo) { UI.orcImp.modo = t.dataset.orcmodo; keepScroll(render); return; }
+  if (t.id==='orc-cancel') { UI.orcImp = null; keepScroll(render); return; }
+  if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
   if (t.id==='sair') { NUVEM.sb?.auth.signOut(); return; }
   if (t.id==='imp-eth') { escolherDadosIniciais(); return; }
   if (t.id==='btn-nova2') { abrirNovaObra(); return; }
@@ -1948,6 +1957,7 @@ document.addEventListener('change', e => {
   if (t.id==='ordem-mes') { UI.ordemMes = t.value; keepScroll(render); }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
+  if (t.id==='arq-orc' && t.files[0]) lerOrcamento(t.files[0]);
   if (t.dataset.map!=null && UI.imp) { UI.imp.map[t.dataset.map] = t.value; }
   if (t.dataset.ef) keepScroll(render);
   if (t.dataset.ci!=null) { const c = o.categorias[+t.dataset.ci], k = t.dataset.k; if (k==='fora') c.fora = t.checked; else if (k==='id'||k==='nome') c[k] = t.value.trim().toUpperCase(); else c[k] = parseNum(t.value); save(); keepScroll(render); }
@@ -1972,6 +1982,12 @@ document.addEventListener('submit', e => {
   if (f.id==='f-membro') { const mail = v('mb-mail').trim().toLowerCase();
     NUVEM.sb.from('go_membros').upsert({ email: mail, papel: v('mb-papel') }, { onConflict:'email' }).then(({error}) => { if (error) toast(error.message); else { toast('Acesso liberado para '+mail+'.'); carregarMembros(); } }); return; }
   if (!S || !obra() && f.id!=='f-nova') return;
+  if (f.id==='f-orc-nova') {
+    const nome = v('on-nome').trim(), id = 'o'+Date.now().toString(36), base = obra() || { funcoes:[] };
+    if (Object.values(S.obras).some(x=>norm(x.nome)===norm(nome))) { toast('Já existe uma obra com esse nome.'); return; }
+    const nova = { id, nome, inicio:v('on-ini')+'-01', fim:v('on-fim')+'-28', orcViab:parseNum(v('on-viab')), categorias:[], gasto:{}, itens:{}, avancos:{}, ajustes:[], funcoes:(base.funcoes||[]).filter(f=>f.ativo).map(f=>({...f})), empreiteiros:[], efetivo:{} };
+    aplicarOrcamento(nova, UI.orcImp.cats); S.obras[id] = nova; S.atual = id; S.mes = null; UI.orcImp = null; UI.efMes = null;
+    save(); render(); toast('Obra '+nome+' criada com '+nova.categorias.length+' categorias.'); return; }
   if (f.id==='f-nova') {
     const id = 'o'+Date.now().toString(36), base = obra() || { categorias:[], funcoes:[] };
     S.obras[id] = { id, nome:v('no-nome').trim(), inicio:v('no-ini')+'-01', fim:v('no-fim')+'-28', orcViab:parseNum(v('no-viab')), categorias: document.getElementById('no-copiar').checked ? base.categorias.map(c=>({ id:c.id, nome:c.nome, eq:0, mo:0, mat:0, fora:!!c.fora })) : [], gasto:{}, itens:{}, avancos:{}, ajustes:[], funcoes: (base.funcoes||[]).filter(f=>f.ativo).map(f=>({...f})), empreiteiros: [], efetivo:{} };
@@ -1982,6 +1998,88 @@ document.addEventListener('dragover', e => { const d=e.target.closest&&e.target.
 document.addEventListener('dragleave', e => { const d=e.target.closest&&e.target.closest('#drop'); if (d) d.classList.remove('over'); });
 document.addEventListener('drop', e => { const d=e.target.closest&&e.target.closest('#drop'); if (d) { e.preventDefault(); d.classList.remove('over'); if (e.dataTransfer.files[0]) lerArquivo(e.dataTransfer.files[0]); } });
 
+
+/* ---------- importar orçamento (relatório "Planilha Orçamentária" do ERP) ---------- */
+function lerOrcamento(file){
+  if (typeof XLSX === 'undefined') { UI.orcImp = { erro:'O leitor de planilhas não carregou. Verifique a conexão e tente de novo.' }; render(); return; }
+  const fr = new FileReader();
+  fr.onload = () => {
+    try {
+      const wb = XLSX.read(new Uint8Array(fr.result), { type:'array' });
+      let rows = null, h = -1;
+      for (const sn of wb.SheetNames) {
+        const rs = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, raw:true, defval:'' });
+        for (let i=0;i<Math.min(30,rs.length);i++) { const n = rs[i].map(norm); if (n.includes('cod. estruturado') && n.includes('valor material')) { rows = rs; h = i; break; } }
+        if (rows) break;
+      }
+      if (!rows) { UI.orcImp = { erro:'Não achei as colunas "Cód. Estruturado" e "Valor Material". Use o relatório "Planilha Orçamentária" do ERP.' }; render(); return; }
+      const H = rows[h].map(norm), ix = n => H.indexOf(n);
+      const cNiv = ix('nivel'), cCod = ix('cod. estruturado'), cDesc = ix('descricao'), cTot = ix('total');
+      const cEq = ix('valor equipamento'), cMo = ix('valor servico'), cMat = ix('valor material'), cTr = ix('valor transporte');
+      let titulo = ''; for (let i=0;i<h;i++) { const t = rows[i].find(x=>String(x).trim()); if (t) { titulo = String(t).trim(); break; } }
+      const nomeObra = titulo.replace(/^planilha or[cç]ament[aá]ria\s*[-–:]\s*/i,'').trim();
+      const cats = []; let totalObra = 0;
+      for (let i=h+1;i<rows.length;i++) {
+        const r = rows[i], cod = String(r[cCod]||'').trim(), niv = +r[cNiv];
+        if (niv===1 && !totalObra) totalObra = parseNum(r[cTot]);
+        if (!/^\d{2}(\.\d{2}){3}$/.test(cod)) continue;
+        const eq = parseNum(r[cEq]), mo = parseNum(r[cMo]), mat = parseNum(r[cMat]) + (cTr>=0 ? parseNum(r[cTr]) : 0);
+        cats.push({ id:cod, nome:String(r[cDesc]||cod).trim().toUpperCase(), eq:Math.round(eq*100)/100, mo:Math.round(mo*100)/100, mat:Math.round(mat*100)/100, tot:parseNum(r[cTot]) });
+      }
+      if (!cats.length) { UI.orcImp = { erro:'O arquivo não tem categorias de nível 4 (códigos como 01.01.03.01).' }; render(); return; }
+      const soma = cats.reduce((s,c)=>s+c.eq+c.mo+c.mat,0);
+      UI.orcImp = { arquivo:file.name, nomeObra, cats, soma, totalObra, modo:null };
+    } catch(e) { UI.orcImp = { erro:'Não consegui ler o arquivo: '+e.message }; }
+    render(); setTimeout(()=>document.getElementById('orc-imp')?.scrollIntoView({block:'start'}),30);
+  };
+  fr.readAsArrayBuffer(file);
+}
+function orcImpHtml(){
+  const I = UI.orcImp, o = obra(); if (!I) return '';
+  if (I.erro) return `<div class="banner">${esc(I.erro)}</div>`;
+  const atual = Object.fromEntries((o?.categorias||[]).map(c=>[c.id,c]));
+  const usados = new Set(); for (const m in o?.gasto||{}) for (const c in o.gasto[m]) usados.add(c);
+  const novas = I.cats.filter(c=>!atual[c.id]), mud = I.cats.filter(c=>atual[c.id] && Math.abs(orcOf(atual[c.id])-(c.eq+c.mo+c.mat))>0.01);
+  const ids = new Set(I.cats.map(c=>c.id)), saem = (o?.categorias||[]).filter(c=>!ids.has(c.id));
+  const confere = I.totalObra ? Math.abs(I.totalObra - I.soma) < 1 : true;
+  const outraObra = I.nomeObra && o && norm(I.nomeObra) !== norm(o.nome);
+  return `<div class="steps" style="gap:12px">
+    <p class="note"><b>${esc(I.arquivo)}</b>${I.nomeObra?` · obra <b>${esc(I.nomeObra)}</b>`:''} · ${I.cats.length} categorias · total <b>${money(I.soma,false)}</b></p>
+    ${confere?`<div class="banner" style="background:var(--good-bg)">A soma das categorias bate com o total da obra no relatório.</div>`:`<div class="banner">Atenção: a soma das categorias (${money(I.soma,false)}) não bate com o total do relatório (${money(I.totalObra,false)}). Confira o arquivo.</div>`}
+    ${outraObra?`<div class="banner">Este orçamento é da obra <b>${esc(I.nomeObra)}</b>, e você está em <b>${esc(o.nome)}</b>. Para uma obra nova, use <b>Criar obra nova</b>.</div>`:''}
+    <div class="seg big" role="group" aria-label="Destino">
+      <button data-orcmodo="atual" aria-pressed="${I.modo==='atual'}">Atualizar ${o?esc(o.nome):'obra atual'}</button>
+      <button data-orcmodo="nova" aria-pressed="${I.modo==='nova'}">Criar obra nova</button>
+    </div>
+    ${I.modo==='atual' && o?`
+      <ul class="forn">
+        <li><span>Categorias novas</span><span>${novas.length}</span></li>
+        <li><span>Categorias com valor alterado</span><span>${mud.length}</span></li>
+        <li><span>Categorias que não estão no arquivo</span><span>${saem.length}</span></li>
+        <li><span>Orçamento executivo</span><span>${money(orcOf({eq:0,mo:0,mat:0})+(o.categorias||[]).reduce((s,c)=>s+orcOf(c),0))} → ${money(I.soma)}</span></li>
+      </ul>
+      ${mud.length?`<div class="tbl-wrap" style="max-height:240px;overflow:auto"><table><thead><tr><th>Categoria</th><th class="n">No app</th><th class="n">No arquivo</th><th class="n">Diferença</th></tr></thead><tbody>${mud.map(c=>{ const a=orcOf(atual[c.id]), b=c.eq+c.mo+c.mat; return `<tr><td>${esc(c.nome)}</td><td class="n">${money(a)}</td><td class="n">${money(b)}</td><td class="n ${b>a?'t-warn':'t-good'}">${signed(b-a)}</td></tr>`; }).join('')}</tbody></table></div>`:''}
+      ${saem.length?`<p class="note">Fora do arquivo: ${saem.map(c=>esc(c.nome)).join(', ')}. ${saem.some(c=>usados.has(c.id))?'As que já têm gasto ficam no app com orçamento zerado; as demais são removidas.':'Elas serão removidas.'}</p>`:''}
+      ${!novas.length && !mud.length && !saem.length?`<div class="banner" style="background:var(--good-bg)">O orçamento do app já está igual ao arquivo.</div>`:`<div class="toolbar"><button class="btn" id="orc-aplicar">Aplicar orçamento em ${esc(o.nome)}</button><button class="btn sec" id="orc-cancel">Cancelar</button></div>`}`:''}
+    ${I.modo==='nova'?`
+      <form id="f-orc-nova" class="grid-form">
+        <div class="field wide"><label for="on-nome">Nome da obra</label><input id="on-nome" required value="${esc(I.nomeObra||'')}"></div>
+        <div class="field"><label for="on-ini">Início</label><input id="on-ini" type="month" required></div>
+        <div class="field"><label for="on-fim">Término previsto</label><input id="on-fim" type="month" required></div>
+        <div class="field"><label for="on-viab">Viabilidade (R$)</label><input id="on-viab" inputmode="decimal" placeholder="opcional"></div>
+        <button class="btn" type="submit">Criar obra com este orçamento</button>
+      </form>
+      <p class="note muted">Início e término definem o prazo e o cheque mensal. A viabilidade pode ser preenchida depois.</p>`:''}
+  </div>`;
+}
+function aplicarOrcamento(o, cats){
+  const usados = new Set(); for (const m in o.gasto||{}) for (const c in o.gasto[m]) usados.add(c);
+  const antes = Object.fromEntries((o.categorias||[]).map(c=>[c.id,c]));
+  const novo = cats.map(c => ({ id:c.id, nome:c.nome, eq:c.eq, mo:c.mo, mat:c.mat, fora: antes[c.id] ? !!antes[c.id].fora : /INCORPORA/i.test(c.nome) }));
+  const ids = new Set(novo.map(c=>c.id));
+  (o.categorias||[]).forEach(c => { if (!ids.has(c.id) && usados.has(c.id)) novo.push({ ...c, eq:0, mo:0, mat:0 }); });
+  o.categorias = novo.sort((a,b)=>a.id.localeCompare(b.id));
+}
 function colarOrcamento(){
   const o = obra(), txt = document.getElementById('cola').value.trim(); if (!txt) { toast('Cole as linhas do orçamento primeiro.'); return; }
   let n=0, novos=0;
