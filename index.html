@@ -481,10 +481,12 @@ body{background:radial-gradient(1200px 600px at 50% -200px,#13244a 0%,var(--bg) 
 .nst{font:600 11px var(--body);color:var(--muted);white-space:nowrap;align-self:center}
 .nst::before{content:"●";margin-right:4px}
 .nst[data-s="ok"]::before{color:var(--good)}.nst[data-s="busy"]::before{color:var(--warn)}.nst[data-s="err"]{color:var(--crit)}.nst[data-s="err"]::before{color:var(--crit)}.nst[data-s="ro"]::before{color:var(--s2)}
-.top-aux{display:flex;flex-direction:column;align-items:flex-end;gap:6px;align-self:center;margin-left:8px}
+.top-aux{display:flex;align-items:center;align-self:flex-end;height:38px;margin-left:10px;padding-left:18px;border-left:1px solid var(--band-line)}
 .top-st{display:flex;align-items:center;gap:10px}
+.st-desk{margin-left:auto;padding:0 2px 3px;align-self:center}
+.st-mob{display:none}
 .ay-div{width:1px;height:24px;background:var(--band-line)}
-.ay-top{height:30px;width:auto;display:block}
+.ay-top{height:24px;width:auto;display:block}
 .ay-login{margin-top:28px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:center}
 .ay-login img{height:28px;width:auto;opacity:.95}
 .login{min-height:calc(88vh - 48px);min-height:calc(88dvh - 48px)}
@@ -493,7 +495,7 @@ body{background:radial-gradient(1200px 600px at 50% -200px,#13244a 0%,var(--bg) 
 .ay-login{flex-direction:column;align-items:center;gap:10px}
 .pg-title{position:relative}
 .ay-pg{display:none}
-@media (max-width:720px){.top-aux{grid-column:1/-1;flex-direction:row;justify-content:space-between;margin:-2px 0 0}.top-st{width:100%;justify-content:space-between}.top-aux .ay-div,.top-aux .ay-top{display:none}.nst{font-size:10.5px}
+@media (max-width:720px){.top-aux{grid-column:1/-1;height:auto;border-left:0;padding-left:0;margin:-2px 0 0;align-self:auto}.st-mob{display:flex;width:100%;justify-content:space-between}.top-aux .ay-div,.top-aux .ay-top{display:none}.nst{font-size:10.5px}
   .ay-pg{display:block;position:absolute;right:0;top:14px;height:18px;width:auto}
   .pg-title .eyebrow,.pg-title h2{padding-right:130px}}
 body.fora header.top,body.fora nav.bottom{display:none}
@@ -558,7 +560,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
       <div class="pick"><label for="sel-obra">Obra</label><select id="sel-obra"></select></div>
       <div class="pick"><label for="sel-mes">Mês</label><select id="sel-mes"></select></div>
       <button class="btn-band" id="btn-nova" aria-label="Nova obra">+ Obra</button>
-      <div class="top-aux"><img class="ay-top" src="ayoshii.svg" alt="A.Yoshii" width="200" height="31"><div class="top-st"><span class="ver-tag" id="ver-tag"></span><span id="nuvem-st" class="nst" role="status"></span></div></div>
+      <div class="top-aux"><img class="ay-top" src="ayoshii.svg" alt="A.Yoshii" width="170" height="26"><div class="top-st st-mob"><span class="ver-tag"></span><span class="nst" role="status"></span></div></div>
     </div>
     <nav class="tabs" aria-label="Páginas">
       <a href="#painel" data-v="painel">Painel</a>
@@ -567,6 +569,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
       <a href="#efetivo" data-v="efetivo">Efetivo</a>
       <a href="#historico" data-v="historico">Mês a mês</a>
       <a href="#orcamento" data-v="orcamento">Obra e orçamento</a>
+      <div class="top-st st-desk"><span class="ver-tag"></span><span class="nst" role="status"></span></div>
     </nav>
   </div>
 </header>
@@ -596,7 +599,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v1.9 · 27/10';
+const APP_VERSAO = 'v1.10 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -630,12 +633,9 @@ async function carregarNuvem(){
   Object.values(S.obras).forEach(o => migrarEfetivo(o));
 }
 function statusNuvem(){
-  const vt = document.getElementById('ver-tag'); if (vt) vt.textContent = APP_VERSAO;
-  const el = document.getElementById('nuvem-st'); if (!el) return;
-  if (NUVEM.papel==='leitor') { el.textContent = 'Só leitura'; el.dataset.s = 'ro'; return; }
-  if (NUVEM.erro) { el.textContent = 'Erro ao salvar'; el.dataset.s = 'err'; el.title = NUVEM.erro; return; }
-  if (NUVEM.salvando || NUVEM.pendente) { el.textContent = 'Salvando…'; el.dataset.s = 'busy'; return; }
-  el.textContent = 'Salvo na nuvem'; el.dataset.s = 'ok'; el.title = '';
+  document.querySelectorAll('.ver-tag').forEach(v => v.textContent = APP_VERSAO);
+  const [txt, st, tit] = NUVEM.papel==='leitor' ? ['Só leitura','ro',''] : NUVEM.erro ? ['Erro ao salvar','err',NUVEM.erro] : (NUVEM.salvando || NUVEM.pendente) ? ['Salvando…','busy',''] : ['Salvo na nuvem','ok',''];
+  document.querySelectorAll('.nst').forEach(el => { el.textContent = txt; el.dataset.s = st; el.title = tit; });
 }
 function save(){
   UI.fornIdx = null;
