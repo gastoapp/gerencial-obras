@@ -1,0 +1,22 @@
+# Mantém o projeto gratuito do Supabase ativo (ele pausa após 7 dias sem uso).
+# Roda toda segunda e quinta às 9h (horário de Brasília) e pode ser disparado à mão em Actions.
+# Usa só a chave pública (a mesma do config.js) e uma função que não lê nenhum dado.
+name: Manter Supabase ativo
+
+on:
+  schedule:
+    - cron: "17 12 * * 1,4"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar o banco
+        run: |
+          KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeGZlZ251Z2Z4c3llYW1kaGR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNjc0NTcsImV4cCI6MjEwODY0MzQ1N30.eXPIzlT_0ByH6XrAkXdQtLS-XDPLQbFHvefiJJ5_moc"
+          curl --fail --silent --show-error -X POST \
+            "https://prxfegnugfxsyeamdhdu.supabase.co/rest/v1/rpc/go_ping" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
+            -H "Content-Type: application/json" -d '{}'
+          echo " ← banco respondeu, projeto ativo"
