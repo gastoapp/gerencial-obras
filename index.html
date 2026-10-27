@@ -518,13 +518,17 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .login-logo b{color:var(--accent)}
 @media (max-width:420px){.login-logo{font-size:25px;gap:10px}.login-logo svg{width:48px;height:48px}}
 
-/* painel em duas colunas no computador: esquerda índices + funcionários, direita metas + dados da obra */
+/* painel no computador: índices | (metas + dados da obra) com as bordas alinhadas; funcionários em faixa larga embaixo */
 .pgrid{display:flex;flex-direction:column;gap:20px}
 .pcol{display:contents}
 .p-ind{order:1}.p-metas{order:2}.p-func{order:3}.p-dados{order:4}
+.peo-emp{display:none}
 @media (min-width:1000px){
-  .pgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+  .pgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:stretch}
   .pcol{display:flex;flex-direction:column;gap:20px;min-width:0}
+  .pcol-e>.p-ind{flex:1}
+  .pcol-d>.p-dados{flex:1;justify-content:space-between}
+  .p-func{grid-column:1/-1}
   .p-ind .kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}
   .p-ind .kpis.k3{grid-template-columns:repeat(3,minmax(0,1fr))}
   .p-ind .kpis.k5{grid-template-columns:repeat(6,minmax(0,1fr))}
@@ -532,9 +536,10 @@ body.fora header.top,body.fora nav.bottom{display:none}
   .p-ind .kpis.k5 .kpi:nth-child(n+4){grid-column:span 3}
   .p-ind .kpi .val{font-size:clamp(20px,1.75vw,26px)}
   .p-metas{gap:16px}
-  .p-func .peo{grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center}
-  .p-func .peo svg{width:140px;height:140px}
   .p-dados .dados{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .p-func .peo{grid-template-columns:auto minmax(0,.9fr) minmax(0,1.3fr);gap:28px;align-items:center}
+  .p-func .peo svg{width:132px;height:132px}
+  .peo-emp{display:flex;flex-direction:column;gap:7px;border-left:1px solid var(--line);padding-left:24px;min-width:0}
 }
 .p-func{display:flex;flex-direction:column}
 .p-func .peo ul{gap:10px}
@@ -590,7 +595,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v1.7 · 27/10';
+const APP_VERSAO = 'v1.8 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1187,17 +1192,6 @@ function renderPainel(el){
     </div></div>
   </section>
 
-    <a class="panel plink p-func" href="#efetivo" aria-label="Funcionários de ${ymLabel(M)}: abrir efetivo">
-      <div class="ph"><h3 class="sub">Funcionários</h3><span class="more">Ver efetivo ›</span></div>
-      ${ef.vazio?`<p class="lead">Efetivo de ${ymLabel(M)} ainda não lançado${ef.ant?`. Último mês lançado: ${ymLabel(ef.ant)}`:''}. Toque para lançar.</p>`:`
-      <div class="peo">${donutHtml(ef.mop, ef.emp, ef.tot)}
-        <ul>
-          <li><span><i style="background:var(--s1)"></i>Própria</span><b>${ef.mop}</b><em>${pct(ef.mop/ef.tot,0)}</em></li>
-          <li><span><i style="background:var(--s2)"></i>Empreiteiros</span><b>${ef.emp}</b><em>${pct(ef.emp/ef.tot,0)}</em></li>
-          <li class="sm"><span>Oficiais ${ef.of} · Meio-of. ${ef.mo} · Serv. ${ef.se}</span></li>
-          ${ef.delta!=null?`<li class="sm"><span><b class="${ef.delta>0?'t-good':ef.delta<0?'t-crit':''}">${ef.delta>0?'+':''}${ef.delta}</b> pessoas vs ${ymLabel(ef.prevK)}</span></li>`:''}
-        </ul></div>`}
-    </a>
     </div>
     <div class="pcol pcol-d">
     <div class="panel p-metas">
@@ -1227,6 +1221,19 @@ function renderPainel(el){
   </section>
 
     </div>
+    <a class="panel plink p-func" href="#efetivo" aria-label="Funcionários de ${ymLabel(M)}: abrir efetivo">
+      <div class="ph"><h3 class="sub">Funcionários</h3><span class="more">Ver efetivo ›</span></div>
+      ${ef.vazio?`<p class="lead">Efetivo de ${ymLabel(M)} ainda não lançado${ef.ant?`. Último mês lançado: ${ymLabel(ef.ant)}`:''}. Toque para lançar.</p>`:`
+      <div class="peo">${donutHtml(ef.mop, ef.emp, ef.tot)}
+        <ul>
+          <li><span><i style="background:var(--s1)"></i>Própria</span><b>${ef.mop}</b><em>${pct(ef.mop/ef.tot,0)}</em></li>
+          <li><span><i style="background:var(--s2)"></i>Empreiteiros</span><b>${ef.emp}</b><em>${pct(ef.emp/ef.tot,0)}</em></li>
+          <li class="sm"><span>Oficiais ${ef.of} · Meio-of. ${ef.mo} · Serv. ${ef.se}</span></li>
+          ${ef.delta!=null?`<li class="sm"><span><b class="${ef.delta>0?'t-good':ef.delta<0?'t-crit':''}">${ef.delta>0?'+':''}${ef.delta}</b> pessoas vs ${ymLabel(ef.prevK)}</span></li>`:''}
+        </ul>
+        <div class="peo-emp"><span class="h4">Maiores empreiteiros</span>${ef.empresas.slice(0,5).map(x=>`<div class="eb"><span title="${esc(x.nome)}${x.atividade?' — '+esc(x.atividade):''}"><b>${esc(x.nome)}</b>${x.atividade?`<em> — ${esc(x.atividade)}</em>`:''}</span><div class="track"><div class="fill s2" style="width:${(x.tot/(ef.empresas[0]?.tot||1)*100).toFixed(1)}%"></div></div><b>${x.tot}</b></div>`).join('')}</div>
+      </div>`}
+    </a>
   </div>
 
   ${prevHtml(previsao(o, k, M))}
