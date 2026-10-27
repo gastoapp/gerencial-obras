@@ -120,6 +120,7 @@ input,select,textarea{font:15px var(--body);color:var(--ink);background:var(--su
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.chip:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 16px;font:600 14px var(--body);cursor:pointer}
 .btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:wait}
 .btn.sec{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
 .btn.danger{background:var(--crit);color:#fff}
 .grid-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
@@ -598,7 +599,7 @@ async function salvarNuvem(){
   NUVEM.salvando = false; statusNuvem();
 }
 function marcarMes(o, ym){ NUVEM.mesesSujos.add(o.id+'|'+ym); }
-const obra = () => S.obras[S.atual];
+const obra = () => S && S.obras ? S.obras[S.atual] : undefined;
 /* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem] */
 function itensDe(o, ym){
   const pack = (o.itens||{})[ym];
@@ -1809,7 +1810,10 @@ document.addEventListener('submit', e => {
   if (f.id==='f-fun') { migrarEfetivo(o); o.funcoes.push({ id:'f'+Date.now().toString(36), nome:v('nf-nome').trim().toUpperCase(), ativo:true }); save(); toast('Função adicionada.'); keepScroll(render); }
   if (f.id==='f-obra') { o.nome=v('ob-nome').trim(); o.inicio=v('ob-ini')+'-01'; o.fim=v('ob-fim')+'-28'; o.orcViab=parseNum(v('ob-viab')); save(); toast('Dados da obra salvos.'); render(); }
   if (f.id==='f-login') { const mail = v('lg-mail').trim(); const btn = f.querySelector('button'); btn.disabled = true;
-    NUVEM.sb.auth.signInWithOtp({ email: mail, options: { emailRedirectTo: location.origin + location.pathname } }).then(({error}) => telaLogin(error ? 'Não consegui enviar: '+esc(error.message) : `Enviamos um link para <b>${esc(mail)}</b>. Abra o e-mail neste aparelho e toque no link para entrar.`)); return; }
+    btn.textContent = 'Enviando…';
+    NUVEM.sb.auth.signInWithOtp({ email: mail, options: { emailRedirectTo: location.origin + location.pathname } })
+      .then(({error}) => telaLogin(error ? 'Não consegui enviar: '+esc(error.message) : `Enviamos um link para <b>${esc(mail)}</b>. Abra o e-mail neste aparelho e toque no link para entrar. Se não chegar em 2 minutos, olhe o spam.`))
+      .catch(err => telaLogin('Não consegui enviar: '+esc(err.message||String(err)))); return; }
   if (f.id==='f-membro') { const mail = v('mb-mail').trim().toLowerCase();
     NUVEM.sb.from('go_membros').upsert({ email: mail, papel: v('mb-papel') }, { onConflict:'email' }).then(({error}) => { if (error) toast(error.message); else { toast('Acesso liberado para '+mail+'.'); carregarMembros(); } }); return; }
   if (!S || !obra() && f.id!=='f-nova') return;
