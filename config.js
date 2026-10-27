@@ -1,6 +1,5 @@
-// Cole aqui os dados do seu projeto Supabase (Project Settings › API).
-// A "anon key" é pública: pode ficar neste arquivo. Nunca cole a "service_role key".
+js
 window.CONFIG = {
-  supabaseUrl: 'COLE_AQUI_O_PROJECT_URL',      // ex.: https://abcdxyz.supabase.co
-  supabaseAnonKey: 'COLE_AQUI_A_ANON_KEY'
+  supabaseUrl: 'https://prxfegnugfxsyeamdhdu.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeGZlZ251Z2Z4c3llYW1kaGR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNjc0NTcsImV4cCI6MjEwODY0MzQ1N30.eXPIzlT_0ByH6XrAkXdQtLS-XDPLQbFHvefiJJ5_moc'
 };
