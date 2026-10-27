@@ -57,7 +57,7 @@ nav.bottom{display:none}
   .brand{display:none}
   .top-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:8px;padding-block:8px}
   nav.tabs{display:none}
-  nav.bottom{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--band);border-top:1px solid var(--band-line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  nav.bottom{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--band);border-top:1px solid var(--band-line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
   nav.bottom a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;color:var(--band-muted);text-decoration:none;font:600 10px var(--body);letter-spacing:0;white-space:nowrap}
   nav.bottom a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   nav.bottom a[aria-current="page"]{color:var(--band-ink)}
@@ -548,6 +548,27 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .p-func .peo ul{gap:10px}
 .p-func .peo li{grid-template-columns:minmax(0,1fr) auto 44px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* análise preço × quantidade */
+.an-cats{display:flex;flex-direction:column;gap:2px}
+.an-cat{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto;gap:12px;align-items:center;padding:8px 6px;border-radius:8px;cursor:pointer}
+.an-cat:hover,.an-cat:focus-visible{background:var(--surface2)}
+.an-cn{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-bar{display:flex;height:12px;border-radius:3px;background:var(--surface2);overflow:hidden;gap:1px}
+.an-bar i{display:block;height:100%}
+.an-v{font-family:var(--mono);font-size:12.5px;text-align:right;min-width:72px}
+.an-body{padding:0 14px 12px;display:flex;flex-direction:column;gap:10px}
+.an-split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.an-split>div{background:var(--surface2);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.an-split span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.an-split b{font-family:var(--mono);font-size:15px;font-weight:500}
+.an-split small{font-size:11.5px;color:var(--ink2)}
+.an-forn{display:flex;flex-direction:column;gap:4px}
+.an-fr{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;font-size:12.5px;padding:5px 0;border-top:1px solid var(--line);align-items:center}
+.an-fr span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-fr .mono{font-family:var(--mono);text-align:right}
+.an-step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;display:flex;flex-direction:column;gap:8px}
+@media (max-width:720px){.an-cat{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}.an-bar{grid-column:1/-1;grid-row:2}.an-fr{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}.an-fr span:nth-child(2){grid-column:1}.an-fr span:nth-child(3){grid-column:2;grid-row:2}.an-fr b{grid-column:2;grid-row:1}}
 </style>
 </head>
 <body>
@@ -565,6 +586,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
     <nav class="tabs" aria-label="Páginas">
       <a href="#painel" data-v="painel">Painel</a>
       <a href="#categorias" data-v="categorias">Categorias</a>
+      <a href="#analise" data-v="analise">Análise</a>
       <a href="#lancar" data-v="lancar">Lançar mês</a>
       <a href="#efetivo" data-v="efetivo">Efetivo</a>
       <a href="#historico" data-v="historico">Mês a mês</a>
@@ -577,6 +599,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 <nav class="bottom" aria-label="Páginas">
   <a href="#painel" data-v="painel"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Painel</a>
   <a href="#categorias" data-v="categorias"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="1.6"/></svg>Categorias</a>
+  <a href="#analise" data-v="analise"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5M8 12.5v-2M10.5 12.5v-4M13 12.5v-3"/></svg>Análise</a>
   <a href="#lancar" data-v="lancar"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 18v2h16v-2"/></svg>Lançar</a>
   <a href="#efetivo" data-v="efetivo"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.6c2.3.2 4 1.9 4.5 4.6"/></svg>Efetivo</a>
   <a href="#historico" data-v="historico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Mês a mês</a>
@@ -599,21 +622,21 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v1.12 · 27/10';
+const APP_VERSAO = 'v2.0 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
 const PAPEL_TXT = { admin:'administrador', editor:'visualiza e edita', leitor:'só visualiza' };
-const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa'];
+const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos'];
 
 function partesDaObra(o){
   return { info:{ id:o.id, nome:o.nome, inicio:o.inicio, fim:o.fim, orcViab:o.orcViab||0 }, categorias:o.categorias||[], avancos:o.avancos||{}, ajustes:o.ajustes||[],
-    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{} };
+    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{}, insumos:o.insumos||{} };
 }
 function montarObra(id, kv){
   const info = kv.info || { id, nome:id };
   return { ...info, id, categorias: kv.categorias||[], avancos: kv.avancos||{}, ajustes: kv.ajustes||[], funcoes: kv.equipe?.funcoes||[], empreiteiros: kv.equipe?.empreiteiros||[],
-    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, gasto:{}, itens:{} };
+    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, insumos: kv.insumos||{}, gasto:{}, itens:{} };
 }
 async function lerTudo(tabela, colunas){
   const out = []; let de = 0;
@@ -638,7 +661,7 @@ function statusNuvem(){
   document.querySelectorAll('.nst').forEach(el => { el.textContent = txt; el.dataset.s = st; el.title = tit; });
 }
 function save(){
-  UI.fornIdx = null;
+  UI.fornIdx = null; UI.anCache = null;
   try { localStorage.setItem(PREF, JSON.stringify({ atual:S.atual, mes:S.mes })); } catch(e) {}
   if (!podeEditar()) { if (NUVEM.papel==='leitor' && !NUVEM.avisouRO) { NUVEM.avisouRO = true; toast('Seu acesso é só de leitura: as alterações não são salvas.'); } return; }
   NUVEM.pendente = true; statusNuvem();
@@ -673,7 +696,7 @@ async function salvarNuvem(){
 }
 function marcarMes(o, ym){ NUVEM.mesesSujos.add(o.id+'|'+ym); }
 const obra = () => S && S.obras ? S.obras[S.atual] : undefined;
-/* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem] */
+/* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem, cód. serviço, cód. item] */
 function itensDe(o, ym){
   const pack = (o.itens||{})[ym];
   const out = pack ? pack.i.map(r => ({ cat:r[0], dia:r[1], doc:r[2], item:pack.s[r[3]]??'', forn:pack.s[r[4]]??'', qtd:r[5], un:pack.s[r[6]]??'', vu:r[7], val:r[8], mo:!!r[9], orig:r[10] })) : [];
@@ -992,7 +1015,7 @@ function lines(el, labels, series, opts={}){
 const legendHtml = items => `<div class="legend">${items.map(it=>`<span><i style="${it.line?`width:16px;border-top:2px ${it.dash?'dashed':'solid'} ${it.color}`:`width:10px;height:10px;border-radius:2px;background:${it.color}`}"></i>${esc(it.name)}</span>`).join('')}</div>`;
 
 /* ---------- topo e rotas ---------- */
-const VIEWS = ['painel','categorias','lancar','efetivo','historico','orcamento'];
+const VIEWS = ['painel','categorias','analise','lancar','efetivo','historico','orcamento'];
 const view = () => { const h = location.hash.replace('#',''); return VIEWS.includes(h) ? h : 'painel'; };
 function renderTop(){
   const so = document.getElementById('sel-obra');
@@ -1012,7 +1035,7 @@ function render(){
   renderTop();
   const el = document.getElementById('view');
   if (!obra()) { el.innerHTML = `<div class="panel empty"><h2 class="sec">Nenhuma obra ainda</h2>${podeEditar()?`<p class="note">Comece pela Etherea com os dados da planilha de set/26 (escolha o arquivo <b>dados-iniciais.json</b> que está no seu computador), ou crie uma obra nova.</p><div class="toolbar" style="justify-content:center"><button class="btn" id="imp-eth">Carregar Etherea (planilha set/26)</button><button class="btn sec" id="btn-nova2">+ Criar obra</button></div>`:'<p class="note">Quem administra o app ainda não cadastrou obras.</p>'}</div>`; return; }
-  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, historico:renderHistorico, orcamento:renderOrcamento})[view()](el);
+  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, historico:renderHistorico, orcamento:renderOrcamento, analise:renderAnalise})[view()](el);
 }
 
 /* ---------- PAINEL (o mês selecionado) ---------- */
@@ -1590,7 +1613,7 @@ function impPreview(){
   return `<div style="display:flex;flex-direction:column;gap:12px">
     <p class="note"><b>${esc(I.nome)}</b> · ${I.linhas.toLocaleString('pt-BR')} lançamentos em ${ms.length} meses${I.ignoradas?` · ${I.ignoradas} linhas sem data ou código ignoradas`:''}.</p>
     ${(()=>{ const mud = ms.filter(m=>I.meses[m].mudou); const dt = mud.reduce((s,m)=>s+I.meses[m].total-Object.values((o.gasto||{})[m]||{}).reduce((a,v)=>a+v[0]+v[1],0),0);
-      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), somando <b>${signed(dt)}</b>. Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
+      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), somando <b>${signed(dt)}</b>.${I.completar?` Inclui ${I.completar} mês(es) só para completar os códigos de serviço e item usados na Análise (os valores não mudam).`:''} Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
     ${sem.length?`<div class="banner" style="flex-direction:column;align-items:stretch"><b>${sem.length} código(s) sem categoria no orçamento.</b> Escolha para onde vão; o app lembra nas próximas importações.
       ${sem.map(([cod,v])=>`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="mono">${esc(cod)}</span><span class="muted" style="flex:1;min-width:120px">${esc(v.fase||'')} · ${money(v.total)}</span><select data-map="${esc(cod)}" aria-label="Categoria para ${esc(cod)}" style="max-width:100%"><option value="">Ignorar</option>${o.categorias.map(c=>`<option value="${esc(c.id)}"${I.map[cod]===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select></div>`).join('')}</div>`:''}
     <div class="tbl-wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th><input type="checkbox" id="imp-all" aria-label="Marcar todos" ${ms.every(m=>I.sel[m])?'checked':''}></th><th>Mês</th><th class="n">No arquivo</th><th class="n">No app</th><th class="n">Diferença</th></tr></thead><tbody>
@@ -1623,7 +1646,7 @@ function lerArquivo(file){
       }
       if (!found) { UI.imp = { erro:'Não achei a coluna "Valor Apropriação" no arquivo. Confira se é a exportação de itens recebidos do ERP.' }; render(); return; }
       const H = found.rows[found.h].map(norm), ix = n => H.indexOf(n);
-      const cCod = ix('cod. estruturado'), cVal = ix('valor apropriacao'), cDoc = ix('data documento'), cApr = ix('data apropriacao'), cDef = ix('definicao'), cForn = ix('fornecedor'), cFase = ix('descricao das fases'), cDocN = ix('documento'), cIt = ix('desc. item compra'), cDesc = ix('descricao'), cQ = ix('qtde. apropriada'), cUn = ix('unidade'), cVu = ix('valor unitario'), cOr = ix('origem');
+      const cCod = ix('cod. estruturado'), cVal = ix('valor apropriacao'), cDoc = ix('data documento'), cApr = ix('data apropriacao'), cDef = ix('definicao'), cForn = ix('fornecedor'), cFase = ix('descricao das fases'), cDocN = ix('documento'), cIt = ix('desc. item compra'), cDesc = ix('descricao'), cQ = ix('qtde. apropriada'), cUn = ix('unidade'), cVu = ix('valor unitario'), cOr = ix('origem'), cCi = ix('cod. item');
       if (cCod<0) { UI.imp = { erro:'Não achei a coluna "Cód. Estruturado".' }; render(); return; }
       const cats = new Set(o.categorias.map(c=>c.id));
       const I = { nome:file.name, linhas:0, ignoradas:0, meses:{}, semCat:{}, map:{ ...(o.mapaCodigos||{}) }, raw:[], sel:{} };
@@ -1632,12 +1655,14 @@ function lerArquivo(file){
         if (!cod || !ym) { if (r.some(x=>x!=='')) I.ignoradas++; continue; }
         const niv = cod.slice(0,11), val = parseNum(r[cVal]);
         const dv = cDoc>=0&&r[cDoc]!==''?r[cDoc]:r[cApr]; const dia = dv instanceof Date ? String(new Date(dv.getTime()+43200000).getDate()).padStart(2,'0') : (typeof dv==='number' ? String(new Date(Math.round((dv-25569)*864e5)+43200000).getUTCDate()).padStart(2,'0') : String(dv).slice(0,2));
-        I.raw.push({ ym, niv, val, dia, doc: cDocN>=0?String(r[cDocN]):'', item: String((cIt>=0&&r[cIt]) || (cDesc>=0?r[cDesc]:'') || ''), qtd: cQ>=0?parseNum(r[cQ]):0, un: cUn>=0?String(r[cUn]):'', vu: cVu>=0?parseNum(r[cVu]):0, orig: cOr>=0?String(r[cOr]):'', mo: norm(r[cDef])==='mao de obra', forn: String(cForn>=0?r[cForn]:'').trim() || '(sem fornecedor)' }); I.linhas++;
+        I.raw.push({ ym, niv, val, dia, doc: cDocN>=0?String(r[cDocN]):'', item: String((cIt>=0&&r[cIt]) || (cDesc>=0?r[cDesc]:'') || ''), qtd: cQ>=0?parseNum(r[cQ]):0, un: cUn>=0?String(r[cUn]):'', vu: cVu>=0?parseNum(r[cVu]):0, orig: cOr>=0?String(r[cOr]):'', mo: norm(r[cDef])==='mao de obra', forn: String(cForn>=0?r[cForn]:'').trim() || '(sem fornecedor)', serv: cod.length>11 ? cod : '', ci: cCi>=0 ? (parseInt(r[cCi])||0) : 0 }); I.linhas++;
         const mm = (I.meses[ym] ??= { n:0, total:0 }); mm.n++; mm.total += val;
         if (!cats.has(niv)) { const s = (I.semCat[niv] ??= { total:0, fase: cFase>=0?String(r[cFase]||''):'' }); s.total += val; }
       }
       const nApp = m => (o.itens?.[m]?.i?.length || 0), totApp = m => Object.values((o.gasto||{})[m]||{}).reduce((s,v)=>s+v[0]+v[1],0);
-      Object.keys(I.meses).forEach(m => { I.meses[m].mudou = Math.abs(I.meses[m].total - totApp(m)) > 0.5 || I.meses[m].n !== nApp(m); I.sel[m] = I.meses[m].mudou; });
+      const semCod = m => nApp(m) > 0 && (o.itens[m].i[0].length < 13);
+      I.completar = cCi>=0 && Object.keys(I.meses).filter(semCod).length;
+      Object.keys(I.meses).forEach(m => { I.meses[m].mudou = Math.abs(I.meses[m].total - totApp(m)) > 0.5 || I.meses[m].n !== nApp(m) || (cCi>=0 && semCod(m)); I.sel[m] = I.meses[m].mudou; });
       UI.imp = I;
     } catch(e) { UI.imp = { erro:'Não consegui ler o arquivo: '+e.message }; }
     render();
@@ -1654,7 +1679,7 @@ function aplicarImport(){
     const cat = cats.has(it.niv) ? it.niv : I.map[it.niv]; if (!cat) continue;
     const g = ((G[it.ym] ??= {})[cat] ??= [0,0]); g[it.mo?0:1] += it.val;
     const p = (P[it.ym] ??= { s:[], m:new Map(), i:[] }); const si = s => { if (!p.m.has(s)) { p.m.set(s, p.s.length); p.s.push(s); } return p.m.get(s); };
-    p.i.push([cat, it.dia, it.doc, si(it.item), si(it.forn), it.qtd, si(it.un), it.vu, Math.round(it.val*100)/100, it.mo?1:0, it.orig]);
+    p.i.push([cat, it.dia, it.doc, si(it.item), si(it.forn), it.qtd, si(it.un), it.vu, Math.round(it.val*100)/100, it.mo?1:0, it.orig, it.serv, it.ci]);
   }
   o.gasto ??= {}; o.itens ??= {};
   for (const m of sel) {
@@ -1882,6 +1907,141 @@ function abrirNovaObra(){
   setTimeout(()=>document.getElementById('no-nome').focus());
 }
 
+/* ---------- ANÁLISE · preço × quantidade por insumo ---------- */
+const GENERICO = 34211;   // "ORC - INSUMO PARA TROCA DE ITEM"
+function temItensV2(o){ for (const m in o.itens||{}) { const r = o.itens[m]?.i?.[0]; if (r) return r.length > 12; } return false; }
+function itensBrutos(o, ym){ const p = (o.itens||{})[ym]; return p ? p.i.map(r => ({ cat:r[0], item:p.s[r[3]]??'', forn:p.s[r[4]]??'', qtd:+r[5]||0, un:p.s[r[6]]??'', val:+r[8]||0, serv:r[11]||'', cod:+r[12]||0 })) : []; }
+const UN_CONV = { 'TON>KG':1000, 'KG>TON':.001, 'MIL>UN':1000, 'M>MT':1, 'ML>MT':1 };
+const unN = u => String(u||'').toUpperCase().replace('²','2').replace('³','3').trim();
+function fatorUn(de, para){ de = unN(de); para = unN(para); return de===para ? 1 : (UN_CONV[de+'>'+para] || 0); }
+function calcAnalise(o, M){
+  const ck = o.id+'|'+M;
+  if (UI.anCache?.k === ck) return UI.anCache.v;
+  const ins = o.insumos, orc = new Map();
+  for (const [s, c, q, cu, t] of ins.itens) {
+    const k = s+'|'+c, x = orc.get(k);
+    if (x) { x.q += q; x.t += t; x.cu = x.q ? x.t/x.q : cu; } else orc.set(k, { serv:s, cod:c, q, cu, t, desc:ins.cods[c]?.[0]||'', un:ins.cods[c]?.[1]||'' });
+  }
+  const real = new Map();
+  for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M)) for (const it of itensBrutos(o, ym)) {
+    if (!it.serv) continue;
+    const k = it.serv+'|'+it.cod, ob = orc.get(k);
+    const r = real.get(k) || { serv:it.serv, cod:it.cod, q:0, v:0, qc:0, vc:0, uns:new Set(), forn:new Map(), desc:it.item };
+    r.q += it.qtd; r.v += it.val; r.uns.add(unN(it.un));
+    const emRS = Math.abs(it.qtd - it.val) <= 0.011*Math.max(1, Math.abs(it.val));   // quantidade lançada em reais
+    const fx = ob && !emRS ? fatorUn(it.un, ob.un) : 0;
+    if (fx) { r.qc += it.qtd*fx; r.vc += it.val; }
+    const f = r.forn.get(it.forn) || { q:0, v:0, un:new Set() }; f.q += fx ? it.qtd*fx : it.qtd; f.v += it.val; f.un.add(fx ? unN(ob.un) : unN(it.un)); r.forn.set(it.forn, f);
+    real.set(k, r);
+  }
+  const linhas = [];
+  for (const [k, ob] of orc) {
+    const r = real.get(k);
+    const L = { k, serv:ob.serv, cat:ob.serv.slice(0,11), cod:ob.cod, desc:ob.desc, un:ob.un, qo:ob.q, cuo:ob.cu, vo:ob.t, qr:r?.qc||0, vr:r?.v||0, vc:r?.vc||0, forn:r?.forn||new Map(), tipo:'ok', dp:0, dq:0 };
+    if (ob.cod === GENERICO) L.tipo = 'gen';
+    else if (!r || Math.abs(L.vr) < 0.01) L.tipo = 'nada';
+    else if (unN(ob.un)==='VB' || !L.qo || !ob.cu || Math.abs(ob.cu-1) < 0.01) L.tipo = 'vb';
+    else if (!L.qr || L.vc < 0.9*L.vr) L.tipo = 'un';
+    if (L.tipo === 'ok' && (L.vc/L.qr > 2.5*L.cuo || L.vc/L.qr < 0.4*L.cuo || L.qr > 4*L.qo)) { L.tipo = 'conf'; L.cur = L.vc/L.qr; }
+    if (L.tipo === 'ok') { L.cur = L.vc/L.qr; L.dp = (L.cur - L.cuo) * L.qr; L.dq = (L.qr - L.qo) * L.cuo; L.pq = L.qr / L.qo; L.resto = L.vr - L.vc; }
+    if (L.tipo === 'un') L.unsR = [...r.uns].join(', ');
+    L.d = L.vr - L.vo;
+    linhas.push(L);
+  }
+  for (const [k, r] of real) if (!orc.has(k)) linhas.push({ k, serv:r.serv, cat:r.serv.slice(0,11), cod:r.cod, desc:r.desc, un:[...r.uns][0]||'', qo:0, cuo:0, vo:0, qr:r.q, vr:r.v, forn:r.forn, tipo: r.cod===GENERICO?'gen':'sem', dp:0, dq:0, d:r.v });
+  const v = { linhas, servDesc: ins.serv };
+  UI.anCache = { k:ck, v };
+  return v;
+}
+const AN_TIPO = { conf:'Conferir quantidade', ok:'Preço × quantidade', vb:'Verba (só R$)', un:'Unidade diferente', gen:'Insumo genérico', sem:'Sem orçamento no serviço', nada:'Ainda sem gasto' };
+function renderAnalise(el){
+  const o = obra(), M = S.mes;
+  const temIns = !!o.insumos?.itens?.length, temV2 = temItensV2(o);
+  if (!temIns || !temV2) { el.innerHTML = podeEditar() ? anSetupHtml(o, temIns, temV2) : `<div class="panel empty"><h2 class="sec">Análise de custos</h2><p class="note">Esta obra ainda não tem o orçamento por insumo carregado. Peça a quem administra o app para ativar a análise.</p></div>`; return; }
+  const A = calcAnalise(o, M), catNome = Object.fromEntries(o.categorias.map(c=>[c.id, c.nome]));
+  const f = UI.anCat || 'todas';
+  const sel = A.linhas.filter(L => (f==='todas' || L.cat===f) && L.tipo!=='nada');
+  const sum = (arr, fn) => arr.reduce((s,x)=>s+fn(x),0);
+  const ok = sel.filter(L=>L.tipo==='ok');
+  const precoMais = sum(ok, L=>Math.max(0,L.dp)), precoMenos = sum(ok, L=>Math.min(0,L.dp));
+  const qtdMais = sum(ok.filter(L=>L.qr>L.qo), L=>L.dq);
+  const pendV = sum(sel.filter(L=>['gen','sem','un','conf'].includes(L.tipo)), L=>L.vr);
+  // por categoria
+  const porCat = {};
+  A.linhas.forEach(L => { if (L.tipo!=='ok') return; const c = (porCat[L.cat] ??= { p:0, q:0 }); c.p += Math.max(0,L.dp); if (L.qr>L.qo) c.q += L.dq; });
+  const cats = Object.entries(porCat).map(([id,x])=>({ id, nome:catNome[id]||id, ...x, t:x.p+x.q })).filter(x=>x.t>1).sort((a,b)=>b.t-a.t);
+  const mx = Math.max(1, ...cats.map(c=>c.t));
+  const modo = UI.anModo || 'estouros';
+  let lista = sel;
+  if (modo==='estouros') { const ex = L => L.dp + (L.qr>L.qo ? L.dq : 0); lista = sel.filter(L => L.tipo==='ok' && ex(L) > 1).sort((a,b)=>ex(b)-ex(a)); }
+  else if (modo==='economias') lista = sel.filter(L => L.tipo==='ok' && L.dp < -1).sort((a,b)=>a.dp-b.dp);
+  else if (modo==='pend') lista = sel.filter(L => ['gen','sem','un','conf'].includes(L.tipo)).sort((a,b)=>b.vr-a.vr);
+  else lista = sel.slice().sort((a,b)=>b.vr-a.vr);
+  const q = norm(UI.anBusca||''); if (q) lista = lista.filter(L => norm(L.desc).includes(q) || norm(A.servDesc[L.serv]||'').includes(q) || [...L.forn.keys()].some(n=>norm(n).includes(q)));
+  const total = lista.length; lista = lista.slice(0, UI.anLim || 60);
+  el.innerHTML = `
+  <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · acumulado até ${ymLabel(M)}</span><h2 class="sec">Análise de custos</h2></div>
+  <p class="lead">Cada gasto é <b>quantidade × preço</b>. Aqui o estouro é separado em <b>preço</b> (comprou mais caro que o orçado) e <b>quantidade</b> (consumiu mais que o orçado), insumo por insumo.</p>
+  <div class="toolbar">
+    <select id="an-cat" aria-label="Categoria" style="flex:1 1 260px"><option value="todas">Todas as categorias</option>${o.categorias.filter(c=>!c.fora).map(c=>`<option value="${esc(c.id)}"${f===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select>
+  </div>
+  <section class="kpis k4">
+    ${tile('Preço acima do orçado', money(precoMais), `economia de preço em outros itens: ${money(-precoMenos)}`, precoMais>1?'t-crit':'')}
+    ${tile('Quantidade acima do orçado', money(qtdMais), 'só itens que já passaram a qtd. orçada', qtdMais>1?'t-crit':'')}
+    ${tile('Pendências de apropriação', money(pendV), 'genérico, sem orçamento, unidade ou quantidade a conferir', pendV>1?'t-warn':'')}
+    ${tile('Insumos analisados', ok.length.toLocaleString('pt-BR'), `${sel.filter(L=>L.tipo==='vb').length} verbas só em R$`)}
+  </section>
+  ${f==='todas' && cats.length?`<section class="panel"><div class="ph"><h3 class="sub">Onde está o estouro</h3>${legendHtml([{name:'Preço',color:'var(--s3)'},{name:'Quantidade',color:'var(--s2)'}])}</div>
+    <div class="an-cats">${cats.slice(0,12).map(c=>`<button class="an-cat" data-ancat="${esc(c.id)}"><span class="an-cn">${esc(c.nome)}</span><span class="an-bar"><i style="width:${(c.p/mx*100).toFixed(1)}%;background:var(--s3)"></i><i style="width:${(c.q/mx*100).toFixed(1)}%;background:var(--s2)"></i></span><span class="an-v">${money(c.t)}</span></button>`).join('')}</div>
+    <p class="note muted">Toque numa categoria para ver os insumos dela.</p></section>`:''}
+  ${f!=='todas'?`<button class="chip" data-ancat="todas" style="align-self:flex-start">← Todas as categorias</button>`:''}
+  <div class="seg big" role="group" aria-label="Mostrar" id="an-lista" style="scroll-margin-top:90px">
+    ${[['estouros','Estouros'],['economias','Economias de preço'],['pend','Pendências'],['todos','Todos']].map(([k,t])=>`<button data-anmodo="${k}" aria-pressed="${modo===k}">${t}</button>`).join('')}
+  </div>
+  <input id="an-busca" type="search" placeholder="Buscar insumo, serviço ou fornecedor" value="${esc(UI.anBusca||'')}" aria-label="Buscar">
+  <p class="note">${total.toLocaleString('pt-BR')} item(ns)${total>lista.length?` · mostrando os ${lista.length} maiores`:''}.</p>
+  <div class="cards">${lista.map(L=>anCard(L, A, catNome)).join('') || '<div class="panel empty"><p class="note">Nada nesta seleção.</p></div>'}</div>
+  ${total>lista.length?`<button class="btn sec" id="an-mais" style="align-self:center">Mostrar mais</button>`:''}
+  <p class="note muted">Como ler: <b>preço</b> = (preço pago − preço orçado) × quantidade comprada; <b>quantidade</b> = (quantidade comprada − orçada) × preço orçado. Itens ainda em execução podem estar abaixo da quantidade orçada só porque não terminaram. Orçamento: ${esc(o.insumos.fonte||'')}.</p>`;
+}
+function anCard(L, A, catNome){
+  const aberto = UI.anAberto === L.k;
+  const pill = { ok:'', vb:'<span class="pill none">Verba</span>', un:`<span class="pill warn">Unidade: orçado ${esc(L.un)}, comprado ${esc(L.unsR||'')}</span>`, gen:'<span class="pill warn">Insumo genérico</span>', sem:'<span class="pill warn">Sem orçamento no serviço</span>', conf:`<span class="pill warn">Conferir: ${L.qr>4*L.qo?`${Math.round(L.qr).toLocaleString('pt-BR')} ${esc(L.un)} comprados × ${Math.round(L.qo).toLocaleString('pt-BR')} orçados`:`${brl2.format(L.cur||0)}/${esc(L.un)} pago × ${brl2.format(L.cuo)} orçado`}</span>` }[L.tipo] || '';
+  const nf = v => (+v).toLocaleString('pt-BR',{maximumFractionDigits: v>=100?0:2});
+  const pu = v => brl2.format(v);
+  const pr = L.tipo==='ok' ? `<div class="an-split">
+      <div><span>Preço</span><b class="${L.dp>1?'t-crit':L.dp<-1?'t-good':''}">${signed(L.dp)}</b><small>${pu(L.cuo)} → ${pu(L.cur)} /${esc(L.un)}</small></div>
+      <div><span>Quantidade</span><b class="${L.qr>L.qo&&L.dq>1?'t-crit':''}">${L.qr>L.qo?signed(L.dq):'dentro'}</b><small>${nf(L.qr)} de ${nf(L.qo)} ${esc(L.un)} · ${pct(L.pq,0)}</small>${L.resto>1?`<small>+ ${money(L.resto)} em outra unidade</small>`:''}</div>
+    </div>` : `<div class="an-split"><div><span>Orçado</span><b>${money(L.vo)}</b></div><div><span>Realizado</span><b class="${L.d>1?'t-crit':''}">${money(L.vr)}</b><small>${L.vo?signed(L.d):''}</small></div></div>`;
+  return `<div class="mcard an-item ${aberto?'open':''}">
+    <button class="mc-head" data-anitem="${esc(L.k)}" aria-expanded="${aberto}">
+      <div class="mc-l"><span class="catname">${esc(L.desc||'Insumo '+L.cod)}<small>${esc(A.servDesc[L.serv]||L.serv)} · ${esc(catNome[L.cat]||L.cat)}</small></span>${pill}</div>
+      <div class="mc-r"><b>${money(L.vr)}</b><span class="muted">orçado ${money(L.vo)}</span></div>
+    </button>
+    <div class="an-body">${pr}${aberto?anForn(L):''}</div>
+  </div>`;
+}
+function anForn(L){
+  const fs = [...L.forn.entries()].map(([n,x])=>({ n, ...x, pu: x.q ? x.v/x.q : 0 })).sort((a,b)=>b.v-a.v);
+  if (!fs.length) return '<p class="note muted">Sem compras até o mês selecionado.</p>';
+  return `<div class="an-forn"><span class="h4">Por fornecedor</span>${fs.map(x=>`<div class="an-fr"><span>${esc(x.n)}</span><span class="mono">${x.q.toLocaleString('pt-BR',{maximumFractionDigits:2})} ${esc([...x.un].join('/'))}</span><span class="mono">${x.q&&x.un.size===1?brl2.format(x.pu):'—'}</span><b class="mono">${money(x.v)}</b></div>`).join('')}
+    <p class="note muted">Preço médio orçado: ${brl2.format(L.cuo||0)} /${esc(L.un)}</p></div>`;
+}
+function anSetupHtml(o, temIns, temV2){
+  return `
+  <div class="pg-title"><span class="eyebrow">${esc(o.nome)}</span><h2 class="sec">Análise de custos</h2></div>
+  <section class="panel">
+    <h3 class="sub">Ativar análise</h3>
+    <p class="note">Esta análise cruza o <b>orçamento por insumo</b> com as <b>compras do ERP</b>. São dois arquivos, uma vez só. Depois, as importações normais de cada mês já mantêm tudo atualizado.</p>
+    <div class="an-step ${temIns?'done':''}"><b>1 · Orçamento detalhado</b> ${temIns?'<span class="pill good">Carregado</span>':''}
+      <p class="note">Relatório <b>Planilha Orçamentária</b> do ERP (o arquivo "Orçamento operacional"). O app confere se a soma dos insumos fecha com cada categoria antes de gravar.</p>
+      ${temIns?'':`<label class="drop" for="arq-orc"><b>Escolher orçamento</b><span class="muted">.xlsx</span><input id="arq-orc" type="file" accept=".xlsx,.xls" hidden></label><div id="orc-imp">${orcImpHtml()}</div>`}</div>
+    <div class="an-step ${temV2?'done':''}"><b>2 · Gastos do ERP</b> ${temV2?'<span class="pill good">Completo</span>':''}
+      <p class="note">O mesmo arquivo <b>Portal Gerencial</b> de sempre. O app completa os lançamentos com o código do serviço e do item, necessários para o cruzamento. Os valores não mudam.</p>
+      ${temV2?'':`<label class="drop" for="arq"><b>Escolher arquivo do ERP</b><span class="muted">.xlsx</span><input id="arq" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label><div id="imp-res">${impPreview()}</div>`}</div>
+  </section>`;
+}
+
 /* ---------- eventos ---------- */
 document.getElementById('sel-obra').addEventListener('change', e => { if (!e.target.value) return; S.atual = e.target.value; S.mes = null; UI.aberto=null; UI.imp=null; save(); render(); });
 document.getElementById('sel-mes').addEventListener('change', e => { S.mes = e.target.value; save(); render(); });
@@ -1905,7 +2065,7 @@ document.addEventListener('click', e => {
   if (t.id==='pd-check') { const u = NUVEM.user; NUVEM.user = null; entrar(u); return; }
   if (t.dataset.orcmodo) { UI.orcImp.modo = t.dataset.orcmodo; keepScroll(render); return; }
   if (t.id==='orc-cancel') { UI.orcImp = null; keepScroll(render); return; }
-  if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
+  if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats, insOk(UI.orcImp)); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
   if (t.id==='sair') { NUVEM.sb?.auth.signOut(); return; }
   if (t.id==='imp-eth') { escolherDadosIniciais(); return; }
   if (t.id==='btn-nova2') { abrirNovaObra(); return; }
@@ -1924,6 +2084,10 @@ document.addEventListener('click', e => {
   if (t.matches('tr.row,.ccard')) { UI.aberto = UI.aberto===t.dataset.id ? null : t.dataset.id; keepScroll(render); return; }
   if (t.dataset.goto) { S.mes = t.dataset.goto; save(); location.hash='#painel'; return; }
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
+  if (t.dataset.ancat) { UI.anCat = t.dataset.ancat; UI.anLim = 60; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
+  if (t.dataset.anmodo) { UI.anModo = t.dataset.anmodo; UI.anLim = 60; UI.anAberto = null; keepScroll(render); return; }
+  if (t.dataset.anitem) { UI.anAberto = UI.anAberto===t.dataset.anitem ? null : t.dataset.anitem; keepScroll(render); return; }
+  if (t.id==='an-mais') { UI.anLim = (UI.anLim||60) + 60; keepScroll(render); return; }
   if (t.id==='imp-todos') { UI.imp.mostrarTodos = !UI.imp.mostrarTodos; document.getElementById('imp-res').innerHTML=impPreview(); return; }
   if (t.id==='imp-cancel') { UI.imp=null; render(); return; }
   if (t.id==='imp-ok') { aplicarImport(); return; }
@@ -1948,6 +2112,7 @@ document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') &
 document.addEventListener('input', e => {
   if (e.target.id==='busca') { UI.busca = e.target.value; const k = calc(obra(), S.mes); document.getElementById('cat-list').innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); }
   if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('busca-mes'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
+  if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 60; clearTimeout(UI.anT); UI.anT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('an-busca'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
   if (e.target.dataset.ef) { setEf(e.target.dataset.ef, parseInt(e.target.value)||0); }
 });
 document.addEventListener('change', e => {
@@ -1955,6 +2120,7 @@ document.addEventListener('change', e => {
   if (t.dataset.papel) { NUVEM.sb.from('go_membros').update({ papel: t.value }).eq('email', t.dataset.papel).then(({error}) => { if (error) toast(error.message); else { toast('Acesso alterado: '+PAPEL_TXT[t.value]+'.'); carregarMembros(); } }); return; }
   if (t.id==='ordem') { UI.ordem = t.value; keepScroll(render); }
   if (t.id==='ordem-mes') { UI.ordemMes = t.value; keepScroll(render); }
+  if (t.id==='an-cat') { UI.anCat = t.value; UI.anLim = 60; UI.anAberto = null; keepScroll(render); }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
   if (t.id==='arq-orc' && t.files[0]) lerOrcamento(t.files[0]);
@@ -1986,7 +2152,7 @@ document.addEventListener('submit', e => {
     const nome = v('on-nome').trim(), id = 'o'+Date.now().toString(36), base = obra() || { funcoes:[] };
     if (Object.values(S.obras).some(x=>norm(x.nome)===norm(nome))) { toast('Já existe uma obra com esse nome.'); return; }
     const nova = { id, nome, inicio:v('on-ini')+'-01', fim:v('on-fim')+'-28', orcViab:parseNum(v('on-viab')), categorias:[], gasto:{}, itens:{}, avancos:{}, ajustes:[], funcoes:(base.funcoes||[]).filter(f=>f.ativo).map(f=>({...f})), empreiteiros:[], efetivo:{} };
-    aplicarOrcamento(nova, UI.orcImp.cats); S.obras[id] = nova; S.atual = id; S.mes = null; UI.orcImp = null; UI.efMes = null;
+    aplicarOrcamento(nova, UI.orcImp.cats, insOk(UI.orcImp)); S.obras[id] = nova; S.atual = id; S.mes = null; UI.orcImp = null; UI.efMes = null;
     save(); render(); toast('Obra '+nome+' criada com '+nova.categorias.length+' categorias.'); return; }
   if (f.id==='f-nova') {
     const id = 'o'+Date.now().toString(36), base = obra() || { categorias:[], funcoes:[] };
@@ -2016,19 +2182,32 @@ function lerOrcamento(file){
       const H = rows[h].map(norm), ix = n => H.indexOf(n);
       const cNiv = ix('nivel'), cCod = ix('cod. estruturado'), cDesc = ix('descricao'), cTot = ix('total');
       const cEq = ix('valor equipamento'), cMo = ix('valor servico'), cMat = ix('valor material'), cTr = ix('valor transporte');
+      const cIns = ix('insumo'), cUn = ix('unid.'), cQi = ix('qtde. insumo'), cCu = ix('custo insumo');
+      const serv = {}, cods = {}, itens = [], somaIns = {}; let sv = null;
       let titulo = ''; for (let i=0;i<h;i++) { const t = rows[i].find(x=>String(x).trim()); if (t) { titulo = String(t).trim(); break; } }
       const nomeObra = titulo.replace(/^planilha or[cç]ament[aá]ria\s*[-–:]\s*/i,'').trim();
       const cats = []; let totalObra = 0;
       for (let i=h+1;i<rows.length;i++) {
         const r = rows[i], cod = String(r[cCod]||'').trim(), niv = +r[cNiv];
         if (niv===1 && !totalObra) totalObra = parseNum(r[cTot]);
+        if (cIns>=0 && niv===6) {
+          if (/^\d{2}(\.\d{2}){4}\.\d{3}$/.test(cod)) { sv = cod; serv[cod] = String(r[cDesc]||'').trim(); continue; }
+          const ci = parseInt(r[cIns]);
+          if (!cod && ci && sv) { const t = parseNum(r[cTot]); cods[ci] ??= [String(r[cDesc]||'').trim(), unN(r[cUn])]; itens.push([sv, ci, parseNum(r[cQi]), parseNum(r[cCu]), Math.round(t*10000)/10000]); somaIns[sv.slice(0,11)] = (somaIns[sv.slice(0,11)]||0) + t; }
+          continue;
+        }
         if (!/^\d{2}(\.\d{2}){3}$/.test(cod)) continue;
         const eq = parseNum(r[cEq]), mo = parseNum(r[cMo]), mat = parseNum(r[cMat]) + (cTr>=0 ? parseNum(r[cTr]) : 0);
         cats.push({ id:cod, nome:String(r[cDesc]||cod).trim().toUpperCase(), eq:Math.round(eq*100)/100, mo:Math.round(mo*100)/100, mat:Math.round(mat*100)/100, tot:parseNum(r[cTot]) });
       }
       if (!cats.length) { UI.orcImp = { erro:'O arquivo não tem categorias de nível 4 (códigos como 01.01.03.01).' }; render(); return; }
       const soma = cats.reduce((s,c)=>s+c.eq+c.mo+c.mat,0);
-      UI.orcImp = { arquivo:file.name, nomeObra, cats, soma, totalObra, modo:null };
+      let insumos = null, insDiv = [];
+      if (itens.length) {
+        insDiv = cats.filter(c => Math.abs((somaIns[c.id]||0) - c.tot) > 1).map(c => ({ nome:c.nome, cat:c.tot, ins:somaIns[c.id]||0 }));
+        const d = new Date(); insumos = { fonte: file.name+' · importado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(), serv, cods, itens };
+      }
+      UI.orcImp = { arquivo:file.name, nomeObra, cats, soma, totalObra, modo: view()==='analise' ? 'atual' : null, insumos, insDiv };
     } catch(e) { UI.orcImp = { erro:'Não consegui ler o arquivo: '+e.message }; }
     render(); setTimeout(()=>document.getElementById('orc-imp')?.scrollIntoView({block:'start'}),30);
   };
@@ -2046,6 +2225,7 @@ function orcImpHtml(){
   return `<div class="steps" style="gap:12px">
     <p class="note"><b>${esc(I.arquivo)}</b>${I.nomeObra?` · obra <b>${esc(I.nomeObra)}</b>`:''} · ${I.cats.length} categorias · total <b>${money(I.soma,false)}</b></p>
     ${confere?`<div class="banner" style="background:var(--good-bg)">A soma das categorias bate com o total da obra no relatório.</div>`:`<div class="banner">Atenção: a soma das categorias (${money(I.soma,false)}) não bate com o total do relatório (${money(I.totalObra,false)}). Confira o arquivo.</div>`}
+    ${I.insumos?(I.insDiv.length?`<div class="banner" style="flex-direction:column;align-items:stretch"><b>O detalhe por insumo não fecha em ${I.insDiv.length} categoria(s).</b> A análise de preço × quantidade fica desligada para este arquivo. ${I.insDiv.slice(0,6).map(x=>`<span>${esc(x.nome)}: categoria ${money(x.cat,false)}, insumos ${money(x.ins,false)}</span>`).join('')}</div>`:`<div class="banner" style="background:var(--good-bg)">Detalhe por insumo conferido: ${I.insumos.itens.length.toLocaleString('pt-BR')} insumos em ${Object.keys(I.insumos.serv).length.toLocaleString('pt-BR')} serviços fecham com cada categoria.</div>`):''}
     ${outraObra?`<div class="banner">Este orçamento é da obra <b>${esc(I.nomeObra)}</b>, e você está em <b>${esc(o.nome)}</b>. Para uma obra nova, use <b>Criar obra nova</b>.</div>`:''}
     <div class="seg big" role="group" aria-label="Destino">
       <button data-orcmodo="atual" aria-pressed="${I.modo==='atual'}">Atualizar ${o?esc(o.nome):'obra atual'}</button>
@@ -2060,7 +2240,7 @@ function orcImpHtml(){
       </ul>
       ${mud.length?`<div class="tbl-wrap" style="max-height:240px;overflow:auto"><table><thead><tr><th>Categoria</th><th class="n">No app</th><th class="n">No arquivo</th><th class="n">Diferença</th></tr></thead><tbody>${mud.map(c=>{ const a=orcOf(atual[c.id]), b=c.eq+c.mo+c.mat; return `<tr><td>${esc(c.nome)}</td><td class="n">${money(a)}</td><td class="n">${money(b)}</td><td class="n ${b>a?'t-warn':'t-good'}">${signed(b-a)}</td></tr>`; }).join('')}</tbody></table></div>`:''}
       ${saem.length?`<p class="note">Fora do arquivo: ${saem.map(c=>esc(c.nome)).join(', ')}. ${saem.some(c=>usados.has(c.id))?'As que já têm gasto ficam no app com orçamento zerado; as demais são removidas.':'Elas serão removidas.'}</p>`:''}
-      ${!novas.length && !mud.length && !saem.length?`<div class="banner" style="background:var(--good-bg)">O orçamento do app já está igual ao arquivo.</div>`:`<div class="toolbar"><button class="btn" id="orc-aplicar">Aplicar orçamento em ${esc(o.nome)}</button><button class="btn sec" id="orc-cancel">Cancelar</button></div>`}`:''}
+      ${!novas.length && !mud.length && !saem.length && !insNovo(o, I)?`<div class="banner" style="background:var(--good-bg)">O orçamento do app já está igual ao arquivo.</div>`:`<div class="toolbar"><button class="btn" id="orc-aplicar">Aplicar orçamento em ${esc(o.nome)}</button><button class="btn sec" id="orc-cancel">Cancelar</button></div>`}`:''}
     ${I.modo==='nova'?`
       <form id="f-orc-nova" class="grid-form">
         <div class="field wide"><label for="on-nome">Nome da obra</label><input id="on-nome" required value="${esc(I.nomeObra||'')}"></div>
@@ -2072,7 +2252,10 @@ function orcImpHtml(){
       <p class="note muted">Início e término definem o prazo e o cheque mensal. A viabilidade pode ser preenchida depois.</p>`:''}
   </div>`;
 }
-function aplicarOrcamento(o, cats){
+function insOk(I){ return I.insumos && !I.insDiv.length ? I.insumos : null; }
+function insNovo(o, I){ const n = insOk(I); if (!n) return false; const a = o.insumos; if (!a?.itens) return true; return a.itens.length !== n.itens.length || JSON.stringify(a.itens) !== JSON.stringify(n.itens); }
+function aplicarOrcamento(o, cats, ins){
+  if (ins) o.insumos = ins;
   const usados = new Set(); for (const m in o.gasto||{}) for (const c in o.gasto[m]) usados.add(c);
   const antes = Object.fromEntries((o.categorias||[]).map(c=>[c.id,c]));
   const novo = cats.map(c => ({ id:c.id, nome:c.nome, eq:c.eq, mo:c.mo, mat:c.mat, fora: antes[c.id] ? !!antes[c.id].fora : /INCORPORA/i.test(c.nome) }));
