@@ -569,6 +569,36 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .an-fr .mono{font-family:var(--mono);text-align:right}
 .an-step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;display:flex;flex-direction:column;gap:8px}
 @media (max-width:720px){.an-cat{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}.an-bar{grid-column:1/-1;grid-row:2}.an-fr{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}.an-fr span:nth-child(2){grid-column:1}.an-fr span:nth-child(3){grid-column:2;grid-row:2}.an-fr b{grid-column:2;grid-row:1}}
+.an-sep{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 6px 2px}
+.an-div{display:grid;grid-template-columns:1fr 2fr;gap:2px;height:12px}
+.an-l,.an-r{display:flex;background:var(--surface2);border-radius:3px;overflow:hidden}
+.an-l{justify-content:flex-end}.an-l i{background:var(--good)}.an-r i{background:var(--crit)}
+.an-l i,.an-r i{display:block;height:100%}
+.an-conc ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;counter-reset:c}
+.an-ci{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);cursor:pointer;font-size:13.5px;line-height:1.45;color:var(--ink2)}
+.an-ci::before{counter-increment:c;content:counter(c);font:600 12px var(--mono);color:var(--accent);padding-top:2px}
+.an-ci b{color:var(--ink);font-weight:600}.an-ci b[class]{white-space:nowrap}.an-ci b.t-crit,.an-ci b.t-good,.an-ci b.t-warn{font-family:var(--mono);font-weight:500}
+.an-ci:hover,.an-ci:focus-visible{border-color:var(--accent)}
+.an-go{color:var(--muted);font-size:18px;line-height:1}
+.an-cob{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px;margin-top:14px}
+.an-cob i{display:block;min-width:3px}
+.an-cobl{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}
+.an-cb{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.an-cb i{width:9px;height:9px;border-radius:2px;display:inline-block}.an-cb b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.an-cb:hover{color:var(--ink)}
+.an-nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.an-nums.n2{grid-template-columns:1fr 1fr}
+.an-nums>div{background:var(--surface2);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.an-nums>div.dim{opacity:.45}
+.an-nums span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.an-nums b{font-family:var(--mono);font-size:14.5px;font-weight:500}
+.an-nums small{font-size:11.5px;color:var(--ink2)}
+.an-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.an-cf{font-size:11px;color:var(--muted)}.an-cf.alta{color:var(--good)}
+.an-chev{font:500 18px var(--mono);color:var(--muted)}
+.an-item .mc-head{grid-template-columns:minmax(0,1fr) auto}
+.an-como summary{cursor:pointer;font-weight:600}.an-como ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+@media (max-width:720px){.an-nums{grid-template-columns:1fr 1fr}.an-div{grid-column:1/-1;grid-row:2}}
 </style>
 </head>
 <body>
@@ -622,7 +652,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.0 · 27/10';
+const APP_VERSAO = 'v2.1 · 27/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1907,126 +1937,266 @@ function abrirNovaObra(){
   setTimeout(()=>document.getElementById('no-nome').focus());
 }
 
-/* ---------- ANÁLISE · preço × quantidade por insumo ---------- */
+/* ---------- ANÁLISE · preço × quantidade por insumo ----------
+   Cada insumo é comparado dentro da sua categoria, somando todos os serviços dela:
+   assim um lançamento no serviço vizinho não vira estouro falso. */
 const GENERICO = 34211;   // "ORC - INSUMO PARA TROCA DE ITEM"
 function temItensV2(o){ for (const m in o.itens||{}) { const r = o.itens[m]?.i?.[0]; if (r) return r.length > 12; } return false; }
-function itensBrutos(o, ym){ const p = (o.itens||{})[ym]; return p ? p.i.map(r => ({ cat:r[0], item:p.s[r[3]]??'', forn:p.s[r[4]]??'', qtd:+r[5]||0, un:p.s[r[6]]??'', val:+r[8]||0, serv:r[11]||'', cod:+r[12]||0 })) : []; }
 const UN_CONV = { 'TON>KG':1000, 'KG>TON':.001, 'MIL>UN':1000, 'M>MT':1, 'ML>MT':1 };
 const unN = u => String(u||'').toUpperCase().replace('²','2').replace('³','3').trim();
 function fatorUn(de, para){ de = unN(de); para = unN(para); return de===para ? 1 : (UN_CONV[de+'>'+para] || 0); }
+function ymMenos(ym, n){ let [y,m] = ym.split('-').map(Number); m -= n; while (m<1) { m += 12; y--; } return y+'-'+String(m).padStart(2,'0'); }
+const AN = { TOL_P:0.10, TOL_Q:0.10, PARADO:6 };   // tolerâncias: 10% em preço e quantidade; item parado há 6 meses = encerrado
+
 function calcAnalise(o, M){
   const ck = o.id+'|'+M;
   if (UI.anCache?.k === ck) return UI.anCache.v;
   const ins = o.insumos, orc = new Map();
   for (const [s, c, q, cu, t] of ins.itens) {
-    const k = s+'|'+c, x = orc.get(k);
-    if (x) { x.q += q; x.t += t; x.cu = x.q ? x.t/x.q : cu; } else orc.set(k, { serv:s, cod:c, q, cu, t, desc:ins.cods[c]?.[0]||'', un:ins.cods[c]?.[1]||'' });
+    const k = s.slice(0,11)+'|'+c;
+    const x = orc.get(k) || { cat:s.slice(0,11), cod:c, q:0, t:0, desc:ins.cods[c]?.[0]||'', un:unN(ins.cods[c]?.[1]), servs:new Map() };
+    x.q += q; x.t += t; const sv = x.servs.get(s) || { q:0, t:0 }; sv.q += q; sv.t += t; x.servs.set(s, sv); orc.set(k, x);
   }
-  const real = new Map();
-  for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M)) for (const it of itensBrutos(o, ym)) {
-    if (!it.serv) continue;
-    const k = it.serv+'|'+it.cod, ob = orc.get(k);
-    const r = real.get(k) || { serv:it.serv, cod:it.cod, q:0, v:0, qc:0, vc:0, uns:new Set(), forn:new Map(), desc:it.item };
-    r.q += it.qtd; r.v += it.val; r.uns.add(unN(it.un));
-    const emRS = Math.abs(it.qtd - it.val) <= 0.011*Math.max(1, Math.abs(it.val));   // quantidade lançada em reais
-    const fx = ob && !emRS ? fatorUn(it.un, ob.un) : 0;
-    if (fx) { r.qc += it.qtd*fx; r.vc += it.val; }
-    const f = r.forn.get(it.forn) || { q:0, v:0, un:new Set() }; f.q += fx ? it.qtd*fx : it.qtd; f.v += it.val; f.un.add(fx ? unN(ob.un) : unN(it.un)); r.forn.set(it.forn, f);
-    real.set(k, r);
+  const real = new Map(); let total = 0;
+  for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M)) {
+    const p = o.itens[ym];
+    for (const r of p.i) {
+      const serv = r[11]; if (!serv) continue;
+      const cod = +r[12]||0, qtd = +r[5]||0, val = +r[8]||0, un = unN(p.s[r[6]]), forn = p.s[r[4]]||'(sem fornecedor)';
+      const k = serv.slice(0,11)+'|'+cod, ob = orc.get(k); total += val;
+      const R = real.get(k) || { cat:serv.slice(0,11), cod, desc:p.s[r[3]]||'', v:0, qc:0, vc:0, n:0, last:'', uns:new Set(), forn:new Map(), servs:new Map() };
+      const emRS = Math.abs(qtd - val) <= 0.011*Math.max(1, Math.abs(val));    // quantidade lançada em reais
+      const fx = ob && !emRS ? fatorUn(un, ob.un) : 0;
+      R.v += val; R.n++; if (ym > R.last) R.last = ym; R.uns.add(emRS ? 'R$' : un);
+      if (fx) { R.qc += qtd*fx; R.vc += val; }
+      const f = R.forn.get(forn) || { q:0, v:0, vc:0 }; f.v += val; if (fx) { f.q += qtd*fx; f.vc += val; } R.forn.set(forn, f);
+      const sv = R.servs.get(serv) || { q:0, v:0 }; sv.v += val; if (fx) sv.q += qtd*fx; R.servs.set(serv, sv);
+      real.set(k, R);
+    }
   }
-  const linhas = [];
-  for (const [k, ob] of orc) {
-    const r = real.get(k);
-    const L = { k, serv:ob.serv, cat:ob.serv.slice(0,11), cod:ob.cod, desc:ob.desc, un:ob.un, qo:ob.q, cuo:ob.cu, vo:ob.t, qr:r?.qc||0, vr:r?.v||0, vc:r?.vc||0, forn:r?.forn||new Map(), tipo:'ok', dp:0, dq:0 };
-    if (ob.cod === GENERICO) L.tipo = 'gen';
-    else if (!r || Math.abs(L.vr) < 0.01) L.tipo = 'nada';
-    else if (unN(ob.un)==='VB' || !L.qo || !ob.cu || Math.abs(ob.cu-1) < 0.01) L.tipo = 'vb';
+  const parado = ymMenos(M, AN.PARADO), linhas = [];
+  const add = (k, ob, R) => {
+    const L = { k, cat:(ob||R).cat, cod:(ob||R).cod, desc:ob?.desc || R?.desc || '', un:ob?.un || [...(R?.uns||[])][0] || '', qo:ob?.q||0, vo:ob?.t||0, vr:R?.v||0, qr:R?.qc||0, vc:R?.vc||0, n:R?.n||0, last:R?.last||'',
+      forn:R?.forn||new Map(), servsO:ob?.servs||new Map(), servsR:R?.servs||new Map(), uns:R?[...R.uns]:[], tipo:'ok', dp:0, dq:0, ef:{ preco:0, qtd:0, tudo:0 }, diag:[] };
+    L.cuo = L.qo ? L.vo/L.qo : 0;
+    if (!R || Math.abs(L.vr) < 1) L.tipo = 'nada';
+    else if (L.cod === GENERICO) L.tipo = 'gen';
+    else if (!ob || L.vo <= 0) L.tipo = 'sem';
+    else if (L.un==='VB' || !L.qo || Math.abs(L.cuo-1) < 0.01) L.tipo = 'vb';
     else if (!L.qr || L.vc < 0.9*L.vr) L.tipo = 'un';
-    if (L.tipo === 'ok' && (L.vc/L.qr > 2.5*L.cuo || L.vc/L.qr < 0.4*L.cuo || L.qr > 4*L.qo)) { L.tipo = 'conf'; L.cur = L.vc/L.qr; }
-    if (L.tipo === 'ok') { L.cur = L.vc/L.qr; L.dp = (L.cur - L.cuo) * L.qr; L.dq = (L.qr - L.qo) * L.cuo; L.pq = L.qr / L.qo; L.resto = L.vr - L.vc; }
-    if (L.tipo === 'un') L.unsR = [...r.uns].join(', ');
-    L.d = L.vr - L.vo;
+    else {
+      L.cur = L.vc/L.qr; L.rp = L.cur/L.cuo; L.pq = L.qr/L.qo;
+      if (L.rp > 2.5 || L.rp < 0.4) { L.tipo = 'conf'; L.motivo = 'preco'; }
+      else if (L.pq > 4) { L.tipo = 'conf'; L.motivo = 'qtd'; }
+    }
+    if (L.tipo === 'ok') {
+      L.dp = (L.cur - L.cuo)*L.qr; L.dq = (L.qr - L.qo)*L.cuo; L.fim = L.last <= parado;
+      const fs = [...L.forn.values()].filter(f => f.q > 0 && f.vc >= 0.05*L.vc).map(f => f.vc/f.q);
+      L.melhor = fs.length ? Math.min(...fs) : L.cur;
+      if (L.rp > 1+AN.TOL_P) L.diag.push(L.melhor <= L.cuo*1.05 ? 'p_caro' : 'p_baixo');
+      if (L.rp < 1-AN.TOL_P) L.diag.push('p_econ');
+      if (L.pq > 1+AN.TOL_Q) L.diag.push('q_passou');
+      else if (L.pq < 1-AN.TOL_Q && L.fim) L.diag.push('q_econ');
+      L.ef.preco = L.diag.some(d=>d[0]==='p') ? L.dp : 0;                       // até 10% = variação normal
+      L.ef.qtd = L.diag.some(d=>d[0]==='q') ? L.dq : 0;
+      L.ef.tudo = L.ef.preco + L.ef.qtd;
+      L.conf = L.n >= 3 && L.vc >= 0.98*L.vr && L.rp >= 0.67 && L.rp <= 1.5 && L.pq <= 2.5 ? 'alta' : 'media';
+    }
     linhas.push(L);
-  }
-  for (const [k, r] of real) if (!orc.has(k)) linhas.push({ k, serv:r.serv, cat:r.serv.slice(0,11), cod:r.cod, desc:r.desc, un:[...r.uns][0]||'', qo:0, cuo:0, vo:0, qr:r.q, vr:r.v, forn:r.forn, tipo: r.cod===GENERICO?'gen':'sem', dp:0, dq:0, d:r.v });
-  const v = { linhas, servDesc: ins.serv };
+  };
+  for (const [k, ob] of orc) add(k, ob, real.get(k));
+  for (const [k, R] of real) if (!orc.has(k)) add(k, null, R);
+  const v = { linhas, total, servDesc: ins.serv };
   UI.anCache = { k:ck, v };
   return v;
 }
-const AN_TIPO = { conf:'Conferir quantidade', ok:'Preço × quantidade', vb:'Verba (só R$)', un:'Unidade diferente', gen:'Insumo genérico', sem:'Sem orçamento no serviço', nada:'Ainda sem gasto' };
+
+const AN_COB = [
+  ['ok',   'Analisado',            'var(--s1)',   'Insumos com quantidade e unidade comparáveis: dá para separar preço e quantidade.'],
+  ['vb',   'Verba (só R$)',        'var(--s2)',   'Orçado como verba ou com a quantidade em reais: só dá para comparar o valor.'],
+  ['gen',  'Insumo genérico',      'var(--warn)', 'Lançado em "ORC - insumo para troca de item": não dá para saber o que foi comprado.'],
+  ['conf', 'A conferir',           'var(--crit)', 'Unidade diferente, preço ou quantidade fora do normal: provável erro de lançamento.'],
+  ['sem',  'Fora do orçamento',    'var(--none)', 'Insumo que não está no orçamento desta categoria.'],
+];
+const anGrupo = t => t==='un' ? 'conf' : t;
+const AN_DIAG = {
+  p_baixo:  ['Preço orçado baixo', 'crit', 'Todos os fornecedores cobraram acima do orçado: o preço do orçamento estava abaixo do mercado.'],
+  p_caro:   ['Comprado acima do orçado', 'warn', 'Houve compra no preço orçado, mas a maior parte saiu mais cara: ponto de negociação.'],
+  p_econ:   ['Economia de preço', 'good', 'Preço médio pago abaixo do orçado.'],
+  q_passou: ['Passou da quantidade', 'crit', 'Já consumiu mais que a quantidade orçada. Esse valor só aumenta até o fim do item.'],
+  q_econ:   ['Sobra de quantidade', 'good', `Sem compras há ${AN.PARADO} meses e abaixo da quantidade orçada: provável economia.`],
+};
+const AN_ABAS = {
+  tudo:  [['estouro','Estouros'],['economia','Economias'],['conferir','A conferir']],
+  preco: [['p_baixo','Preço orçado baixo'],['p_caro','Comprado caro'],['p_econ','Economia'],['conferir','A conferir']],
+  qtd:   [['q_passou','Passou do orçado'],['q_econ','Sobra provável'],['conferir','A conferir']],
+};
+const nfq = v => (+v).toLocaleString('pt-BR',{ maximumFractionDigits: Math.abs(v)>=100 ? 0 : 2 });
+const pu2 = v => brl2.format(v||0);
+const pctS = (v,d=0) => (v>=0?'+':'−')+pct(Math.abs(v),d);
+
+function anConclusoes(ok, cob, total, catNome){
+  const S_ = (arr, f) => arr.reduce((s,x)=>s+f(x),0);
+  const top = (arr, f) => arr.slice().sort((a,b)=>f(b)-f(a))[0];
+  const P = S_(ok, L=>Math.max(0,L.ef.preco)), Q = S_(ok, L=>Math.max(0,L.ef.qtd)), Pe = S_(ok, L=>Math.min(0,L.ef.preco));
+  const out = [];
+  if (P+Q > 1) {
+    const qp = Q/(P+Q);
+    const leitura = qp >= 0.6 ? 'O problema principal é <b>quantidade</b> (levantamento do orçamento ou perdas na obra), não o preço de compra.'
+      : qp <= 0.4 ? 'O problema principal é <b>preço</b> (preço orçado ou negociação), não a quantidade consumida.'
+      : 'Preço e quantidade pesam parecido.';
+    out.push({ ef:'tudo', aba:'estouro', txt:`O estouro confirmado nos insumos é de <b class="t-crit">${money(P+Q)}</b>: <b>${pct(qp,0)}</b> vem de quantidade (<b class="t-crit">${money(Q)}</b>) e <b>${pct(1-qp,0)}</b> de preço (<b class="t-crit">${money(P)}</b>). ${leitura}` });
+  }
+  const base = S_(ok, L=>L.qr*L.cuo), pago = S_(ok, L=>L.vc), net = pago - base;
+  if (base > 1) out.push({ ef:'preco', aba: P+Pe>0?'p_baixo':'p_econ', txt:`No preço, a obra paga em média <b>${pctS(pago/base-1,1)}</b> em relação ao orçado. Os estouros de preço (<b class="t-crit">+${money(P)}</b>) ${P < -Pe ? 'são menores que as economias' : 'superam as economias'} (<b class="t-good">${money(-Pe)}</b>)${P < -Pe ? ': o problema de preço é pontual, não geral.' : ': o preço do orçamento está baixo de forma geral.'}` });
+  const pb = ok.filter(L=>L.diag.includes('p_baixo')), pbT = S_(pb, L=>L.dp);
+  if (pb.length) { const t = top(pb, L=>L.dp); out.push({ ef:'preco', aba:'p_baixo', txt:`<b>${pb.length} insumo(s) com preço orçado abaixo do mercado</b>: nenhum fornecedor vendeu no preço do orçamento. Somam <b class="t-crit">+${money(pbT)}</b>. Maior: ${esc(t.desc)} (${pu2(t.cuo)} → ${pu2(t.cur)} /${esc(t.un)}).` }); }
+  const pc = ok.filter(L=>L.diag.includes('p_caro')), pcT = S_(pc, L=>L.dp);
+  if (pc.length) { const t = top(pc, L=>L.dp); out.push({ ef:'preco', aba:'p_caro', txt:`<b>${pc.length} insumo(s) comprados acima do orçado mesmo havendo fornecedor no preço</b>: <b class="t-warn">+${money(pcT)}</b>. Maior: ${esc(t.desc)} (média ${pu2(t.cur)}, melhor compra ${pu2(t.melhor)}, orçado ${pu2(t.cuo)}).` }); }
+  const qq = ok.filter(L=>L.diag.includes('q_passou')), qqT = S_(qq, L=>L.dq);
+  if (qq.length) { const t = top(qq, L=>L.dq); out.push({ ef:'qtd', aba:'q_passou', txt:`<b>${qq.length} insumo(s) já passaram da quantidade orçada</b>: <b class="t-crit">+${money(qqT)}</b>, e esse valor só cresce até o fim. Maior: ${esc(t.desc)} (${nfq(t.qr)} de ${nfq(t.qo)} ${esc(t.un)}, ${pctS(t.pq-1)}).` }); }
+  const qe = ok.filter(L=>L.diag.includes('q_econ')), qeT = S_(qe, L=>L.dq);
+  if (qe.length) out.push({ ef:'qtd', aba:'q_econ', txt:`<b>${qe.length} insumo(s) parados há ${AN.PARADO}+ meses abaixo da quantidade orçada</b>: provável sobra de <b class="t-good">${money(-qeT)}</b>. Confirme com a obra se esses serviços terminaram.` });
+  const cobOk = cob.ok/(total||1);
+  out.push({ ef:null, aba:'conferir', txt:`<b>Confiabilidade:</b> a separação preço × quantidade cobre <b>${pct(cobOk,0)}</b> do gasto. ${cob.gen>1?`${money(cob.gen)} (${pct(cob.gen/total,0)}) está no insumo genérico "troca de item"; `:''}${cob.vb>1?`${money(cob.vb)} são verbas, sem quantidade para comparar. `:''}${cob.conf>1?`${money(cob.conf)} tem unidade ou quantidade incoerente e precisa ser conferido no ERP.`:''}` });
+  return out;
+}
+
 function renderAnalise(el){
   const o = obra(), M = S.mes;
   const temIns = !!o.insumos?.itens?.length, temV2 = temItensV2(o);
   if (!temIns || !temV2) { el.innerHTML = podeEditar() ? anSetupHtml(o, temIns, temV2) : `<div class="panel empty"><h2 class="sec">Análise de custos</h2><p class="note">Esta obra ainda não tem o orçamento por insumo carregado. Peça a quem administra o app para ativar a análise.</p></div>`; return; }
   const A = calcAnalise(o, M), catNome = Object.fromEntries(o.categorias.map(c=>[c.id, c.nome]));
-  const f = UI.anCat || 'todas';
-  const sel = A.linhas.filter(L => (f==='todas' || L.cat===f) && L.tipo!=='nada');
-  const sum = (arr, fn) => arr.reduce((s,x)=>s+fn(x),0);
+  const fc = UI.anCat || 'todas', ef = UI.anEf || 'tudo';
+  const abas = AN_ABAS[ef]; let aba = UI.anAba; if (!abas.some(a=>a[0]===aba)) aba = abas[0][0];
+  const sel = A.linhas.filter(L => (fc==='todas' || L.cat===fc) && L.tipo!=='nada');
   const ok = sel.filter(L=>L.tipo==='ok');
-  const precoMais = sum(ok, L=>Math.max(0,L.dp)), precoMenos = sum(ok, L=>Math.min(0,L.dp));
-  const qtdMais = sum(ok.filter(L=>L.qr>L.qo), L=>L.dq);
-  const pendV = sum(sel.filter(L=>['gen','sem','un','conf'].includes(L.tipo)), L=>L.vr);
-  // por categoria
-  const porCat = {};
-  A.linhas.forEach(L => { if (L.tipo!=='ok') return; const c = (porCat[L.cat] ??= { p:0, q:0 }); c.p += Math.max(0,L.dp); if (L.qr>L.qo) c.q += L.dq; });
-  const cats = Object.entries(porCat).map(([id,x])=>({ id, nome:catNome[id]||id, ...x, t:x.p+x.q })).filter(x=>x.t>1).sort((a,b)=>b.t-a.t);
-  const mx = Math.max(1, ...cats.map(c=>c.t));
-  const modo = UI.anModo || 'estouros';
-  let lista = sel;
-  if (modo==='estouros') { const ex = L => L.dp + (L.qr>L.qo ? L.dq : 0); lista = sel.filter(L => L.tipo==='ok' && ex(L) > 1).sort((a,b)=>ex(b)-ex(a)); }
-  else if (modo==='economias') lista = sel.filter(L => L.tipo==='ok' && L.dp < -1).sort((a,b)=>a.dp-b.dp);
-  else if (modo==='pend') lista = sel.filter(L => ['gen','sem','un','conf'].includes(L.tipo)).sort((a,b)=>b.vr-a.vr);
-  else lista = sel.slice().sort((a,b)=>b.vr-a.vr);
-  const q = norm(UI.anBusca||''); if (q) lista = lista.filter(L => norm(L.desc).includes(q) || norm(A.servDesc[L.serv]||'').includes(q) || [...L.forn.keys()].some(n=>norm(n).includes(q)));
-  const total = lista.length; lista = lista.slice(0, UI.anLim || 60);
+  const total = sel.reduce((s,L)=>s+L.vr,0);
+  const cob = { ok:0, vb:0, gen:0, conf:0, sem:0 }; sel.forEach(L => cob[anGrupo(L.tipo)] += L.vr);
+  const S_ = (arr, f) => arr.reduce((s,x)=>s+f(x),0);
+
+  // KPIs do efeito escolhido
+  const e = L => L.ef[ef];
+  const pos = L => Math.max(0,L.ef.preco)+Math.max(0,L.ef.qtd), neg = L => Math.min(0,L.ef.preco)+Math.min(0,L.ef.qtd);
+  const est = ef==='tudo' ? S_(ok, pos) : S_(ok, L=>Math.max(0,e(L))), eco = ef==='tudo' ? S_(ok, neg) : S_(ok, L=>Math.min(0,e(L)));
+  let kp;
+  if (ef==='preco') { const base = S_(ok, L=>L.qr*L.cuo), pago = S_(ok, L=>L.vc);
+    kp = [tile('Pago acima do orçado', money(est), `${ok.filter(L=>L.ef.preco>1).length} insumos · acima de 10%`, est>1?'t-crit':''), tile('Pago abaixo do orçado', money(-eco), `${ok.filter(L=>L.ef.preco<-1).length} insumos · abaixo de 10%`, eco<-1?'t-good':''),
+      tile('Saldo de preço', signed(est+eco), 'estouros − economias', est+eco>0?'t-crit':'t-good'), tile('Preço médio pago', base?pctS(pago/base-1,1):'—', 'em relação ao orçado', pago>base?'t-crit':'t-good')]; }
+  else if (ef==='qtd') {
+    kp = [tile('Já passou do orçado', money(est), `${ok.filter(L=>L.diag.includes('q_passou')).length} insumos · confirmado`, est>1?'t-crit':''), tile('Sobra provável', money(-eco), `${ok.filter(L=>L.diag.includes('q_econ')).length} insumos parados`, eco<-1?'t-good':''),
+      tile('Dentro do orçado', ok.filter(L=>Math.abs(L.pq-1)<=AN.TOL_Q).length.toLocaleString('pt-BR'), `insumos com até ${pct(AN.TOL_Q,0)} de diferença`), tile('Em andamento', ok.filter(L=>!L.fim && L.pq<1-AN.TOL_Q).length.toLocaleString('pt-BR'), 'abaixo do orçado, ainda comprando')]; }
+  else {
+    const ep = S_(ok, L=>Math.min(0,L.ef.preco)), eq = S_(ok, L=>Math.min(0,L.ef.qtd));
+    kp = [tile('Estouro confirmado', money(est), 'preço + quantidade já gastos', est>1?'t-crit':''), tile('Economia de preço', money(-ep), 'confirmada: já pago abaixo', ep<-1?'t-good':''),
+      tile('Sobra provável', money(-eq), `quantidade · itens parados há ${AN.PARADO}+ meses`, eq<-1?'t-good':''), tile('Cobertura da análise', pct(cob.ok/(total||1),0), `de ${money(total)} gastos`)]; }
+
+  // categorias (só na visão geral)
+  let catsHtml = '';
+  if (fc==='todas') {
+    const pc = {}; ok.forEach(L => { const c = (pc[L.cat] ??= { e:0, s:0 }); if (ef==='tudo') { c.e += pos(L); c.s += neg(L); } else { const x = e(L); if (x>0) c.e += x; else c.s += x; } });
+    const cats = Object.entries(pc).map(([id,x])=>({ id, nome:catNome[id]||id, ...x })).filter(x=>x.e>1000).sort((a,b)=>b.e-a.e);
+    const mx = Math.max(1, ...cats.map(c=>Math.max(c.e,-c.s)));
+    const linhaC = c => `<button class="an-cat" data-ancat="${esc(c.id)}"><span class="an-cn">${esc(c.nome)}</span>
+      <span class="an-div"><span class="an-l"><i style="width:${(-c.s/mx*100).toFixed(1)}%"></i></span><span class="an-r"><i style="width:${(c.e/mx*100).toFixed(1)}%"></i></span></span>
+      <span class="an-v t-crit">+${money(c.e)}</span></button>`;
+    const pior = cats.slice(0,10), melhor = [];
+    catsHtml = cats.length ? `<section class="panel"><div class="ph"><h3 class="sub">Por categoria · ${{tudo:'preço + quantidade',preco:'só preço',qtd:'só quantidade'}[ef]}</h3>${legendHtml([{name:'Economia',color:'var(--good)'},{name:'Estouro',color:'var(--crit)'}])}</div>
+      <div class="an-cats">${pior.map(linhaC).join('')}${melhor.length?`<div class="an-sep">Maiores saldos positivos</div>${melhor.map(linhaC).join('')}`:''}</div>
+      <p class="note muted">Ordenado pelo estouro (vermelho, valor à direita). Em verde, as economias da mesma categoria${ef==='preco'?'':' (as de quantidade são prováveis)'}. Toque para ver os insumos.</p></section>` : '';
+  }
+
+  // lista
+  let lista;
+  if (aba==='conferir') lista = sel.filter(L=>L.tipo!=='ok' && (!UI.anTipo || anGrupo(L.tipo)===UI.anTipo)).sort((a,b)=>b.vr-a.vr);
+  else if (aba==='estouro') lista = ok.filter(L=>pos(L)>1).sort((a,b)=>pos(b)-pos(a));
+  else if (aba==='economia') lista = ok.filter(L=>neg(L)<-1).sort((a,b)=>neg(a)-neg(b));
+  else { const k = aba.startsWith('p') ? 'preco' : 'qtd', sgn = aba.endsWith('econ') ? -1 : 1; lista = ok.filter(L=>L.diag.includes(aba)).sort((a,b)=>sgn*(b.ef[k]-a.ef[k])); }
+  const q = norm(UI.anBusca||''); if (q) lista = lista.filter(L => norm(L.desc).includes(q) || String(L.cod)===q || [...L.forn.keys()].some(n=>norm(n).includes(q)));
+  const nTot = lista.length, soma = aba==='conferir' ? S_(lista, L=>L.vr) : S_(lista, L=>aba==='estouro' ? pos(L) : aba==='economia' ? neg(L) : L.ef[aba.startsWith('p')?'preco':'qtd']);
+  lista = lista.slice(0, UI.anLim || 40);
+  const conc = fc==='todas' || ok.length ? anConclusoes(ok, cob, total, catNome) : [];
+
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · acumulado até ${ymLabel(M)}</span><h2 class="sec">Análise de custos</h2></div>
-  <p class="lead">Cada gasto é <b>quantidade × preço</b>. Aqui o estouro é separado em <b>preço</b> (comprou mais caro que o orçado) e <b>quantidade</b> (consumiu mais que o orçado), insumo por insumo.</p>
   <div class="toolbar">
-    <select id="an-cat" aria-label="Categoria" style="flex:1 1 260px"><option value="todas">Todas as categorias</option>${o.categorias.filter(c=>!c.fora).map(c=>`<option value="${esc(c.id)}"${f===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select>
+    <select id="an-cat" aria-label="Categoria" style="flex:1 1 260px"><option value="todas">Todas as categorias</option>${o.categorias.filter(c=>!c.fora).map(c=>`<option value="${esc(c.id)}"${fc===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select>
   </div>
-  <section class="kpis k4">
-    ${tile('Preço acima do orçado', money(precoMais), `economia de preço em outros itens: ${money(-precoMenos)}`, precoMais>1?'t-crit':'')}
-    ${tile('Quantidade acima do orçado', money(qtdMais), 'só itens que já passaram a qtd. orçada', qtdMais>1?'t-crit':'')}
-    ${tile('Pendências de apropriação', money(pendV), 'genérico, sem orçamento, unidade ou quantidade a conferir', pendV>1?'t-warn':'')}
-    ${tile('Insumos analisados', ok.length.toLocaleString('pt-BR'), `${sel.filter(L=>L.tipo==='vb').length} verbas só em R$`)}
+  <section class="panel an-conc">
+    <h3 class="sub">Conclusões${fc!=='todas'?' · '+esc(catNome[fc]||fc):''}</h3>
+    <ol>${conc.map((c,i)=>`<li><button class="an-ci" data-anconc="${i}" data-ef="${c.ef||''}" data-aba="${c.aba}"><span>${c.txt}</span><span class="an-go" aria-hidden="true">›</span></button></li>`).join('')}</ol>
+    <div class="an-cob" role="img" aria-label="Composição do gasto analisado">${AN_COB.map(([k,n,c])=>cob[k]>0?`<i style="flex:${cob[k]};background:${c}" title="${n}: ${money(cob[k])}"></i>`:'').join('')}</div>
+    <div class="an-cobl">${AN_COB.map(([k,n,c,d])=>cob[k]>1?`<button class="an-cb" data-ancob="${k}" title="${esc(d)}"><i style="background:${c}"></i>${n} <b>${pct(cob[k]/(total||1),0)}</b></button>`:'').join('')}</div>
   </section>
-  ${f==='todas' && cats.length?`<section class="panel"><div class="ph"><h3 class="sub">Onde está o estouro</h3>${legendHtml([{name:'Preço',color:'var(--s3)'},{name:'Quantidade',color:'var(--s2)'}])}</div>
-    <div class="an-cats">${cats.slice(0,12).map(c=>`<button class="an-cat" data-ancat="${esc(c.id)}"><span class="an-cn">${esc(c.nome)}</span><span class="an-bar"><i style="width:${(c.p/mx*100).toFixed(1)}%;background:var(--s3)"></i><i style="width:${(c.q/mx*100).toFixed(1)}%;background:var(--s2)"></i></span><span class="an-v">${money(c.t)}</span></button>`).join('')}</div>
-    <p class="note muted">Toque numa categoria para ver os insumos dela.</p></section>`:''}
-  ${f!=='todas'?`<button class="chip" data-ancat="todas" style="align-self:flex-start">← Todas as categorias</button>`:''}
-  <div class="seg big" role="group" aria-label="Mostrar" id="an-lista" style="scroll-margin-top:90px">
-    ${[['estouros','Estouros'],['economias','Economias de preço'],['pend','Pendências'],['todos','Todos']].map(([k,t])=>`<button data-anmodo="${k}" aria-pressed="${modo===k}">${t}</button>`).join('')}
+  <div class="seg big an-ef" role="group" aria-label="Efeito">
+    ${[['tudo','Preço + quantidade'],['preco','Só preço'],['qtd','Só quantidade']].map(([k,t])=>`<button data-anef="${k}" aria-pressed="${ef===k}">${t}</button>`).join('')}
   </div>
-  <input id="an-busca" type="search" placeholder="Buscar insumo, serviço ou fornecedor" value="${esc(UI.anBusca||'')}" aria-label="Buscar">
-  <p class="note">${total.toLocaleString('pt-BR')} item(ns)${total>lista.length?` · mostrando os ${lista.length} maiores`:''}.</p>
-  <div class="cards">${lista.map(L=>anCard(L, A, catNome)).join('') || '<div class="panel empty"><p class="note">Nada nesta seleção.</p></div>'}</div>
-  ${total>lista.length?`<button class="btn sec" id="an-mais" style="align-self:center">Mostrar mais</button>`:''}
-  <p class="note muted">Como ler: <b>preço</b> = (preço pago − preço orçado) × quantidade comprada; <b>quantidade</b> = (quantidade comprada − orçada) × preço orçado. Itens ainda em execução podem estar abaixo da quantidade orçada só porque não terminaram. Orçamento: ${esc(o.insumos.fonte||'')}.</p>`;
+  <section class="kpis k4">${kp.join('')}</section>
+  ${catsHtml}
+  ${fc!=='todas'?`<button class="chip" data-ancat="todas" style="align-self:flex-start">← Todas as categorias</button>`:''}
+  <div id="an-lista" style="scroll-margin-top:90px;display:flex;flex-direction:column;gap:10px">
+    <div class="seg big" role="group" aria-label="Lista">${abas.map(([k,t])=>`<button data-anaba="${k}" aria-pressed="${aba===k}">${t}</button>`).join('')}</div>
+    ${aba==='conferir'?`<div class="toolbar">${[['', 'Tudo'],...AN_COB.filter(c=>c[0]!=='ok').map(c=>[c[0],c[1]])].map(([k,t])=>`<button class="chip" data-antipo="${k}" aria-pressed="${(UI.anTipo||'')===k}">${t}</button>`).join('')}</div>`:''}
+    <p class="note">${aba==='conferir'?(AN_COB.find(c=>c[0]===UI.anTipo)?.[3]||'Gastos que não entram na separação preço × quantidade. Revisar a apropriação no ERP aumenta a confiabilidade.'):(AN_DIAG[aba]?.[2]||(aba==='estouro'?'Insumos com estouro de preço e/ou de quantidade (só o que já foi gasto).':'Insumos com economia de preço (confirmada) e/ou sobra de quantidade (provável).'))}</p>
+    <input id="an-busca" type="search" placeholder="Buscar insumo, código ou fornecedor" value="${esc(UI.anBusca||'')}" aria-label="Buscar">
+    <p class="note"><b>${nTot.toLocaleString('pt-BR')}</b> insumo(s) · ${aba==='conferir'?'gasto':'efeito'} <b class="${aba==='conferir'?'':soma>0?'t-crit':'t-good'}">${aba==='conferir'?money(soma):signed(soma)}</b>${nTot>lista.length?` · mostrando os ${lista.length} maiores`:''}</p>
+    <div class="cards">${lista.map(L=>anCard(L, A, catNome, ef)).join('') || '<div class="panel empty"><p class="note">Nada nesta seleção.</p></div>'}</div>
+    ${nTot>lista.length?`<button class="btn sec" id="an-mais" style="align-self:center">Mostrar mais</button>`:''}
+  </div>
+  <details class="panel an-como"><summary>Como a análise é feita</summary>
+    <ul class="note">
+      <li>Cada insumo do orçamento é comparado com as compras do ERP do mesmo insumo, <b>na mesma categoria</b>, somando todos os serviços dela.</li>
+      <li><b>Preço</b> = (preço médio pago − preço orçado) × quantidade comprada. <b>Quantidade</b> = (quantidade comprada − orçada) × preço orçado. A soma dos dois é a diferença em R$.</li>
+      <li>Quantidade só conta como estouro quando <b>já passou</b> do orçado (é certo, só aumenta). Abaixo do orçado só conta como economia se o insumo está <b>sem compras há ${AN.PARADO} meses</b>.</li>
+      <li>Diferenças de até ${pct(AN.TOL_P,0)} (em preço ou em quantidade) são tratadas como variação normal e não entram nos totais.</li>
+      <li>Ficam de fora (em "A conferir"): verbas, o insumo genérico de troca de item, unidades diferentes, preço pago menor que 40% ou maior que 2,5× o orçado e quantidade maior que 4× a orçada. Esses casos quase sempre são erro de lançamento, não de orçamento.</li>
+      <li><b>Confiança alta</b>: 3+ lançamentos, mesma unidade em tudo, preço entre −33% e +50% e quantidade até 2,5× a orçada.</li>
+    </ul>
+    <p class="note muted">Orçamento: ${esc(o.insumos.fonte||'')}.</p>
+  </details>`;
 }
-function anCard(L, A, catNome){
+
+function anCard(L, A, catNome, ef){
   const aberto = UI.anAberto === L.k;
-  const pill = { ok:'', vb:'<span class="pill none">Verba</span>', un:`<span class="pill warn">Unidade: orçado ${esc(L.un)}, comprado ${esc(L.unsR||'')}</span>`, gen:'<span class="pill warn">Insumo genérico</span>', sem:'<span class="pill warn">Sem orçamento no serviço</span>', conf:`<span class="pill warn">Conferir: ${L.qr>4*L.qo?`${Math.round(L.qr).toLocaleString('pt-BR')} ${esc(L.un)} comprados × ${Math.round(L.qo).toLocaleString('pt-BR')} orçados`:`${brl2.format(L.cur||0)}/${esc(L.un)} pago × ${brl2.format(L.cuo)} orçado`}</span>` }[L.tipo] || '';
-  const nf = v => (+v).toLocaleString('pt-BR',{maximumFractionDigits: v>=100?0:2});
-  const pu = v => brl2.format(v);
-  const pr = L.tipo==='ok' ? `<div class="an-split">
-      <div><span>Preço</span><b class="${L.dp>1?'t-crit':L.dp<-1?'t-good':''}">${signed(L.dp)}</b><small>${pu(L.cuo)} → ${pu(L.cur)} /${esc(L.un)}</small></div>
-      <div><span>Quantidade</span><b class="${L.qr>L.qo&&L.dq>1?'t-crit':''}">${L.qr>L.qo?signed(L.dq):'dentro'}</b><small>${nf(L.qr)} de ${nf(L.qo)} ${esc(L.un)} · ${pct(L.pq,0)}</small>${L.resto>1?`<small>+ ${money(L.resto)} em outra unidade</small>`:''}</div>
-    </div>` : `<div class="an-split"><div><span>Orçado</span><b>${money(L.vo)}</b></div><div><span>Realizado</span><b class="${L.d>1?'t-crit':''}">${money(L.vr)}</b><small>${L.vo?signed(L.d):''}</small></div></div>`;
+  const pills = L.tipo==='ok' ? L.diag.map(d=>`<span class="pill ${AN_DIAG[d][1]}">${AN_DIAG[d][0]}</span>`).join('') + `<span class="an-cf ${L.conf}">confiança ${L.conf==='alta'?'alta':'média'}</span>` : `<span class="pill warn">${{gen:'Insumo genérico',vb:'Verba',un:'Unidade diferente',conf:'A conferir',sem:'Fora do orçamento'}[L.tipo]}</span>`;
+  let corpo;
+  if (L.tipo==='ok') {
+    const andamento = !L.fim && L.pq < 1-AN.TOL_Q;
+    corpo = `<div class="an-nums">
+      <div><span>Orçado</span><b>${money(L.vo)}</b><small>${nfq(L.qo)} ${esc(L.un)} × ${pu2(L.cuo)}</small></div>
+      <div><span>Comprado</span><b>${money(L.vr)}</b><small>${nfq(L.qr)} ${esc(L.un)} × ${pu2(L.cur)}</small></div>
+      <div class="${ef==='qtd'?'dim':''}"><span>Efeito preço</span><b class="${L.ef.preco>1?'t-crit':L.ef.preco<-1?'t-good':''}">${L.ef.preco?signed(L.ef.preco):'dentro'}</b><small>${pctS(L.rp-1,1)} no preço</small></div>
+      <div class="${ef==='preco'?'dim':''}"><span>Efeito quantidade</span><b class="${L.ef.qtd>1?'t-crit':L.ef.qtd<-1?'t-good':''}">${L.ef.qtd?signed(L.ef.qtd):andamento?'em andamento':'dentro'}</b><small>${pct(L.pq,0)} da qtd. orçada${andamento?` · faltam ${nfq(L.qo-L.qr)}`:''}</small></div>
+    </div>`;
+  } else {
+    const motivo = { gen:'Lançado no insumo genérico de troca de item: não dá para saber o que foi comprado. Reapropriar no ERP.',
+      vb:'Orçado como verba (ou com a quantidade em reais): só dá para comparar o valor.',
+      un:`Orçado em ${esc(L.un)}, comprado em ${esc(L.uns.join(', '))}: quantidades não comparáveis.`,
+      sem:'Este insumo não está no orçamento desta categoria: pode estar apropriado na categoria errada, ou não foi orçado.',
+      conf: L.motivo==='qtd' ? `Comprado ${nfq(L.qr)} ${esc(L.un)} para ${nfq(L.qo)} orçados (${pct(L.pq,0)}): provável quantidade lançada errada ou insumo de outra categoria.` : `Preço médio ${pu2(L.cur)} para ${pu2(L.cuo)} orçado (${pctS(L.rp-1)}): provável unidade ou quantidade lançada errada.` }[L.tipo];
+    corpo = `<div class="an-nums n2"><div><span>Orçado</span><b>${money(L.vo)}</b></div><div><span>Gasto</span><b class="${L.vr>L.vo+1?'t-crit':''}">${money(L.vr)}</b><small>${L.vo?signed(L.vr-L.vo):''}</small></div></div><p class="note">${motivo}</p>`;
+  }
   return `<div class="mcard an-item ${aberto?'open':''}">
     <button class="mc-head" data-anitem="${esc(L.k)}" aria-expanded="${aberto}">
-      <div class="mc-l"><span class="catname">${esc(L.desc||'Insumo '+L.cod)}<small>${esc(A.servDesc[L.serv]||L.serv)} · ${esc(catNome[L.cat]||L.cat)}</small></span>${pill}</div>
-      <div class="mc-r"><b>${money(L.vr)}</b><span class="muted">orçado ${money(L.vo)}</span></div>
+      <div class="mc-l"><span class="catname">${esc(L.desc||'Insumo '+L.cod)}<small>${esc(catNome[L.cat]||L.cat)} · insumo ${L.cod}</small></span><span class="an-pills">${pills}</span></div>
+      <span class="an-chev" aria-hidden="true">${aberto?'−':'+'}</span>
     </button>
-    <div class="an-body">${pr}${aberto?anForn(L):''}</div>
+    <div class="an-body">${corpo}${aberto?anDetalhe(L, A):''}</div>
   </div>`;
 }
-function anForn(L){
-  const fs = [...L.forn.entries()].map(([n,x])=>({ n, ...x, pu: x.q ? x.v/x.q : 0 })).sort((a,b)=>b.v-a.v);
-  if (!fs.length) return '<p class="note muted">Sem compras até o mês selecionado.</p>';
-  return `<div class="an-forn"><span class="h4">Por fornecedor</span>${fs.map(x=>`<div class="an-fr"><span>${esc(x.n)}</span><span class="mono">${x.q.toLocaleString('pt-BR',{maximumFractionDigits:2})} ${esc([...x.un].join('/'))}</span><span class="mono">${x.q&&x.un.size===1?brl2.format(x.pu):'—'}</span><b class="mono">${money(x.v)}</b></div>`).join('')}
-    <p class="note muted">Preço médio orçado: ${brl2.format(L.cuo||0)} /${esc(L.un)}</p></div>`;
+function anDetalhe(L, A){
+  const fs = [...L.forn.entries()].map(([n,x])=>({ n, ...x, pu: x.q ? x.vc/x.q : 0 })).sort((a,b)=>b.v-a.v);
+  const ss = new Set([...L.servsO.keys(), ...L.servsR.keys()]);
+  const sv = [...ss].map(s => ({ s, o:L.servsO.get(s)||{q:0,t:0}, r:L.servsR.get(s)||{q:0,v:0} })).sort((a,b)=>(b.r.v+b.o.t)-(a.r.v+a.o.t));
+  const cmp = L.tipo==='ok';
+  return `<div class="an-forn"><span class="h4">Por fornecedor${cmp?' · preço médio pago':''}</span>
+    ${fs.length?fs.map(x=>`<div class="an-fr"><span>${esc(x.n)}</span><span class="mono">${x.q?nfq(x.q)+' '+esc(L.un):'—'}</span><span class="mono ${cmp&&x.q?(x.pu>L.cuo*1.05?'t-crit':x.pu<L.cuo*0.95?'t-good':''):''}">${x.q?pu2(x.pu):'—'}</span><b class="mono">${money(x.v)}</b></div>`).join(''):'<p class="note muted">Sem compras até o mês selecionado.</p>'}
+    ${cmp?`<p class="note muted">Preço orçado: ${pu2(L.cuo)} /${esc(L.un)}. Vermelho = acima do orçado, verde = abaixo.</p>`:''}</div>
+  ${sv.length>1 || (sv[0] && !L.servsO.has(sv[0].s))?`<div class="an-forn"><span class="h4">Por serviço · quantidade orçada × comprada</span>
+    ${sv.map(x=>`<div class="an-fr"><span title="${esc(x.s)}">${esc(A.servDesc[x.s]||x.s)}</span><span class="mono">${nfq(x.o.q)}</span><span class="mono ${x.r.q>x.o.q*1.1?'t-crit':''}">${nfq(x.r.q)}</span><b class="mono">${money(x.r.v)}</b></div>`).join('')}
+    <p class="note muted">Quando um serviço passa e outro fica abaixo, a diferença costuma ser apropriação trocada entre serviços, não estouro. Por isso a análise soma a categoria inteira.</p></div>`:''}`;
 }
+
 function anSetupHtml(o, temIns, temV2){
   return `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)}</span><h2 class="sec">Análise de custos</h2></div>
@@ -2084,8 +2254,12 @@ document.addEventListener('click', e => {
   if (t.matches('tr.row,.ccard')) { UI.aberto = UI.aberto===t.dataset.id ? null : t.dataset.id; keepScroll(render); return; }
   if (t.dataset.goto) { S.mes = t.dataset.goto; save(); location.hash='#painel'; return; }
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
-  if (t.dataset.ancat) { UI.anCat = t.dataset.ancat; UI.anLim = 60; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
-  if (t.dataset.anmodo) { UI.anModo = t.dataset.anmodo; UI.anLim = 60; UI.anAberto = null; keepScroll(render); return; }
+  if (t.dataset.ancat) { UI.anCat = t.dataset.ancat; UI.anLim = 40; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
+  if (t.dataset.anef) { UI.anEf = t.dataset.anef; UI.anAba = null; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
+  if (t.dataset.anaba) { UI.anAba = t.dataset.anaba; UI.anTipo = ''; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
+  if (t.dataset.antipo!=null) { UI.anTipo = t.dataset.antipo; UI.anLim = 40; keepScroll(render); return; }
+  if (t.dataset.anconc!=null) { if (t.dataset.ef) UI.anEf = t.dataset.ef; UI.anAba = t.dataset.aba; UI.anTipo = ''; UI.anLim = 40; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
+  if (t.dataset.ancob) { if (t.dataset.ancob==='ok') { UI.anEf = 'tudo'; UI.anAba = 'estouro'; UI.anTipo = ''; } else { UI.anAba = 'conferir'; UI.anTipo = t.dataset.ancob; } UI.anLim = 40; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
   if (t.dataset.anitem) { UI.anAberto = UI.anAberto===t.dataset.anitem ? null : t.dataset.anitem; keepScroll(render); return; }
   if (t.id==='an-mais') { UI.anLim = (UI.anLim||60) + 60; keepScroll(render); return; }
   if (t.id==='imp-todos') { UI.imp.mostrarTodos = !UI.imp.mostrarTodos; document.getElementById('imp-res').innerHTML=impPreview(); return; }
