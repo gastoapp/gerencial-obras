@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icone-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Gerencial de Obras</title>
+<title>Gerencial Obras</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
@@ -494,6 +494,14 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .ped-a .btn{padding:8px 12px;font-size:13px}
 .ped-a select{font-size:13px;padding:6px 8px}
 .aviso-ped{text-decoration:none;color:var(--ink);background:var(--warn-bg);border:1px solid #6b5212}
+
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:34px;height:34px;flex:none;filter:drop-shadow(0 0 6px rgba(34,211,238,.25))}
+.brand b{color:var(--accent);font-weight:700}
+.login-logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:.04em;text-transform:uppercase}
+.login-logo svg{width:56px;height:56px;flex:none;filter:drop-shadow(0 6px 18px rgba(34,211,238,.25))}
+.login-logo b{color:var(--accent)}
+@media (max-width:420px){.login-logo{font-size:25px;gap:10px}.login-logo svg{width:48px;height:48px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -503,7 +511,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 <header class="top">
   <div class="wrap">
     <div class="top-row">
-      <div class="brand">Gerencial de Obras <span class="ver">nuvem</span></div>
+      <div class="brand"><svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgA)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg><span>Gerencial <b>Obras</b></span></div>
       <div class="pick"><label for="sel-obra">Obra</label><select id="sel-obra"></select></div>
       <div class="pick"><label for="sel-mes">Mês</label><select id="sel-mes"></select></div>
       <button class="btn-band" id="btn-nova" aria-label="Nova obra">+ Obra</button>
@@ -545,6 +553,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
+const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
 const PAPEL_TXT = { admin:'administrador', editor:'visualiza e edita', leitor:'só visualiza' };
@@ -660,7 +669,7 @@ function telaSimples(html){ document.body.classList.add('fora'); document.getEle
 function telaLogin(msg, modo){
   UI.loginModo = modo || UI.loginModo || 'entrar';
   const novo = UI.loginModo==='criar';
-  telaSimples(`<h1 class="sec">Gerencial de Obras</h1><p class="lead">${novo?'Primeiro acesso: crie sua senha. Use o e-mail que foi liberado na equipe.':'Entre com seu e-mail e senha.'}</p>
+  telaSimples(`<div class="login-logo">${LOGO_SVG}<span>Gerencial <b>Obras</b></span></div><p class="lead">${novo?'Primeiro acesso: crie sua senha. Use o e-mail que foi liberado na equipe.':'Entre com seu e-mail e senha.'}</p>
     <form id="f-login" class="login-f">
       <div class="field"><label for="lg-mail">E-mail</label><input id="lg-mail" type="email" autocomplete="email" required placeholder="voce@empresa.com.br" value="${esc(UI.lgMail||'')}"></div>
       <div class="field"><label for="lg-senha">Senha${novo?' (mínimo 6 caracteres)':''}</label><input id="lg-senha" type="password" autocomplete="${novo?'new-password':'current-password'}" required minlength="6"></div>
