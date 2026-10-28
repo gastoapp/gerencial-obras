@@ -676,7 +676,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.4 · 28/10';
+const APP_VERSAO = 'v2.5 · 28/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1737,7 +1737,7 @@ function renderLancar(el){
   <section class="panel">
     <h3 class="sub">1 · Gastos do ERP</h3>
     <p class="note">Use o mesmo arquivo que hoje vai para a aba <b>Grid Expor. - ITENS RECEBIDO</b> (.xlsx ou .csv). O app lê <i>Cód. Estruturado</i>, <i>Data Documento</i>, <i>Valor Apropriação</i>, <i>Definição</i> e <i>Fornecedor</i>, e liga cada linha à categoria pelos 11 primeiros dígitos do código, como o PROCV de hoje.</p>
-    <label class="drop" id="drop" for="arq"><b>Escolher arquivo</b><span class="muted">ou arraste aqui · .xlsx, .xls ou .csv</span><input id="arq" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>
+    <label class="drop" id="drop" for="arq"><b>Escolher arquivo</b><span class="muted">ou arraste aqui · .xlsx, .xls ou .csv</span><input id="arq" type="file" accept=".xlsx,.xlsm,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel" hidden></label>
     <div id="imp-res">${impPreview()}</div>
   </section>
   <section class="panel">
@@ -2037,8 +2037,8 @@ function renderOrcamento(el){
   <div class="toolbar"><button class="btn sec" id="cat-add">+ Adicionar categoria</button></div>
   <section class="panel" id="orc-imp">
     <h3 class="sub">Importar orçamento</h3>
-    <p class="note">Use o relatório <b>Planilha Orçamentária</b> do ERP (.xlsx). O app pega as categorias de nível 4 (código de 11 dígitos) com Equipamento, Serviço e Material. Dá para atualizar esta obra ou criar uma obra nova.</p>
-    ${podeEditar()?`<label class="drop" for="arq-orc"><b>Escolher arquivo do orçamento</b><span class="muted">.xlsx</span><input id="arq-orc" type="file" accept=".xlsx,.xls" hidden></label>`:''}
+    <p class="note">Use o relatório <b>Planilha Orçamentária</b> (ou a Listagem do orçamento) do ERP, em .xlsx ou .xlsm. O app pega as categorias de nível 4 (código de 11 dígitos) com Equipamento, Serviço e Material. Dá para atualizar esta obra ou criar uma obra nova.</p>
+    ${podeEditar()?`<label class="drop" for="arq-orc"><b>Escolher arquivo do orçamento</b><span class="muted">.xlsx ou .xlsm</span><input id="arq-orc" type="file" accept=".xlsx,.xlsm,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel" hidden></label>`:''}
     ${orcImpHtml()}
   </section>
   <section class="panel">
@@ -2335,10 +2335,10 @@ function anSetupHtml(o, temIns, temV2){
     <p class="note">Esta análise cruza o <b>orçamento por insumo</b> com as <b>compras do ERP</b>. São dois arquivos, uma vez só. Depois, as importações normais de cada mês já mantêm tudo atualizado.</p>
     <div class="an-step ${temIns?'done':''}"><b>1 · Orçamento detalhado</b> ${temIns?'<span class="pill good">Carregado</span>':''}
       <p class="note">Relatório <b>Planilha Orçamentária</b> do ERP (o arquivo "Orçamento operacional"). O app confere se a soma dos insumos fecha com cada categoria antes de gravar.</p>
-      ${temIns?'':`<label class="drop" for="arq-orc"><b>Escolher orçamento</b><span class="muted">.xlsx</span><input id="arq-orc" type="file" accept=".xlsx,.xls" hidden></label><div id="orc-imp">${orcImpHtml()}</div>`}</div>
+      ${temIns?'':`<label class="drop" for="arq-orc"><b>Escolher orçamento</b><span class="muted">.xlsx ou .xlsm</span><input id="arq-orc" type="file" accept=".xlsx,.xlsm,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel" hidden></label><div id="orc-imp">${orcImpHtml()}</div>`}</div>
     <div class="an-step ${temV2?'done':''}"><b>2 · Gastos do ERP</b> ${temV2?'<span class="pill good">Completo</span>':''}
       <p class="note">O mesmo arquivo <b>Portal Gerencial</b> de sempre. O app completa os lançamentos com o código do serviço e do item, necessários para o cruzamento. Os valores não mudam.</p>
-      ${temV2?'':`<label class="drop" for="arq"><b>Escolher arquivo do ERP</b><span class="muted">.xlsx</span><input id="arq" type="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label><div id="imp-res">${impPreview()}</div>`}</div>
+      ${temV2?'':`<label class="drop" for="arq"><b>Escolher arquivo do ERP</b><span class="muted">.xlsx ou .xlsm</span><input id="arq" type="file" accept=".xlsx,.xlsm,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel" hidden></label><div id="imp-res">${impPreview()}</div>`}</div>
   </section>`;
 }
 
