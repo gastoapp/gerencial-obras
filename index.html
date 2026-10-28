@@ -607,6 +607,22 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .pv-det summary b::after{content:"+";color:var(--muted);font-size:18px}
 .pv-det[open] summary b::after{content:"−"}
 .pv-det summary:hover{border-color:var(--accent)}
+.niv-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.niv-l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.seg.niv button{display:inline-flex;align-items:baseline;gap:6px}
+.seg.niv small{font:500 11px var(--mono);color:var(--muted)}
+.seg.niv button[aria-pressed="true"] small{color:inherit;opacity:.75}
+.niv-g{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.niv-g select{padding:6px 10px}
+.filhos{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.filhos h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fil{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 110px 110px 110px;gap:10px;align-items:center;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:13px}
+.fil:not(.h):hover,.fil:focus-visible{background:var(--surface2)}
+.fil span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fil .mono{text-align:right;font-family:var(--mono);font-size:12.5px}
+.fil.h{cursor:default;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);order:-1;padding-top:0}
+.fil.h span{text-align:right}
+@media (max-width:720px){.fil{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}.fil span:nth-child(2),.fil span:nth-child(3){display:none}.fil.h{display:none}.niv-bar .seg{width:100%;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}.seg.niv button{justify-content:center;padding:7px 2px}}
 </style>
 </head>
 <body>
@@ -660,21 +676,21 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.3 · 28/10';
+const APP_VERSAO = 'v2.4 · 28/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
 const PAPEL_TXT = { admin:'administrador', editor:'visualiza e edita', leitor:'só visualiza' };
-const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos'];
+const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos','estrutura'];
 
 function partesDaObra(o){
   return { info:{ id:o.id, nome:o.nome, inicio:o.inicio, fim:o.fim, orcViab:o.orcViab||0 }, categorias:o.categorias||[], avancos:o.avancos||{}, ajustes:o.ajustes||[],
-    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{}, insumos:o.insumos||{} };
+    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{}, insumos:o.insumos||{}, estrutura:o.estrutura||{} };
 }
 function montarObra(id, kv){
   const info = kv.info || { id, nome:id };
   return { ...info, id, categorias: kv.categorias||[], avancos: kv.avancos||{}, ajustes: kv.ajustes||[], funcoes: kv.equipe?.funcoes||[], empreiteiros: kv.equipe?.empreiteiros||[],
-    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, insumos: kv.insumos||{}, gasto:{}, itens:{} };
+    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, insumos: kv.insumos||{}, estrutura: kv.estrutura||{}, gasto:{}, itens:{} };
 }
 async function lerTudo(tabela, colunas){
   const out = []; let de = 0;
@@ -699,7 +715,7 @@ function statusNuvem(){
   document.querySelectorAll('.nst').forEach(el => { el.textContent = txt; el.dataset.s = st; el.title = tit; });
 }
 function save(){
-  UI.fornIdx = null; UI.anCache = null;
+  UI.fornIdx = null; UI.anCache = null; UI.nivCache = null;
   try { localStorage.setItem(PREF, JSON.stringify({ atual:S.atual, mes:S.mes })); } catch(e) {}
   if (!podeEditar()) { if (NUVEM.papel==='leitor' && !NUVEM.avisouRO) { NUVEM.avisouRO = true; toast('Seu acesso é só de leitura: as alterações não são salvas.'); } return; }
   NUVEM.pendente = true; statusNuvem();
@@ -737,7 +753,7 @@ const obra = () => S && S.obras ? S.obras[S.atual] : undefined;
 /* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem, cód. serviço, cód. item] */
 function itensDe(o, ym){
   const pack = (o.itens||{})[ym];
-  const out = pack ? pack.i.map(r => ({ cat:r[0], dia:r[1], doc:r[2], item:pack.s[r[3]]??'', forn:pack.s[r[4]]??'', qtd:r[5], un:pack.s[r[6]]??'', vu:r[7], val:r[8], mo:!!r[9], orig:r[10] })) : [];
+  const out = pack ? pack.i.map(r => ({ cat:r[0], dia:r[1], doc:r[2], item:pack.s[r[3]]??'', forn:pack.s[r[4]]??'', qtd:r[5], un:pack.s[r[6]]??'', vu:r[7], val:r[8], mo:!!r[9], orig:r[10], serv:r[11]||'' })) : [];
   (o.ajustes||[]).filter(a=>a.ym===ym).forEach(a => out.push({ cat:a.cat, dia:'', doc:'ajuste', item:a.desc||'Ajuste manual', forn:'Ajuste manual', qtd:0, un:'', vu:0, val:+a.valor||0, mo:a.tipo==='mo', orig:'manual', ajuste:true }));
   return out;
 }
@@ -1051,6 +1067,105 @@ function lines(el, labels, series, opts={}){
   hit.addEventListener('pointerleave', () => { tip.hidden = true; xh.setAttribute('opacity','0'); });
 }
 const legendHtml = items => `<div class="legend">${items.map(it=>`<span><i style="${it.line?`width:16px;border-top:2px ${it.dash?'dashed':'solid'} ${it.color}`:`width:10px;height:10px;border-radius:2px;background:${it.color}`}"></i>${esc(it.name)}</span>`).join('')}</div>`;
+
+/* ---------- NÍVEIS do orçamento (2 a 5) ----------
+   O app guarda gasto e orçado no nível 4 (categoria). Os níveis 2 e 3 somam as categorias;
+   o nível 5 vem do código completo de cada lançamento e do orçamento por etapa.
+   O que não tem detalhe de nível 5 (ajustes manuais, códigos sem etapa) fica numa linha "sem detalhe". */
+const NIV_LEN = { 2:5, 3:8, 4:11, 5:14 };
+const temNiveis = o => !!o && Object.keys(o.estrutura||{}).length > 0;
+function niveisDisp(o){ const s = new Set([4]); for (const c in o.estrutura||{}) { const n = o.estrutura[c][0]; if (n>=2 && n<=5) s.add(n); } return [...s].sort(); }
+function nivelAtual(o, max=5){ const ns = niveisDisp(o).filter(n=>n<=max); const n = UI.nivel || 4; return ns.includes(n) ? n : (ns.includes(4) ? 4 : ns[ns.length-1]); }
+function contaNivel(o, n){ return n===4 ? o.categorias.filter(c=>!c.fora && orcOf(c)>1).length : Object.entries(o.estrutura||{}).filter(([c,v])=>v[0]===n && (v[2]+v[3]+v[4])>1).length; }
+function catMapa(o){ if (UI.catMapa?.o !== o || UI.catMapa.n !== o.categorias.length) UI.catMapa = { o, n:o.categorias.length, m:Object.fromEntries(o.categorias.map(c=>[c.id,c])) }; return UI.catMapa.m; }
+function idNo(o, cat, serv, n){
+  if (n===4) return cat;
+  if (n<4) return catMapa(o)[cat]?.fora ? cat : cat.slice(0, NIV_LEN[n]);
+  return serv && serv.length >= 14 && serv.slice(0,11) === cat ? serv.slice(0,14) : cat+'·';
+}
+function nomeNo(o, id, n){
+  const est = o.estrutura||{}, cm = catMapa(o);
+  if (n===4 || cm[id] && n<4) return cm[id]?.nome || id;
+  if (n<4) return est[id]?.[1] || id;
+  const cat = id.slice(0,11), pai = cm[cat]?.nome || cat;
+  if (id.endsWith('·')) return pai+' · sem detalhe';
+  const nm = est[id]?.[1]; if (!nm) return pai+' · '+id.slice(12);
+  const pw = new Set(norm(pai).split(/\W+/)), nw = norm(nm).split(/\W+/).filter(w=>w.length>2);
+  return nw.length && nw.filter(w=>pw.has(w)).length/nw.length >= 0.6 ? nm : pai+' · '+nm;   // nome do nível 5 já diz tudo: não repete o nível 4
+}
+/* grupo padrão: o nível mais alto (acima do escolhido) em que nenhum grupo concentra 60% do orçado; se nenhum servir, não agrupa */
+function gNivelPadrao(o, n){
+  const cand = niveisDisp(o).filter(g=>g<n);
+  for (const g of cand) { const t = {}; let tot = 0; o.categorias.filter(c=>!c.fora).forEach(c => { const v = orcOf(c); t[c.id.slice(0,NIV_LEN[g])] = (t[c.id.slice(0,NIV_LEN[g])]||0) + v; tot += v; }); if (tot && Math.max(...Object.values(t)) < 0.6*tot) return g; }
+  return 0;
+}
+function kNivel(o, M, k, nForc){
+  if (!temNiveis(o)) return { ...k, nivel:4, legado:true, base:k };
+  const n = nForc || nivelAtual(o);
+  const G = n===2 ? 0 : (UI.gNivel!=null && (UI.gNivel===0 || UI.gNivel<n) && (UI.gNivel===0 || niveisDisp(o).includes(UI.gNivel)) ? UI.gNivel : gNivelPadrao(o, n));
+  const ck = o.id+'|'+M+'|'+n+'|'+G;
+  if (UI.nivCache?.k === ck) return UI.nivCache.v;
+  const est = o.estrutura||{}, cm = catMapa(o);
+  const nodes = {}, A = {};
+  const no = (id, base) => nodes[id] ??= { id, nome:nomeNo(o, id, n), eq:0, mo:0, mat:0, fora:!!base?.fora, cat:id.slice(0,11) };
+  const add = (ym, id, mo, mat) => { const r = ((A[ym] ??= {})[id] ??= [0,0]); r[0] += mo; r[1] += mat; };
+  if (n <= 4) {
+    for (const c of o.categorias) { const x = no(idNo(o, c.id, '', n), c); x.eq += +c.eq||0; x.mo += +c.mo||0; x.mat += +c.mat||0; }
+    for (const ym in k.A) for (const cid in k.A[ym]) { const c = cm[cid]; add(ym, idNo(o, cid, '', n), k.A[ym][cid][0], k.A[ym][cid][1]); if (!nodes[idNo(o, cid, '', n)]) no(idNo(o, cid, '', n), c); }
+  } else {
+    for (const c of o.categorias) {
+      let se = 0, sm = 0, sa = 0;
+      for (const code in est) { const v = est[code]; if (v[0]!==5 || code.slice(0,11)!==c.id) continue; const x = no(code, c); x.eq += v[2]; x.mo += v[3]; x.mat += v[4]; se += v[2]; sm += v[3]; sa += v[4]; }
+      const r = no(c.id+'·', c); r.eq += (+c.eq||0)-se; r.mo += (+c.mo||0)-sm; r.mat += (+c.mat||0)-sa;
+    }
+    for (const ym in k.A) {
+      const dist = {};   // quanto de cada categoria foi distribuído no nível 5
+      const p = (o.itens||{})[ym];
+      if (p) for (const r of p.i) { const cat = r[0], id = idNo(o, cat, r[11]||'', 5), v = +r[8]||0, mo = r[9] ? v : 0, mat = r[9] ? 0 : v; if (!nodes[id]) no(id, cm[cat]); add(ym, id, mo, mat); const d = (dist[cat] ??= [0,0]); d[0] += mo; d[1] += mat; }
+      for (const cid in k.A[ym]) { const d = dist[cid] || [0,0], rmo = k.A[ym][cid][0]-d[0], rmat = k.A[ym][cid][1]-d[1]; if (Math.abs(rmo)>0.005 || Math.abs(rmat)>0.005) { no(cid+'·', cm[cid]); add(ym, cid+'·', rmo, rmat); } }
+    }
+  }
+  const yms = Object.keys(A).sort();
+  const grpId = id => G ? id.slice(0, NIV_LEN[G]) : '';
+  const grpNomeDe = gid => G===4 ? (cm[gid]?.nome || gid) : (est[gid]?.[1] || gid);
+  const rows = Object.values(nodes).map(x => {
+    let acMo = 0, acMat = 0;
+    for (const y of yms) { if (y > M) break; const v = A[y][x.id]; if (v) { acMo += v[0]; acMat += v[1]; } }
+    const m = (A[M]||{})[x.id] || [0,0];
+    const orc = x.eq+x.mo+x.mat, acum = acMo+acMat, p = orc>1 ? acum/orc : NaN;
+    let st = 'good';
+    if (orc <= 1) st = 'none'; else if (acum > orc+0.5) st = 'crit'; else if (k.ritmo != null && p > k.ritmo + 0.05) st = 'warn';
+    const c = { id:x.id, nome:x.nome, eq:x.eq, mo:x.mo, mat:x.mat, fora:x.fora, cat:x.cat };
+    return { c, orc, mes:m[0]+m[1], mesMo:m[0], mesMat:m[1], acMo, acMat, acum, p, saldo:orc-acum, st, grupo: x.fora ? 'Sem verba' : (G ? grpNomeDe(grpId(x.id)) : ''), gid: x.fora ? '~' : grpId(x.id) };
+  }).filter(r => r.orc > 1 || Math.abs(r.acum) > 0.5 || (n<=4 && !r.c.id.endsWith('·')));
+  const gmap = {}; rows.forEach(r => { if (G) gmap[r.gid] = r.grupo; });
+  const grupos = G ? Object.keys(gmap).sort().map(g=>gmap[g]) : null;
+  const v = { ...k, rows, A, nivel:n, gNivel:G, agrupar: !!G, grupos, base:k.base||k };
+  UI.nivCache = { k:ck, v };
+  return v;
+}
+function nivelSeg(o, max=5, extra=''){
+  const ns = niveisDisp(o).filter(n=>n<=max); if (ns.length < 2) return '';
+  const cur = nivelAtual(o, max);
+  return `<div class="niv-bar"><span class="niv-l">Ver por</span><div class="seg niv" role="group" aria-label="Nível do orçamento">${ns.map(n=>`<button data-niv="${n}" aria-pressed="${cur===n}" title="${contaNivel(o,n)} itens com orçamento">Nível ${n}<small>${contaNivel(o,n)}</small></button>`).join('')}</div>${extra}</div>`;
+}
+function agrupaSel(o, kn){
+  if (kn.legado) return `<button class="chip" id="agrupar" aria-pressed="${UI.agrupar}">Agrupar Torre / Periferia</button>`;
+  const cand = niveisDisp(o).filter(g=>g<kn.nivel);
+  if (!cand.length) return '';
+  return `<label class="niv-g">Agrupar por <select id="agrupa-niv" aria-label="Agrupar por nível"><option value="0"${!kn.gNivel?' selected':''}>Sem agrupar</option>${cand.map(g=>`<option value="${g}"${kn.gNivel===g?' selected':''}>Nível ${g}</option>`).join('')}</select></label>`;
+}
+/* filhos do nó no nível de baixo, para abrir o detalhe */
+function filhosHtml(o, r, kn){
+  if (kn.legado || kn.nivel>=5) return '';
+  const prox = niveisDisp(o).find(n=>n>kn.nivel); if (!prox) return '';
+  const kf = kNivelSemCache(o, S.mes, kn.base||kn, prox);
+  const fs = kf.rows.filter(x => !x.c.fora && x.c.id !== r.c.id && x.c.id.startsWith(r.c.id.replace('·',''))).sort((a,b)=>a.c.id.localeCompare(b.c.id));
+  if (fs.length < 2) return '';
+  return `<div class="filhos"><h4>Abrir no nível ${prox}</h4>${fs.map(x=>`<button class="fil" data-desce="${prox}" data-alvo="${esc(x.c.id)}"><span>${esc(x.c.nome)}</span><span class="mono">${money(x.orc)}</span><span class="mono">${money(x.acum)}</span><b class="mono ${x.saldo<-0.5?'t-crit':'t-good'}">${x.orc<=1&&!x.acum?'—':signed(x.saldo)}</b></button>`).join('')}
+    <div class="fil h"><span></span><span>orçado</span><span>acumulado</span><span>saldo</span></div></div>`;
+}
+function kNivelSemCache(o, M, k, n){ const save_ = UI.nivCache, g = UI.gNivel; UI.gNivel = 0; const v = kNivel(o, M, k, n); UI.nivCache = save_; UI.gNivel = g; return v; }
 
 /* ---------- topo e rotas ---------- */
 const VIEWS = ['painel','categorias','analise','lancar','efetivo','historico','orcamento'];
@@ -1388,9 +1503,10 @@ function drawCheque(k){
 function renderCategorias(el){
   const o = obra(), M = S.mes;
   if (!o.categorias.length) { el.innerHTML = `<div class="panel empty"><p class="note">Cadastre o orçamento para ver as categorias.</p><a class="btn" href="#orcamento">Cadastrar orçamento</a></div>`; return; }
-  const k = calc(o, M);
+  const k = kNivel(o, M, calc(o, M));
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)}</span><h2 class="sec">Categorias</h2></div>
+  ${nivelSeg(o)}
   <div class="seg big" role="group" aria-label="Visão">
     <button data-vm="global" aria-pressed="${UI.catModo==='global'}">Global · acumulado até ${ymLabel(M)}</button>
     <button data-vm="mes" aria-pressed="${UI.catModo==='mes'}">Gastos de ${ymLabel(M)}</button>
@@ -1414,7 +1530,7 @@ function catGlobalHtml(k){
   <div class="toolbar" style="flex-direction:column;align-items:stretch;gap:10px">
     <div class="chips" role="group" aria-label="Filtrar por situação">
       ${['todos','crit','warn','good','none'].map(f=>`<button class="chip" data-f="${f}" aria-pressed="${UI.filtro===f}">${f==='todos'?'Todas':ST_TXT[f]}<span class="c">${counts[f]}</span></button>`).join('')}
-      <button class="chip" id="agrupar" aria-pressed="${UI.agrupar}">Agrupar Torre / Periferia</button>
+      ${agrupaSel(obra(), k)}
     </div>
     <div class="searchrow">
       <input id="busca" type="search" placeholder="Buscar categoria" value="${esc(UI.busca)}" aria-label="Buscar categoria">
@@ -1428,9 +1544,9 @@ function catGlobalHtml(k){
     </div>
   </div>
   <div id="cat-list">${catList(k)}</div>
-  <section class="grid2">
-    <div class="panel"><div><h3 class="sub">Estouro e economia</h3><p class="lead">As categorias que mais passaram e as que mais sobraram do orçado.</p></div>${divergente(k)}</div>
-    <div class="panel"><div><h3 class="sub">Por frente de obra</h3><p class="lead">Orçado e acumulado por grupo até ${ymLabel(S.mes)}.</p></div>${porGrupo(k)}</div>
+  <section class="${k.legado||k.grupos?'grid2':''}">
+    <div class="panel"><div><h3 class="sub">Estouro e economia</h3><p class="lead">Os itens que mais passaram e os que mais sobraram do orçado.</p></div>${divergente(k)}</div>
+    ${k.legado||k.grupos?`<div class="panel"><div><h3 class="sub">${k.legado?'Por frente de obra':'Por grupo · nível '+k.gNivel}</h3><p class="lead">Orçado e acumulado por grupo até ${ymLabel(S.mes)}.</p></div>${porGrupo(k)}</div>`:''}
   </section>`;
 }
 function divergente(k){
@@ -1443,7 +1559,7 @@ function divergente(k){
   return `<div class="div-list">${est.length?`<span class="h4">Maiores estouros</span>${est.map(row).join('')}`:''}${eco.length?`<span class="h4" style="margin-top:6px">Maiores economias</span>${eco.map(row).join('')}`:''}</div>`;
 }
 function porGrupo(k){
-  const gs = ['Torre','Periferia','Gerais'].map(g => { const rs = k.rows.filter(r=>r.grupo===g); const o=rs.reduce((s,r)=>s+r.orc,0), a=rs.reduce((s,r)=>s+r.acum,0), m=rs.reduce((s,r)=>s+r.mes,0); return { g, o, a, m, n:rs.length, est:rs.filter(r=>r.st==='crit').length }; }).filter(x=>x.o>0);
+  const gs = (k.legado ? ['Torre','Periferia','Gerais'] : (k.grupos||[])).map(g => { const rs = k.rows.filter(r=>r.grupo===g); const o=rs.reduce((s,r)=>s+r.orc,0), a=rs.reduce((s,r)=>s+r.acum,0), m=rs.reduce((s,r)=>s+r.mes,0); return { g, o, a, m, n:rs.length, est:rs.filter(r=>r.st==='crit').length }; }).filter(x=>x.o>0);
   return `<div class="grp-bars">${gs.map(x => { const p = x.a/x.o, st = x.a>x.o?'crit':(k.ritmo!=null&&p>k.ritmo+0.05?'warn':'good');
     return `<div class="gb"><div class="gb-top"><b>${x.g}</b><span>${money(x.a)} de ${money(x.o)} · <span class="${x.o-x.a<0?'t-crit':'t-good'}">${x.o-x.a<0?'estouro':'saldo'} ${money(Math.abs(x.o-x.a))}</span></span></div>
     <div class="bar"><div class="track"><div class="fill ${st}" style="width:${(Math.min(p,1.2)/1.2*100).toFixed(1)}%"></div><div class="tick100" style="left:${(100/1.2).toFixed(2)}%"></div>${k.ritmo!=null?`<div class="tickr" style="left:${(Math.min(k.ritmo,1.2)/1.2*100).toFixed(2)}%"></div>`:''}</div><span class="pct">${pct(p,0)}</span></div>
@@ -1464,41 +1580,42 @@ function barHtml(r, k){
 function catList(k){
   const rows = filtrar(k);
   if (!rows.length) return `<div class="panel empty"><p class="note">Nenhuma categoria com esse filtro.</p></div>`;
-  const groups = UI.agrupar ? ['Torre','Periferia','Gerais','Sem verba'].map(g=>[g, rows.filter(r=>r.grupo===g)]).filter(x=>x[1].length) : [[null, rows]];
+  const agr = k.legado ? UI.agrupar : k.agrupar, gl = k.legado ? ['Torre','Periferia','Gerais','Sem verba'] : [...(k.grupos||[]), 'Sem verba'];
+  const groups = agr ? gl.map(g=>[g, rows.filter(r=>r.grupo===g)]).filter(x=>x[1].length) : [[null, rows]];
   const base = tot(k.rows.filter(r=>!r.c.fora));
   if (isMob()) {
     return `<div class="cards">${groups.map(([g,rs]) => { const t = tot(rs);
       return (g?`<div class="grp-h"><span class="grp-t">${grpNome(g)}</span><span class="grp-s">${rs.length} · saldo ${money(t.o-t.a)}</span></div>`:'') + rs.map(r => {
-        const name = UI.agrupar && (g==='Torre'||g==='Periferia') ? curto(r.c.nome) : r.c.nome;
+        const name = agr && k.legado && (g==='Torre'||g==='Periferia') ? curto(r.c.nome) : r.c.nome;
         return `<div class="ccard ${r.st}" data-id="${esc(r.c.id)}" tabindex="0" role="button" aria-expanded="${UI.aberto===r.c.id}">
           <div class="cc-top"><div class="catname">${esc(name)}<small>${esc(r.c.id)}</small></div><span class="pill ${r.st}">${ST_TXT[r.st]}</span></div>
           ${barHtml(r,k)}
           <div class="cc-nums"><div><span>Orçado</span><b>${money(r.orc)}</b></div><div><span>Acumulado</span><b>${money(r.acum)}</b></div><div><span>Saldo</span><b class="${r.saldo<0?'t-crit':'t-good'}">${r.orc<=1&&!r.acum?'—':signed(r.saldo)}</b></div></div>
           <div class="cc-mes"><span>Gasto em ${ymLabel(S.mes)}</span><b>${r.mes?money(r.mes):'—'}</b></div>
-          ${UI.aberto===r.c.id?`<div class="cc-det" data-stop="1">${detalheHtml(r)}</div>`:''}
+          ${UI.aberto===r.c.id?`<div class="cc-det" data-stop="1">${detalheHtml(r, k)}</div>`:''}
         </div>`; }).join(''); }).join('')}
       <div class="total-card"><div><span>Orçado</span><b>${money(base.o)}</b></div><div><span>Acumulado</span><b>${money(base.a)}</b></div><div><span>Saldo</span><b>${money(base.o-base.a)}</b></div></div></div>`;
   }
   let html = '';
   groups.forEach(([g,rs]) => {
-    if (g) { const t = tot(rs); html += `<tr class="grp"><td colspan="7"><span class="grp-t">${grpNome(g)}</span><span class="grp-s">${rs.length} ${rs.length>1?'categorias':'categoria'} · orçado ${money(t.o)} · acumulado ${money(t.a)} · saldo ${money(t.o-t.a)}</span></td></tr>`; }
+    if (g) { const t = tot(rs); html += `<tr class="grp"><td colspan="7"><span class="grp-t">${grpNome(g)}</span><span class="grp-s">${rs.length} ${k.legado||k.nivel===4?(rs.length>1?'categorias':'categoria'):(rs.length>1?'itens':'item')} · orçado ${money(t.o)} · acumulado ${money(t.a)} · saldo ${money(t.o-t.a)}</span></td></tr>`; }
     rs.forEach(r => {
-      const name = UI.agrupar && (g==='Torre'||g==='Periferia') ? curto(r.c.nome) : r.c.nome;
+      const name = agr && k.legado && (g==='Torre'||g==='Periferia') ? curto(r.c.nome) : r.c.nome;
       html += `<tr class="row" data-id="${esc(r.c.id)}" tabindex="0" aria-expanded="${UI.aberto===r.c.id}">
         <td><div class="catname">${esc(name)}<small>${esc(r.c.id)}</small></div></td>
         <td class="n">${money(r.orc)}</td><td class="n">${r.mes?money(r.mes):'<span class="muted">—</span>'}</td><td class="n">${money(r.acum)}</td>
         <td style="min-width:170px">${barHtml(r,k)}</td>
         <td class="n ${r.saldo<0?'t-crit':'t-good'}">${r.orc<=1&&!r.acum?'—':signed(r.saldo)}</td>
         <td><span class="pill ${r.st}">${ST_TXT[r.st]}</span></td></tr>`;
-      if (UI.aberto===r.c.id) html += `<tr class="det"><td colspan="7">${detalheHtml(r)}</td></tr>`;
+      if (UI.aberto===r.c.id) html += `<tr class="det"><td colspan="7">${detalheHtml(r, k)}</td></tr>`;
     });
   });
   html += `<tr class="total"><td>Total da obra</td><td class="n">${money(base.o)}</td><td class="n">${money(base.m)}</td><td class="n">${money(base.a)}</td><td><span class="pct mono">${pct(base.a/(base.o||1),1)}</span></td><td class="n ${base.o-base.a<0?'t-crit':'t-good'}">${signed(base.o-base.a)}</td><td></td></tr>`;
-  return `<div class="tbl-wrap"><table class="orc"><thead><tr><th>Categoria</th><th class="n">Orçado</th><th class="n">Gasto no mês</th><th class="n">Acumulado</th><th>Consumo do orçado</th><th class="n">Saldo</th><th>Situação</th></tr></thead><tbody>${html}</tbody></table></div>`;
+  return `<div class="tbl-wrap"><table class="orc"><thead><tr><th>${k.legado||k.nivel===4?'Categoria':'Nível '+k.nivel}</th><th class="n">Orçado</th><th class="n">Gasto no mês</th><th class="n">Acumulado</th><th>Consumo do orçado</th><th class="n">Saldo</th><th>Situação</th></tr></thead><tbody>${html}</tbody></table></div>`;
 }
-function detalheHtml(r){
-  const o = obra(), M = S.mes;
-  const its = itensDe(o, M).filter(i=>i.cat===r.c.id);
+function detalheHtml(r, k){
+  const o = obra(), M = S.mes, n = k?.nivel || 4;
+  const its = itensDe(o, M).filter(i=>idNo(o, i.cat, i.serv, n)===r.c.id);
   const moOrc=+r.c.mo||0, matOrc=(+r.c.mat||0)+(+r.c.eq||0);
   return `<div class="det-grid">
     <div><h4>Últimos 12 meses</h4><div class="chart" id="ch-det"></div></div>
@@ -1512,7 +1629,7 @@ function detalheHtml(r){
     </div></div>
     <div><h4>Lançamentos de ${ymLabel(M)}</h4><p class="note">${its.length} lançamento(s) somando <b>${money(its.reduce((s,i)=>s+i.val,0))}</b>.</p>
     ${its.length?`<button class="btn sec" data-vermes="${esc(r.c.id)}" style="margin-top:8px">Conferir lançamentos do mês</button>`:''}</div>
-  </div>`;
+  </div>${k?filhosHtml(o, r, k):''}`;
 }
 function drawDetalhe(k){
   const el = document.getElementById('ch-det'); if (!el) return;
@@ -1525,12 +1642,12 @@ function catMesHtml(o, k){
   const q = norm(UI.buscaMes);
   const match = i => !q || norm(i.forn).includes(q) || norm(i.item).includes(q) || String(i.doc).includes(q);
   const porCat = {};
-  its.forEach(i => { (porCat[i.cat] ??= []).push(i); });
+  const nv = k.nivel || 4; its.forEach(i => { (porCat[idNo(o, i.cat, i.serv, nv)] ??= []).push(i); });
   const rowsK = Object.fromEntries(k.rows.map(r=>[r.c.id, r]));
   let cats = Object.keys(porCat).map(id => { const all = porCat[id]; const vis = all.filter(match); return { id, r: rowsK[id], nome: rowsK[id]?.c.nome || id, all, vis, total: all.reduce((s,i)=>s+i.val,0), mo: all.filter(i=>i.mo).reduce((s,i)=>s+i.val,0) }; })
     .filter(c => c.vis.length && Math.abs(c.total) > 0.005);
   cats.sort(UI.ordemMes==='nome' ? (a,b)=>a.nome.localeCompare(b.nome) : (a,b)=>b.total-a.total);
-  const totMes = Object.values(porCat).flat().filter(i=>!(rowsK[i.cat]?.c.fora)).reduce((s,i)=>s+i.val,0);
+  const totMes = its.filter(i=>!(catMapa(o)[i.cat]?.fora)).reduce((s,i)=>s+i.val,0);
   const sobra = k.cheque - totMes, mx = Math.max(1, ...cats.map(c=>Math.abs(c.total)));
   const nLanc = its.length;
   if (!nLanc) return `<div class="panel empty"><p class="note">Nenhum lançamento em ${ymLabel(M)}. Importe o arquivo do ERP em Lançar mês.</p><a class="btn" href="#lancar">Lançar ${ymLabel(M)}</a></div>`;
@@ -1538,7 +1655,7 @@ function catMesHtml(o, k){
   <section class="kpis k4" style="margin-top:4px">
     ${tile(`Gasto de ${ymLabel(M)}`, money(totMes), `${pct(totMes/(k.orcExe||1),2)} do executivo`)}
     ${tile('Cheque mensal', money(k.cheque), `<b class="${sobra<0?'t-crit':'t-good'}">${sobra<0?'Passou':'Sobrou'} ${money(Math.abs(sobra))}</b>`)}
-    ${tile('Categorias com gasto', Object.keys(porCat).length, `de ${k.rows.length}`)}
+    ${tile(nv===4?'Categorias com gasto':'Itens com gasto', Object.keys(porCat).length, `de ${k.rows.length}${nv===4?'':' no nível '+nv}`)}
     ${tile('Lançamentos', nLanc.toLocaleString('pt-BR'), `${new Set(its.map(i=>i.forn)).size} fornecedores`)}
   </section>
   <div class="searchrow">
@@ -1580,8 +1697,8 @@ function fornIndex(o){
 function fornResumo(nome, catId){
   const o = obra(), M = S.mes, h = fornIndex(o)[nome] || {};
   const ms = Object.keys(h).filter(m=>m<=M).sort(); if (!ms.length) return '';
-  const tot = ms.reduce((s,m)=>s+h[m].v,0), noCat = ms.reduce((s,m)=>s+(h[m].cats[catId]||0),0);
-  const outras = {}; ms.forEach(m => { for (const c in h[m].cats) if (c!==catId) outras[c] = (outras[c]||0) + h[m].cats[c]; });
+  const tot = ms.reduce((s,m)=>s+h[m].v,0), noCat = ms.reduce((s,m)=>s+Object.entries(h[m].cats).filter(([c])=>c.startsWith(catId)).reduce((a,[,v])=>a+v,0),0);
+  const outras = {}; ms.forEach(m => { for (const c in h[m].cats) if (!c.startsWith(catId)) outras[c] = (outras[c]||0) + h[m].cats[c]; });
   const nOut = Object.keys(outras).length;
   const serie = monthsBetween(addMonths(M,-11), M), mx = Math.max(1, ...serie.map(m=>Math.abs(h[m]?.v||0)));
   const fmtK = v => { const a = Math.abs(v); return a>=1e6 ? nf1.format(v/1e6)+'mi' : (a>=1e3 ? Math.round(v/1e3) : (a? '<1' : '')); };
@@ -1608,7 +1725,7 @@ function lancHtml(c, list){
       return `<div class="fitem ${open?'open':''}"><button class="fi-head" data-fa="${esc(key)}" aria-expanded="${open}">
         <span class="fi-l"><b class="fi-n">${esc(x.f)}</b><span class="fi-s">${x.is.length} lançamento(s) · ${tipo} · ${pct(x.tot/(totCat||1),0)} da categoria</span><span class="mc-bar"><span style="width:${(Math.abs(x.tot)/mx*100).toFixed(1)}%"></span></span></span>
         <span class="fi-r"><b>${money(x.tot)}</b><span class="chev" aria-hidden="true">${open?'▴':'▾'}</span></span></button>
-        ${open?`<div class="fi-body">${fornResumo(x.f, c.id)}<span class="fi-sec">Lançamentos de ${ymLabel(S.mes)} nesta categoria</span>${x.is.map(itemRow).join('')}</div>`:''}</div>`; }).join('')}</div></div>`;
+        ${open?`<div class="fi-body">${fornResumo(x.f, c.id.replace('·','').slice(0,11))}<span class="fi-sec">Lançamentos de ${ymLabel(S.mes)} nesta categoria</span>${x.is.map(itemRow).join('')}</div>`:''}</div>`; }).join('')}</div></div>`;
 }
 
 /* ---------- LANÇAR MÊS ---------- */
@@ -1845,13 +1962,13 @@ function renderEfetivo(el){
 
 /* ---------- MÊS A MÊS ---------- */
 function renderHistorico(el){
-  const o = obra(), M = S.mes, k = calc(o, M);
+  const o = obra(), M = S.mes, k = calc(o, M), kn = kNivel(o, M, k);
   const ms = monthsBetween(addMonths(M,-11), M);
-  const rows = k.rows.filter(r=>!r.c.fora && (r.acum || r.orc>1)).sort((a,b)=>a.c.id.localeCompare(b.c.id));
+  const rows = kn.rows.filter(r=>!r.c.fora && (r.acum || r.orc>1)).sort((a,b)=>a.c.id.localeCompare(b.c.id));
   if (!UI.histCat || !rows.find(r=>r.c.id===UI.histCat)) UI.histCat = (rows.slice().sort((a,b)=>a.saldo-b.saldo)[0]||{c:{}}).c.id;
-  let mx = 0; rows.forEach(r=>ms.forEach(m=>{ const v=(k.A[m]||{})[r.c.id]; if(v) mx=Math.max(mx,v[0]+v[1]); }));
+  let mx = 0; rows.forEach(r=>ms.forEach(m=>{ const v=(kn.A[m]||{})[r.c.id]; if(v) mx=Math.max(mx,v[0]+v[1]); }));
   const cell = v => { if (!v) return `<td class="c muted">·</td>`; const a = Math.max(0.06, Math.min(1, Math.sqrt(v/mx))); return `<td class="c" style="background:color-mix(in oklab, var(--accent) ${Math.round(a*70)}%, transparent);${a>0.55?'color:var(--accent-ink)':''}" title="${money(v,false)}">${axisMoney(v)}</td>`; };
-  const totMes = ms.map(m=>rows.reduce((s,r)=>{ const v=(k.A[m]||{})[r.c.id]; return s+(v?v[0]+v[1]:0); },0));
+  const totMes = ms.map(m=>rows.reduce((s,r)=>{ const v=(kn.A[m]||{})[r.c.id]; return s+(v?v[0]+v[1]:0); },0));
   const rc = rows.find(r=>r.c.id===UI.histCat);
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · até ${ymLabel(M)}</span><h2 class="sec">Mês a mês</h2></div>
@@ -1866,9 +1983,9 @@ function renderHistorico(el){
     <div class="chart" id="ch-av"></div>
   </section>
   <section class="panel" style="padding:0;overflow:hidden">
-    <div style="padding:16px 16px 0"><h3 class="sub">Mapa de gastos</h3><p class="lead">Últimos 12 meses por categoria. Cor mais forte = gasto maior. Toque no mês para abrir o painel dele.</p></div>
+    <div style="padding:16px 16px 0"><h3 class="sub">Mapa de gastos</h3><p class="lead">Últimos 12 meses por ${kn.legado||kn.nivel===4?'categoria':'item do nível '+kn.nivel}. Cor mais forte = gasto maior. Toque no mês para abrir o painel dele.</p>${nivelSeg(o)}</div>
     <div class="tbl-wrap" style="border:0;border-top:1px solid var(--line);border-radius:0;margin-top:12px"><table class="heat"><thead><tr><th>Categoria</th>${ms.map(m=>`<th class="n"><button class="chip" style="padding:2px 8px" data-goto="${m}">${ymLabel(m)}</button></th>`).join('')}<th class="n">Acum.</th><th class="n">% orç.</th></tr></thead><tbody>
-    ${rows.map(r=>`<tr><td><div class="catname">${esc(r.c.nome)}</div></td>${ms.map(m=>{ const v=(k.A[m]||{})[r.c.id]; return cell(v?v[0]+v[1]:0); }).join('')}<td class="c">${money(r.acum)}</td><td class="c ${r.st==='crit'?'t-crit':''}">${isFinite(r.p)?pct(r.p,0):'—'}</td></tr>`).join('')}
+    ${rows.map(r=>`<tr><td><div class="catname">${esc(r.c.nome)}</div></td>${ms.map(m=>{ const v=(kn.A[m]||{})[r.c.id]; return cell(v?v[0]+v[1]:0); }).join('')}<td class="c">${money(r.acum)}</td><td class="c ${r.st==='crit'?'t-crit':''}">${isFinite(r.p)?pct(r.p,0):'—'}</td></tr>`).join('')}
     <tr class="total"><td><b>Total do mês</b></td>${totMes.map(v=>`<td class="c ${v>k.cheque?'t-crit':'t-good'}"><b>${axisMoney(v)}</b></td>`).join('')}<td class="c"><b>${money(k.incorrido)}</b></td><td class="c"><b>${pct(k.incorrido/(k.orcExe||1),0)}</b></td></tr>
     <tr><td class="muted">Cheque mensal</td>${ms.map(()=>`<td class="c muted">${axisMoney(k.cheque)}</td>`).join('')}<td></td><td></td></tr>
     </tbody></table></div>
@@ -2078,9 +2195,10 @@ function renderAnalise(el){
   const temIns = !!o.insumos?.itens?.length, temV2 = temItensV2(o);
   if (!temIns || !temV2) { el.innerHTML = podeEditar() ? anSetupHtml(o, temIns, temV2) : `<div class="panel empty"><h2 class="sec">Análise de custos</h2><p class="note">Esta obra ainda não tem o orçamento por insumo carregado. Peça a quem administra o app para ativar a análise.</p></div>`; return; }
   const A = calcAnalise(o, M), catNome = Object.fromEntries(o.categorias.map(c=>[c.id, c.nome]));
-  const fc = UI.anCat || 'todas', ef = UI.anEf || 'tudo';
+  const fc = UI.anCat || 'todas', ef = UI.anEf || 'tudo', nA = temNiveis(o) ? nivelAtual(o, 4) : 4;
+  const noA = cat => idNo(o, cat, '', nA), nomeA = id => nomeNo(o, id, nA);
   const abas = AN_ABAS[ef]; let aba = UI.anAba; if (!abas.some(a=>a[0]===aba)) aba = abas[0][0];
-  const sel = A.linhas.filter(L => (fc==='todas' || L.cat===fc) && L.tipo!=='nada');
+  const sel = A.linhas.filter(L => (fc==='todas' || noA(L.cat)===fc) && L.tipo!=='nada');
   const ok = sel.filter(L=>L.tipo==='ok');
   const total = sel.reduce((s,L)=>s+L.vr,0);
   const cob = { ok:0, vb:0, gen:0, conf:0, sem:0 }; sel.forEach(L => cob[anGrupo(L.tipo)] += L.vr);
@@ -2105,14 +2223,14 @@ function renderAnalise(el){
   // categorias (só na visão geral)
   let catsHtml = '';
   if (fc==='todas') {
-    const pc = {}; ok.forEach(L => { const c = (pc[L.cat] ??= { e:0, s:0 }); if (ef==='tudo') { c.e += pos(L); c.s += neg(L); } else { const x = e(L); if (x>0) c.e += x; else c.s += x; } });
-    const cats = Object.entries(pc).map(([id,x])=>({ id, nome:catNome[id]||id, ...x })).filter(x=>x.e>1000).sort((a,b)=>b.e-a.e);
+    const pc = {}; ok.forEach(L => { const c = (pc[noA(L.cat)] ??= { e:0, s:0 }); if (ef==='tudo') { c.e += pos(L); c.s += neg(L); } else { const x = e(L); if (x>0) c.e += x; else c.s += x; } });
+    const cats = Object.entries(pc).map(([id,x])=>({ id, nome:nomeA(id), ...x })).filter(x=>x.e>1000).sort((a,b)=>b.e-a.e);
     const mx = Math.max(1, ...cats.map(c=>Math.max(c.e,-c.s)));
     const linhaC = c => `<button class="an-cat" data-ancat="${esc(c.id)}"><span class="an-cn">${esc(c.nome)}</span>
       <span class="an-div"><span class="an-l"><i style="width:${(-c.s/mx*100).toFixed(1)}%"></i></span><span class="an-r"><i style="width:${(c.e/mx*100).toFixed(1)}%"></i></span></span>
       <span class="an-v t-crit">+${money(c.e)}</span></button>`;
     const pior = cats.slice(0,10), melhor = [];
-    catsHtml = cats.length ? `<section class="panel"><div class="ph"><h3 class="sub">Por categoria · ${{tudo:'preço + quantidade',preco:'só preço',qtd:'só quantidade'}[ef]}</h3>${legendHtml([{name:'Economia',color:'var(--good)'},{name:'Estouro',color:'var(--crit)'}])}</div>
+    catsHtml = cats.length ? `<section class="panel"><div class="ph"><h3 class="sub">${nA===4?'Por categoria':'Por nível '+nA} · ${{tudo:'preço + quantidade',preco:'só preço',qtd:'só quantidade'}[ef]}</h3>${legendHtml([{name:'Economia',color:'var(--good)'},{name:'Estouro',color:'var(--crit)'}])}</div>
       <div class="an-cats">${pior.map(linhaC).join('')}${melhor.length?`<div class="an-sep">Maiores saldos positivos</div>${melhor.map(linhaC).join('')}`:''}</div>
       <p class="note muted">Ordenado pelo estouro (vermelho, valor à direita). Em verde, as economias da mesma categoria${ef==='preco'?'':' (as de quantidade são prováveis)'}. Toque para ver os insumos.</p></section>` : '';
   }
@@ -2131,10 +2249,11 @@ function renderAnalise(el){
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · acumulado até ${ymLabel(M)}</span><h2 class="sec">Análise de custos</h2></div>
   <div class="toolbar">
-    <select id="an-cat" aria-label="Categoria" style="flex:1 1 260px"><option value="todas">Todas as categorias</option>${o.categorias.filter(c=>!c.fora).map(c=>`<option value="${esc(c.id)}"${fc===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select>
+    <select id="an-cat" aria-label="Filtrar" style="flex:1 1 260px"><option value="todas">${nA===4?'Todas as categorias':'Todos os itens do nível '+nA}</option>${[...new Set(o.categorias.filter(c=>!c.fora && orcOf(c)>1).map(c=>noA(c.id)))].sort().map(id=>`<option value="${esc(id)}"${fc===id?' selected':''}>${esc(nomeA(id))}</option>`).join('')}</select>
   </div>
+  ${nivelSeg(o, 4)}
   <section class="panel an-conc">
-    <h3 class="sub">Conclusões${fc!=='todas'?' · '+esc(catNome[fc]||fc):''}</h3>
+    <h3 class="sub">Conclusões${fc!=='todas'?' · '+esc(nomeA(fc)):''}</h3>
     <ol>${conc.map((c,i)=>`<li><button class="an-ci" data-anconc="${i}" data-ef="${c.ef||''}" data-aba="${c.aba}"><span>${c.txt}</span><span class="an-go" aria-hidden="true">›</span></button></li>`).join('')}</ol>
     <div class="an-cob" role="img" aria-label="Composição do gasto analisado">${AN_COB.map(([k,n,c])=>cob[k]>0?`<i style="flex:${cob[k]};background:${c}" title="${n}: ${money(cob[k])}"></i>`:'').join('')}</div>
     <div class="an-cobl">${AN_COB.map(([k,n,c,d])=>cob[k]>1?`<button class="an-cb" data-ancob="${k}" title="${esc(d)}"><i style="background:${c}"></i>${n} <b>${pct(cob[k]/(total||1),0)}</b></button>`:'').join('')}</div>
@@ -2156,7 +2275,7 @@ function renderAnalise(el){
   </div>
   <details class="panel an-como"><summary>Como a análise é feita</summary>
     <ul class="note">
-      <li>Cada insumo do orçamento é comparado com as compras do ERP do mesmo insumo, <b>na mesma categoria</b>, somando todos os serviços dela.</li>
+      <li>Cada insumo do orçamento é comparado com as compras do ERP do mesmo insumo, <b>na mesma categoria (nível 4)</b>, somando todos os serviços dela. O seletor de nível só agrupa o resultado; o nível 5 aparece ao abrir cada insumo, na quebra por serviço.</li>
       <li><b>Preço</b> = (preço médio pago − preço orçado) × quantidade comprada. <b>Quantidade</b> = (quantidade comprada − orçada) × preço orçado. A soma dos dois é a diferença em R$.</li>
       <li>Quantidade só conta como estouro quando <b>já passou</b> do orçado (é certo, só aumenta). Abaixo do orçado só conta como economia se o insumo está <b>sem compras há ${AN.PARADO} meses</b>.</li>
       <li>Diferenças de até ${pct(AN.TOL_P,0)} (em preço ou em quantidade) são tratadas como variação normal e não entram nos totais.</li>
@@ -2246,7 +2365,7 @@ document.addEventListener('click', e => {
   if (t.id==='pd-check') { const u = NUVEM.user; NUVEM.user = null; entrar(u); return; }
   if (t.dataset.orcmodo) { UI.orcImp.modo = t.dataset.orcmodo; keepScroll(render); return; }
   if (t.id==='orc-cancel') { UI.orcImp = null; keepScroll(render); return; }
-  if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats, insOk(UI.orcImp)); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
+  if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats, insOk(UI.orcImp), UI.orcImp.estrutura); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
   if (t.id==='sair') { NUVEM.sb?.auth.signOut(); return; }
   if (t.id==='imp-eth') { escolherDadosIniciais(); return; }
   if (t.id==='btn-nova2') { abrirNovaObra(); return; }
@@ -2261,6 +2380,8 @@ document.addEventListener('click', e => {
   if (t.dataset.fa) { const k=t.dataset.fa; UI.fornAberto.has(k)?UI.fornAberto.delete(k):UI.fornAberto.add(k); keepScroll(render); return; }
   if (t.dataset.vermes) { UI.catModo='mes'; UI.abertoMes=t.dataset.vermes; UI.buscaMes=''; render(); setTimeout(()=>document.querySelector(`[data-mid="${CSS.escape(t.dataset.vermes)}"]`)?.scrollIntoView({block:'start'}),30); return; }
   if (t.dataset.f) { UI.filtro = t.dataset.f; keepScroll(render); return; }
+  if (t.dataset.niv) { UI.nivel = +t.dataset.niv; UI.gNivel = null; UI.aberto = null; UI.abertoMes = null; UI.anCat = 'todas'; keepScroll(render); return; }
+  if (t.dataset.desce) { UI.nivel = +t.dataset.desce; UI.gNivel = null; UI.aberto = t.dataset.alvo; UI.filtro = 'todos'; UI.busca = ''; render(); setTimeout(()=>document.querySelector(`[data-id="${CSS.escape(t.dataset.alvo)}"]`)?.scrollIntoView({block:'center'}),30); return; }
   if (t.id==='agrupar') { UI.agrupar = !UI.agrupar; keepScroll(render); return; }
   if (t.matches('tr.row,.ccard')) { UI.aberto = UI.aberto===t.dataset.id ? null : t.dataset.id; keepScroll(render); return; }
   if (t.dataset.goto) { S.mes = t.dataset.goto; save(); location.hash='#painel'; return; }
@@ -2296,7 +2417,7 @@ document.addEventListener('click', e => {
 document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; }, true);
 document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
-  if (e.target.id==='busca') { UI.busca = e.target.value; const k = calc(obra(), S.mes); document.getElementById('cat-list').innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); }
+  if (e.target.id==='busca') { UI.busca = e.target.value; const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); document.getElementById('cat-list').innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); }
   if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('busca-mes'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
   if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 60; clearTimeout(UI.anT); UI.anT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('an-busca'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
   if (e.target.dataset.ef) { setEf(e.target.dataset.ef, parseInt(e.target.value)||0); }
@@ -2307,6 +2428,7 @@ document.addEventListener('change', e => {
   if (t.id==='ordem') { UI.ordem = t.value; keepScroll(render); }
   if (t.id==='ordem-mes') { UI.ordemMes = t.value; keepScroll(render); }
   if (t.id==='an-cat') { UI.anCat = t.value; UI.anLim = 60; UI.anAberto = null; keepScroll(render); }
+  if (t.id==='agrupa-niv') { UI.gNivel = +t.value; keepScroll(render); }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
   if (t.id==='arq-orc' && t.files[0]) lerOrcamento(t.files[0]);
@@ -2338,7 +2460,7 @@ document.addEventListener('submit', e => {
     const nome = v('on-nome').trim(), id = 'o'+Date.now().toString(36), base = obra() || { funcoes:[] };
     if (Object.values(S.obras).some(x=>norm(x.nome)===norm(nome))) { toast('Já existe uma obra com esse nome.'); return; }
     const nova = { id, nome, inicio:v('on-ini')+'-01', fim:v('on-fim')+'-28', orcViab:parseNum(v('on-viab')), categorias:[], gasto:{}, itens:{}, avancos:{}, ajustes:[], funcoes:(base.funcoes||[]).filter(f=>f.ativo).map(f=>({...f})), empreiteiros:[], efetivo:{} };
-    aplicarOrcamento(nova, UI.orcImp.cats, insOk(UI.orcImp)); S.obras[id] = nova; S.atual = id; S.mes = null; UI.orcImp = null; UI.efMes = null;
+    aplicarOrcamento(nova, UI.orcImp.cats, insOk(UI.orcImp), UI.orcImp.estrutura); S.obras[id] = nova; S.atual = id; S.mes = null; UI.orcImp = null; UI.efMes = null;
     save(); render(); toast('Obra '+nome+' criada com '+nova.categorias.length+' categorias.'); return; }
   if (f.id==='f-nova') {
     const id = 'o'+Date.now().toString(36), base = obra() || { categorias:[], funcoes:[] };
@@ -2369,13 +2491,15 @@ function lerOrcamento(file){
       const cNiv = ix('nivel'), cCod = ix('cod. estruturado'), cDesc = ix('descricao'), cTot = ix('total');
       const cEq = ix('valor equipamento'), cMo = ix('valor servico'), cMat = ix('valor material'), cTr = ix('valor transporte');
       const cIns = ix('insumo'), cUn = ix('unid.'), cQi = ix('qtde. insumo'), cCu = ix('custo insumo');
-      const serv = {}, cods = {}, itens = [], somaIns = {}; let sv = null;
+      const serv = {}, cods = {}, itens = [], somaIns = {}, estrutura = {}; let sv = null;
+      const r2 = v => Math.round(v*100)/100;
       let titulo = ''; for (let i=0;i<h;i++) { const t = rows[i].find(x=>String(x).trim()); if (t) { titulo = String(t).trim(); break; } }
       const nomeObra = /^planilha or[cç]ament[aá]ria/i.test(titulo) ? titulo.replace(/^planilha or[cç]ament[aá]ria\s*[-–:]\s*/i,'').trim() : '';
       const cats = []; let totalObra = 0;
       for (let i=h+1;i<rows.length;i++) {
         const r = rows[i], cod = String(r[cCod]||'').trim(), niv = +r[cNiv];
         if (niv===1 && !totalObra) totalObra = parseNum(r[cTot]);
+        if ((niv===2 || niv===3 || niv===5) && cod.length===NIV_LEN[niv]) { estrutura[cod] = [niv, String(r[cDesc]||cod).trim().toUpperCase(), r2(parseNum(r[cEq])), r2(parseNum(r[cMo])), r2(parseNum(r[cMat]) + (cTr>=0 ? parseNum(r[cTr]) : 0))]; continue; }
         if (cIns>=0) {   // serviço = código terminado em 3 dígitos (6 ou 7 níveis, conforme a obra); insumo = linha sem código com "Insumo"
           if (/^\d{2}(\.\d{2}){4,}\.\d{3}$/.test(cod)) { sv = cod; serv[cod] = String(r[cDesc]||'').trim(); continue; }
           const ci = parseInt(r[cIns]);
@@ -2393,7 +2517,7 @@ function lerOrcamento(file){
         insDiv = cats.filter(c => Math.abs((somaIns[c.id]||0) - c.tot) > 1).map(c => ({ nome:c.nome, cat:c.tot, ins:somaIns[c.id]||0 }));
         const d = new Date(); insumos = { fonte: file.name+' · importado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(), serv, cods, itens };
       }
-      UI.orcImp = { arquivo:file.name, nomeObra, cats, soma, totalObra, modo: view()==='analise' ? 'atual' : null, insumos, insDiv };
+      UI.orcImp = { arquivo:file.name, nomeObra, cats, soma, totalObra, modo: view()==='analise' ? 'atual' : null, insumos, insDiv, estrutura };
     } catch(e) { UI.orcImp = { erro:'Não consegui ler o arquivo: '+e.message }; }
     render(); setTimeout(()=>document.getElementById('orc-imp')?.scrollIntoView({block:'start'}),30);
   };
@@ -2409,7 +2533,8 @@ function orcImpHtml(){
   const confere = I.totalObra ? Math.abs(I.totalObra - I.soma) < 1 : true;
   const outraObra = I.nomeObra && o && norm(I.nomeObra) !== norm(o.nome);
   return `<div class="steps" style="gap:12px">
-    <p class="note"><b>${esc(I.arquivo)}</b>${I.nomeObra?` · obra <b>${esc(I.nomeObra)}</b>`:''} · ${I.cats.length} categorias · total <b>${money(I.soma,false)}</b></p>
+    <p class="note"><b>${esc(I.arquivo)}</b>${I.nomeObra?` · obra <b>${esc(I.nomeObra)}</b>`:''} · ${I.cats.length} categorias · total <b>${money(I.soma,false)}</b>${Object.keys(I.estrutura||{}).length?` · níveis: ${[2,3,5].map(n=>[n, Object.values(I.estrutura).filter(v=>v[0]===n).length]).filter(x=>x[1]).map(([n,c])=>`${c} no nível ${n}`).join(', ')}`:''}</p>
+    ${o && estNovo(o, I) && !temNiveis(o) && I.modo==='atual'?`<div class="banner" style="background:var(--good-bg)">Este arquivo traz os níveis 2, 3 e 5. Aplicando, as abas Categorias, Mês a mês e Análise ganham o seletor de nível.</div>`:''}
     ${confere?`<div class="banner" style="background:var(--good-bg)">A soma das categorias bate com o total da obra no relatório.</div>`:`<div class="banner">Atenção: a soma das categorias (${money(I.soma,false)}) não bate com o total do relatório (${money(I.totalObra,false)}). Confira o arquivo.</div>`}
     ${I.insumos?(I.insDiv.length?`<div class="banner" style="flex-direction:column;align-items:stretch"><b>O detalhe por insumo não fecha em ${I.insDiv.length} categoria(s).</b> A análise de preço × quantidade fica desligada para este arquivo. ${I.insDiv.slice(0,6).map(x=>`<span>${esc(x.nome)}: categoria ${money(x.cat,false)}, insumos ${money(x.ins,false)}</span>`).join('')}</div>`:`<div class="banner" style="background:var(--good-bg)">Detalhe por insumo conferido: ${I.insumos.itens.length.toLocaleString('pt-BR')} insumos em ${Object.keys(I.insumos.serv).length.toLocaleString('pt-BR')} serviços fecham com cada categoria.</div>`):''}
     ${outraObra?`<div class="banner">Este orçamento é da obra <b>${esc(I.nomeObra)}</b>, e você está em <b>${esc(o.nome)}</b>. Para uma obra nova, use <b>Criar obra nova</b>.</div>`:''}
@@ -2426,7 +2551,7 @@ function orcImpHtml(){
       </ul>
       ${mud.length?`<div class="tbl-wrap" style="max-height:240px;overflow:auto"><table><thead><tr><th>Categoria</th><th class="n">No app</th><th class="n">No arquivo</th><th class="n">Diferença</th></tr></thead><tbody>${mud.map(c=>{ const a=orcOf(atual[c.id]), b=c.eq+c.mo+c.mat; return `<tr><td>${esc(c.nome)}</td><td class="n">${money(a)}</td><td class="n">${money(b)}</td><td class="n ${b>a?'t-warn':'t-good'}">${signed(b-a)}</td></tr>`; }).join('')}</tbody></table></div>`:''}
       ${saem.length?`<p class="note">Fora do arquivo: ${saem.map(c=>esc(c.nome)).join(', ')}. ${saem.some(c=>usados.has(c.id))?'As que já têm gasto ficam no app com orçamento zerado; as demais são removidas.':'Elas serão removidas.'}</p>`:''}
-      ${!novas.length && !mud.length && !saem.length && !insNovo(o, I)?`<div class="banner" style="background:var(--good-bg)">O orçamento do app já está igual ao arquivo.</div>`:`<div class="toolbar"><button class="btn" id="orc-aplicar">Aplicar orçamento em ${esc(o.nome)}</button><button class="btn sec" id="orc-cancel">Cancelar</button></div>`}`:''}
+      ${!novas.length && !mud.length && !saem.length && !insNovo(o, I) && !estNovo(o, I)?`<div class="banner" style="background:var(--good-bg)">O orçamento do app já está igual ao arquivo.</div>`:`<div class="toolbar"><button class="btn" id="orc-aplicar">Aplicar orçamento em ${esc(o.nome)}</button><button class="btn sec" id="orc-cancel">Cancelar</button></div>`}`:''}
     ${I.modo==='nova'?`
       <form id="f-orc-nova" class="grid-form">
         <div class="field wide"><label for="on-nome">Nome da obra</label><input id="on-nome" required value="${esc(I.nomeObra||'')}"></div>
@@ -2438,10 +2563,12 @@ function orcImpHtml(){
       <p class="note muted">Início e término definem o prazo e o cheque mensal. A viabilidade pode ser preenchida depois.</p>`:''}
   </div>`;
 }
+function estNovo(o, I){ return !!I.estrutura && Object.keys(I.estrutura).length > 0 && JSON.stringify(o.estrutura||{}) !== JSON.stringify(I.estrutura); }
 function insOk(I){ return I.insumos && !I.insDiv.length ? I.insumos : null; }
 function insNovo(o, I){ const n = insOk(I); if (!n) return false; const a = o.insumos; if (!a?.itens) return true; return a.itens.length !== n.itens.length || JSON.stringify(a.itens) !== JSON.stringify(n.itens); }
-function aplicarOrcamento(o, cats, ins){
+function aplicarOrcamento(o, cats, ins, est){
   if (ins) o.insumos = ins;
+  if (est && Object.keys(est).length) o.estrutura = est;
   const usados = new Set(); for (const m in o.gasto||{}) for (const c in o.gasto[m]) usados.add(c);
   const antes = Object.fromEntries((o.categorias||[]).map(c=>[c.id,c]));
   const novo = cats.map(c => ({ id:c.id, nome:c.nome, eq:c.eq, mo:c.mo, mat:c.mat, fora: antes[c.id] ? !!antes[c.id].fora : /INCORPORA/i.test(c.nome) }));
