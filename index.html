@@ -623,6 +623,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .fil.h{cursor:default;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);order:-1;padding-top:0}
 .fil.h span{text-align:right}
 @media (max-width:720px){.fil{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}.fil span:nth-child(2),.fil span:nth-child(3){display:none}.fil.h{display:none}.niv-bar .seg{width:100%;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}.seg.niv button{justify-content:center;padding:7px 2px}}
+@media (max-width:720px){input,select,textarea{font-size:16px!important}}
 </style>
 </head>
 <body>
@@ -676,7 +677,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.5 · 28/10';
+const APP_VERSAO = 'v2.6 · 29/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1662,6 +1663,7 @@ function catMesHtml(o, k){
     <input id="busca-mes" type="search" placeholder="Buscar fornecedor, item ou documento" value="${esc(UI.buscaMes)}" aria-label="Buscar nos lançamentos do mês">
     <select id="ordem-mes" aria-label="Ordenar"><option value="valor"${UI.ordemMes!=='nome'?' selected':''}>Maior gasto primeiro</option><option value="nome"${UI.ordemMes==='nome'?' selected':''}>Nome</option></select>
   </div>
+  <div id="mes-res" style="display:flex;flex-direction:column;gap:12px">
   ${q?(cats.length?`<p class="note">${cats.reduce((s,c)=>s+c.vis.length,0)} lançamento(s) encontrados em ${cats.length} categoria(s), somando <b>${money(cats.reduce((s,c)=>s+c.vis.reduce((a,i)=>a+i.val,0),0))}</b>. Outros meses: ${outrosMeses(o, M, match)}</p>`:`<div class="banner" style="flex-direction:column;align-items:flex-start;gap:8px"><span>Nada encontrado em ${ymLabel(M)} para “${esc(UI.buscaMes)}”.</span>${outrosMeses(o, M, match, true)}</div>`):''}
   <div class="cards">${cats.map(c => {
     const aberto = UI.abertoMes===c.id || !!q;
@@ -1673,7 +1675,7 @@ function catMesHtml(o, k){
         <div class="mc-r"><b>${money(c.total)}</b><span class="muted">${pct(c.total/(totMes||1),1)} do mês</span>${c.r?`<span class="pill ${st}" title="situação no acumulado">${ST_TXT[st]}</span>`:''}</div>
       </button>
       ${aberto?lancHtml(c, c.vis):''}
-    </div>`; }).join('')}</div>`;
+    </div>`; }).join('')}</div></div>`;
 }
 
 /* busca em todos os meses: lista onde o termo aparece */
@@ -2269,9 +2271,11 @@ function renderAnalise(el){
     ${aba==='conferir'?`<div class="toolbar">${[['', 'Tudo'],...AN_COB.filter(c=>c[0]!=='ok').map(c=>[c[0],c[1]])].map(([k,t])=>`<button class="chip" data-antipo="${k}" aria-pressed="${(UI.anTipo||'')===k}">${t}</button>`).join('')}</div>`:''}
     <p class="note">${aba==='conferir'?(AN_COB.find(c=>c[0]===UI.anTipo)?.[3]||'Gastos que não entram na separação preço × quantidade. Revisar a apropriação no ERP aumenta a confiabilidade.'):(AN_DIAG[aba]?.[2]||(aba==='estouro'?'Insumos com estouro de preço e/ou de quantidade (só o que já foi gasto).':'Insumos com economia de preço (confirmada) e/ou sobra de quantidade (provável).'))}</p>
     <input id="an-busca" type="search" placeholder="Buscar insumo, código ou fornecedor" value="${esc(UI.anBusca||'')}" aria-label="Buscar">
+    <div id="an-res" style="display:flex;flex-direction:column;gap:10px">
     <p class="note"><b>${nTot.toLocaleString('pt-BR')}</b> insumo(s) · ${aba==='conferir'?'gasto':'efeito'} <b class="${aba==='conferir'?'':soma>0?'t-crit':'t-good'}">${aba==='conferir'?money(soma):signed(soma)}</b>${nTot>lista.length?` · mostrando os ${lista.length} maiores`:''}</p>
     <div class="cards">${lista.map(L=>anCard(L, A, catNome, ef)).join('') || '<div class="panel empty"><p class="note">Nada nesta seleção.</p></div>'}</div>
     ${nTot>lista.length?`<button class="btn sec" id="an-mais" style="align-self:center">Mostrar mais</button>`:''}
+    </div>
   </div>
   <details class="panel an-como"><summary>Como a análise é feita</summary>
     <ul class="note">
@@ -2351,6 +2355,8 @@ let lastW = window.innerWidth, rzT;
 window.addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => { if (Math.abs(window.innerWidth-lastW) < 40) return; lastW = window.innerWidth; if (view()!=='orcamento' && view()!=='lancar') { const y=window.scrollY; render(); window.scrollTo(0,y); } }, 200); });
 mq.addEventListener?.('change', () => render());
 
+/* busca: refaz só a lista de resultados; o campo de busca não é recriado (sem perder o foco, sem pulo de tela) */
+function atualizarParte(fn, id){ const vivo = document.getElementById(id); if (!vivo) return; const tmp = document.createElement('div'); fn(tmp); const novo = tmp.querySelector('#'+id); if (novo) vivo.innerHTML = novo.innerHTML; }
 function keepScroll(fn){ const y = window.scrollY; fn(); window.scrollTo(0,y); }
 document.addEventListener('click', e => {
   if (e.target.closest('[data-stop]') && !e.target.closest('button')) return;
@@ -2417,9 +2423,9 @@ document.addEventListener('click', e => {
 document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; }, true);
 document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
-  if (e.target.id==='busca') { UI.busca = e.target.value; const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); document.getElementById('cat-list').innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); }
-  if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('busca-mes'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
-  if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 60; clearTimeout(UI.anT); UI.anT = setTimeout(()=>{ const pos=e.target.selectionStart; keepScroll(render); const i=document.getElementById('an-busca'); if(i){ i.focus(); try{i.setSelectionRange(pos,pos)}catch(_){} } }, 250); }
+  if (e.target.id==='busca') { UI.busca = e.target.value; clearTimeout(UI.bgT); UI.bgT = setTimeout(()=>{ const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); const l = document.getElementById('cat-list'); if (l) { l.innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); } }, 200); }
+  if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>atualizarParte(renderCategorias, 'mes-res'), 250); }
+  if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 40; clearTimeout(UI.anT); UI.anT = setTimeout(()=>atualizarParte(renderAnalise, 'an-res'), 250); }
   if (e.target.dataset.ef) { setEf(e.target.dataset.ef, parseInt(e.target.value)||0); }
 });
 document.addEventListener('change', e => {
