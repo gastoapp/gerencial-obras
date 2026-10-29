@@ -677,7 +677,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.6 · 29/10';
+const APP_VERSAO = 'v2.7 · 29/10';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
@@ -1773,7 +1773,7 @@ function impPreview(){
   return `<div style="display:flex;flex-direction:column;gap:12px">
     <p class="note"><b>${esc(I.nome)}</b> · ${I.linhas.toLocaleString('pt-BR')} lançamentos em ${ms.length} meses${I.ignoradas?` · ${I.ignoradas} linhas sem data ou código ignoradas`:''}.</p>
     ${(()=>{ const mud = ms.filter(m=>I.meses[m].mudou); const dt = mud.reduce((s,m)=>s+I.meses[m].total-Object.values((o.gasto||{})[m]||{}).reduce((a,v)=>a+v[0]+v[1],0),0);
-      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), somando <b>${signed(dt)}</b>.${I.completar?` Inclui ${I.completar} mês(es) só para completar os códigos de serviço e item usados na Análise (os valores não mudam).`:''} Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
+      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), ${Math.abs(dt)<1?'sem mudar o total':`somando <b>${signed(dt)}</b>`}.${I.completar?` Inclui ${I.completar} mês(es) só para completar os códigos de serviço e item usados na Análise (os valores não mudam).`:''}${I.conteudo?` Inclui ${I.conteudo} mês(es) com o mesmo total, mas com lançamentos diferentes (ex.: fornecedor, descrição ou quantidade); os valores não mudam.`:''} Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
     ${sem.length?`<div class="banner" style="flex-direction:column;align-items:stretch"><b>${sem.length} código(s) sem categoria no orçamento.</b> Escolha para onde vão; o app lembra nas próximas importações.
       ${sem.map(([cod,v])=>`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="mono">${esc(cod)}</span><span class="muted" style="flex:1;min-width:120px">${esc(v.fase||'')} · ${money(v.total)}</span><select data-map="${esc(cod)}" aria-label="Categoria para ${esc(cod)}" style="max-width:100%"><option value="">Ignorar</option>${o.categorias.map(c=>`<option value="${esc(c.id)}"${I.map[cod]===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select></div>`).join('')}</div>`:''}
     <div class="tbl-wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th><input type="checkbox" id="imp-all" aria-label="Marcar todos" ${ms.every(m=>I.sel[m])?'checked':''}></th><th>Mês</th><th class="n">No arquivo</th><th class="n">No app</th><th class="n">Diferença</th></tr></thead><tbody>
@@ -1822,7 +1822,17 @@ function lerArquivo(file){
       const nApp = m => (o.itens?.[m]?.i?.length || 0), totApp = m => Object.values((o.gasto||{})[m]||{}).reduce((s,v)=>s+v[0]+v[1],0);
       const semCod = m => nApp(m) > 0 && (o.itens[m].i[0].length < 13);
       I.completar = cCi>=0 && Object.keys(I.meses).filter(semCod).length;
-      Object.keys(I.meses).forEach(m => { I.meses[m].mudou = Math.abs(I.meses[m].total - totApp(m)) > 0.5 || I.meses[m].n !== nApp(m) || (cCi>=0 && semCod(m)); I.sel[m] = I.meses[m].mudou; });
+      // assinatura do conteúdo de cada mês: pega mudanças com o mesmo total (ex.: fornecedor que veio vazio e agora veio preenchido)
+      const hash = arr => { arr.sort(); let h = 5381; for (const t of arr) for (let i=0;i<t.length;i++) h = ((h<<5) + h + t.charCodeAt(i)) | 0; return h; };
+      const linha = (dia, doc, item, forn, qtd, un, val, mo, serv, ci) => [dia, doc, item, forn, +qtd||0, un, Math.round((+val||0)*100)/100, mo?1:0, serv||'', +ci||0].join('|');
+      const sigArq = {}; I.raw.filter(it => cats.has(it.niv) || I.map[it.niv]).forEach(it => (sigArq[it.ym] ??= []).push(linha(it.dia, it.doc, it.item, it.forn, it.qtd, it.un, it.val, it.mo, it.serv, it.ci)));
+      const sigApp = m => { const p = o.itens?.[m]; if (!p) return null; return hash(p.i.map(r => linha(r[1], r[2], p.s[r[3]]??'', p.s[r[4]]??'', r[5], p.s[r[6]]??'', r[8], r[9], r[11], r[12]))); };
+      I.conteudo = 0;
+      Object.keys(I.meses).forEach(m => {
+        const mm = I.meses[m], porValor = Math.abs(mm.total - totApp(m)) > 0.5 || mm.n !== nApp(m), porCod = cCi>=0 && semCod(m);
+        const porConteudo = !porValor && !porCod && nApp(m) > 0 && hash(sigArq[m]||[]) !== sigApp(m);
+        if (porConteudo) I.conteudo++;
+        mm.mudou = porValor || porCod || porConteudo; I.sel[m] = mm.mudou; });
       UI.imp = I;
     } catch(e) { UI.imp = { erro:'Não consegui ler o arquivo: '+e.message }; }
     render();
