@@ -657,12 +657,12 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .ins-body{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px}
 .ins-ren{align-self:flex-start}
 .ins-it{border:1px solid var(--line);border-radius:9px;background:var(--surface2);overflow:hidden}
-.ins-ih{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px;align-items:center;padding:10px 12px;cursor:pointer}
+.ins-ih{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,2fr);gap:14px;align-items:center;padding:10px 12px;cursor:pointer}
 .ins-ih:hover{background:color-mix(in oklab,var(--accent) 6%,var(--surface2))}
 .ins-ih:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .ins-nm{font-size:13.5px;font-weight:500;line-height:1.3;min-width:0}
 .ins-nm small{display:block;color:var(--muted);font:400 11px var(--mono);margin-top:2px}
-.ins-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ins-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .ins-g span{display:flex;flex-direction:column;gap:1px;min-width:0}
 .ins-g i{font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .ins-g b{font:500 13px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -690,6 +690,12 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .ins-sr{display:flex;flex-direction:column;align-items:flex-end}
 .ins-sr b{font:500 13.5px var(--mono);white-space:nowrap}.ins-sr small{font-size:11px;color:var(--muted)}
 .ins-sb{padding:0 10px 10px;display:flex;flex-direction:column;gap:8px}
+.ins-fora{display:flex;flex-direction:column;border:1px solid color-mix(in oklab,var(--warn) 40%,var(--line));border-radius:8px;padding:8px 10px 4px;margin:4px 0 6px;background:color-mix(in oklab,var(--warn) 6%,transparent)}
+.ins-fora .h4{color:var(--warn)}
+.ins-fp{font-style:normal;color:var(--warn)}
+.ins-tag{font-style:normal;font-size:10.5px;font-weight:600;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.ins-tag.crit{background:var(--crit-bg);color:var(--crit)}.ins-tag.good{background:var(--good-bg);color:var(--good)}
+.ins-cr span small{display:block}
 </style>
 </head>
 <body>
@@ -745,7 +751,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.2 · 31/10';
+const APP_VERSAO = 'v3.3 · 31/10';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2150,6 +2156,7 @@ function calcInsumos(o, M){
       const desc = String(p.s[r[3]] ?? '').trim();
       let un = unN(p.s[r[6]]), qtd = +r[5]||0; const val = +r[8]||0;
       if (un==='TON') { un = 'KG'; qtd *= 1000; } else if (un==='MIL') { un = 'UN'; qtd *= 1000; }   // mesma unidade para comparar preços
+      else if ((un==='RL' || un==='ROLO') && /\b(CABO|FIO|CORDAO)\b/.test(norm(desc).toUpperCase())) { const mt = /(?:ROLO|RL|C\/)\s*(?:DE\s*)?(\d{2,4})\s*M\b/.exec(norm(desc).toUpperCase()); un = 'MT'; qtd *= mt ? +mt[1] : 100; }   // rolo de cabo = 100 m
       const key = tipo+'|'+(alt || desc);
       const it = itens.get(key) || { key, tipo, alt, desc, compras:[], v:0, serv:r[11]||'', cat:r[0] };
       it.compras.push({ ym, dia:r[1]||'', doc:r[2]||'', forn:p.s[r[4]]||'(sem fornecedor)', qtd, un, val });
@@ -2162,8 +2169,18 @@ function calcInsumos(o, M){
     it.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
     const pr = it.compras.filter(c => c.un===it.un && c.qtd>0 && c.val>0 && Math.abs(c.qtd-c.val) > 0.011*Math.max(1,c.val)).map(c => ({ ...c, pu:c.val/c.qtd }));
     it.q = pr.reduce((s,c)=>s+c.qtd,0); it.vq = pr.reduce((s,c)=>s+c.val,0);
-    it.med = it.q ? it.vq/it.q : null;
+    it.media = it.q ? it.vq/it.q : null;
+    it.pad = medPond(pr);                                         // preço padrão = mediana ponderada pela quantidade (obra toda)
+    it.med = it.pad;
+    const mi = c => +c.ym.slice(0,4)*12 + +c.ym.slice(5);
+    const ultM = pr.length ? Math.max(...pr.map(mi)) : 0;
+    it.atual = medPond(pr.filter(c => mi(c) > ultM-3));          // preço atual = mediana das compras dos últimos 3 meses com compra
+    it.reaj = it.pad && it.atual && Math.abs(it.atual/it.pad-1) > 0.10 ? it.atual/it.pad-1 : 0;
+    pr.forEach(c => { const viz = pr.filter(x => Math.abs(mi(x)-mi(c)) <= 2); c.ref = viz.length >= 3 ? medPond(viz) : it.pad; });   // referência local: compras de 2 meses antes e depois
     it.min = pr.length ? Math.min(...pr.map(c=>c.pu)) : null; it.max = pr.length ? Math.max(...pr.map(c=>c.pu)) : null;
+    it.minC = pr.find(c=>c.pu===it.min); it.maxC = pr.find(c=>c.pu===it.max);
+    it.fora = pr.filter(c => c.ref && Math.abs(c.pu/c.ref-1) > INS_TOL);    // fora do padrão = destoa das compras da mesma época (reajuste não conta)
+    it.pr = pr;
     const ult = pr.slice().sort((a,b)=>(a.ym+String(a.dia).padStart(2,'0')).localeCompare(b.ym+String(b.dia).padStart(2,'0'))).pop();
     it.ult = ult ? ult.pu : null; it.ultYm = ult?.ym; it.ultDia = ult?.dia;
     it.nForn = new Set(it.compras.map(c=>c.forn)).size;
@@ -2177,8 +2194,8 @@ function calcInsumos(o, M){
   const media = (itens, vTot) => {          // preço médio só quando os itens são comparáveis: 80%+ na mesma unidade e preços parecidos
     const porUn = {}; itens.forEach(i => { if (i.q) porUn[i.un] = (porUn[i.un]||0) + i.vq; });
     const un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
-    const comUn = itens.filter(i => i.un===un && i.q), q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.vq,0);
-    const m = q ? v/q : 0, cv = m ? Math.sqrt(comUn.reduce((s,i)=>s+i.vq*(i.med-m)**2,0)/(v||1))/m : 9, vP = itens.reduce((s,i)=>s+(i.q?i.vq:0),0);
+    const comUn = itens.filter(i => i.un===un && i.q && i.pad), q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.pad*i.q,0);
+    const m = q ? v/q : 0, cv = m ? Math.sqrt(comUn.reduce((s,i)=>s+i.pad*i.q*(i.pad-m)**2,0)/(v||1))/m : 9, vP = itens.reduce((s,i)=>s+(i.q?i.vq:0),0);
     return { un, med: q && un && un!=='VB' && v >= 0.8*vP && cv <= 0.5 ? m : null };
   };
   for (const G of grupos.values()) {
@@ -2189,9 +2206,9 @@ function calcInsumos(o, M){
     }
     const porUn = {}; G.itens.forEach(i => { if (i.q) porUn[i.un] = (porUn[i.un]||0) + i.vq; });
     G.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
-    const comUn = G.itens.filter(i => i.un===G.un && i.q);
-    const q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.vq,0);
-    const m = q ? v/q : 0, cv = m ? Math.sqrt(comUn.reduce((s,i)=>s+i.vq*(i.med-m)**2,0)/(v||1))/m : 9;
+    const comUn = G.itens.filter(i => i.un===G.un && i.q && i.pad);
+    const q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.pad*i.q,0);
+    const m = q ? v/q : 0, cv = m ? Math.sqrt(comUn.reduce((s,i)=>s+i.pad*i.q*(i.pad-m)**2,0)/(v||1))/m : 9;
     const vPrecos = G.itens.reduce((s,i)=>s+(i.q?i.vq:0),0);
     G.med = q && G.un && G.un!=='VB' && v >= 0.8*vPrecos && cv <= 0.5 ? m : null;   // média só quando o grupo é homogêneo: 80%+ na mesma unidade e preços parecidos
   }
@@ -2199,6 +2216,8 @@ function calcInsumos(o, M){
   UI.insCache = { k:ck, v };
   return v;
 }
+const INS_TOL = 0.15;
+function medPond(cs){ if (!cs.length) return null; const ord = cs.slice().sort((a,b)=>a.pu-b.pu), meio = cs.reduce((s,c)=>s+c.qtd,0)/2; let acc = 0; for (const c of ord) { acc += c.qtd; if (acc >= meio) return c.pu; } return ord[ord.length-1].pu; }   // compra fora do padrão: mais de 15% acima ou abaixo do preço padrão
 const dtC = c => (c.dia ? String(c.dia).padStart(2,'0')+'/' : '') + MES[+c.ym.slice(5)-1] + '/' + c.ym.slice(2,4);
 const puU = (v, un) => v==null ? '—' : brl2.format(v) + (un && un!=='VB' ? '/'+un : '');
 
@@ -2248,6 +2267,13 @@ function insSubHtml(o, x){
     ${aberto?`<div class="ins-sb">${x.itens.slice(0, lim).map(it => insItem(o, it)).join('')}${x.itens.length>lim?`<button class="chip" data-insmais="${esc(x.key)}" style="align-self:center">Ver os outros ${x.itens.length-lim} item(ns)</button>`:''}</div>`:''}
   </div>`;
 }
+function insCompra(c, it, destaque){
+  const emRS = Math.abs(c.qtd-c.val) <= 0.011*Math.max(1,Math.abs(c.val)); const pu = c.qtd && !emRS ? c.val/c.qtd : null;
+  const ref = c.un!==it.un ? null : (c.ref || (pu!=null ? it.pr?.find(x=>x.ym===c.ym && x.dia===c.dia && x.val===c.val)?.ref : null) || it.pad);   // outra unidade: não compara
+  const d = pu!=null && ref ? pu/ref-1 : null, fora = d!=null && Math.abs(d) > INS_TOL;
+  const tag = destaque ? (pu===it.max ? '<em class="ins-tag crit">maior preço</em>' : pu===it.min ? '<em class="ins-tag good">menor preço</em>' : '') : '';
+  return `<div class="ins-cr${fora?' fora':''}"><span>${dtC(c)}</span><span>${esc(c.forn)}${tag}${c.doc?`<small>doc ${esc(c.doc)}</small>`:''}</span><span class="mono">${c.qtd&&!emRS?nfq(c.qtd)+' '+esc(c.un):'—'}</span><span class="mono ${d!=null?(d>0.05?'t-crit':d<-0.05?'t-good':''):''}">${pu!=null?brl2.format(pu):'—'}${fora?`<small>${pctS(d,0)}</small>`:''}</span><b class="mono">${brl2.format(c.val)}</b></div>`;
+}
 function insItem(o, it){
   const aberto = UI.insItem === it.key;
   const lim = (UI.insLimC||{})[it.key] || 20;
@@ -2257,18 +2283,23 @@ function insItem(o, it){
       <span class="ins-nm">${esc(it.desc||it.alt)}<small>${esc(it.alt||'sem código')} · ${it.compras.length} compra(s) · ${it.nForn} fornecedor(es)${it.via==='serviço'?' · classificado pelo serviço':it.via==='manual'?' · classificado à mão':''}</small></span>
       <span class="ins-g">
         <span><i>Último</i><b>${puU(it.ult, it.un)}</b><small>${it.ultYm?dtC({ym:it.ultYm,dia:it.ultDia}):'lançado só em R$, sem quantidade'}</small></span>
-        <span><i>Média</i><b>${puU(it.med, it.un)}</b></span>
-        <span><i>Mín – máx</i><b>${it.min!=null?brl2.format(it.min)+' – '+brl2.format(it.max):'—'}</b></span>
+        <span><i>Preço atual</i><b>${puU(it.atual, it.un)}</b><small>${it.reaj?`<em class="${it.reaj>0?'t-crit':'t-good'}">${pctS(it.reaj,0)} sobre o padrão da obra</em>`:(it.atual?'últimos 3 meses de compra':'')}</small></span>
+        <span><i>Preço padrão</i><b>${puU(it.pad, it.un)}</b><small>${it.fora.length?`<em class="ins-fp">${it.fora.length} compra(s) fora do padrão</em>`:(it.pad?'obra toda · sem compra fora do padrão':'')}</small></span>
+        <span><i>Mín – máx</i><b>${it.min!=null?brl2.format(it.min)+' – '+brl2.format(it.max):'—'}</b><small>${it.minC&&it.max>it.min?`${dtC(it.minC)} · ${dtC(it.maxC)}`:''}</small></span>
         <span><i>Comprado</i><b>${it.q?nfq(it.q)+' '+esc(it.un):'—'}</b><small>${money(it.v)}</small></span>
       </span>
     </button>
     ${aberto?`<div class="ins-cp">
       ${podeEditar()?`<label class="ins-mv">Grupo <select data-insmover="${esc(it.key)}" aria-label="Mover para outro grupo">${['__auto', ...INS_GRUPOS[it.tipo], 'Outros'].map(n=>`<option value="${esc(n)}"${n==='__auto'?(!(o.familias||{})[it.key]?' selected':''):((o.familias||{})[it.key]===n?' selected':'')}>${n==='__auto'?'Automático ('+esc(insClasse(it.tipo, it.desc, [o.insumos?.serv?.[it.serv], o.estrutura?.[String(it.serv).slice(0,14)]?.[1], catMapa(o)[it.cat]?.nome])[0])+')':esc(n)}</option>`).join('')}</select></label>`:''}
+      ${it.fora.length?`<div class="ins-fora"><span class="h4">Fora do padrão · ${it.fora.length} compra(s) a mais de ${Math.round(INS_TOL*100)}% das compras da mesma época</span>
+        ${it.fora.slice().sort((a,b)=>Math.abs(b.pu/b.ref-1)-Math.abs(a.pu/a.ref-1)).slice(0, (UI.insForaLim||{})[it.key]||5).map(c => insCompra(c, it, true)).join('')}
+        ${it.fora.length>((UI.insForaLim||{})[it.key]||5)?`<button class="chip" data-insforamais="${esc(it.key)}" style="align-self:center;margin:4px 0">Ver todas as ${it.fora.length}</button>`:''}</div>`:''}
+      ${it.reaj?`<p class="note ${it.reaj>0?'t-crit':'t-good'}" style="margin:2px 0 6px">O preço ${it.reaj>0?'subiu':'caiu'} <b>${pctS(it.reaj,0)}</b>: as compras dos últimos 3 meses saem a ${puU(it.atual, it.un)}, contra ${puU(it.pad, it.un)} no padrão da obra. Mudança de patamar (reajuste) não é marcada como fora do padrão.</p>`:''}
+      <span class="h4" style="margin-top:6px">Todas as compras</span>
       <div class="ins-cr h"><span>Data</span><span>Fornecedor</span><span>Qtd.</span><span>Preço unit.</span><span>Valor</span></div>
-      ${cs.slice(0, lim).map(c => { const emRS = Math.abs(c.qtd-c.val) <= 0.011*Math.max(1,Math.abs(c.val)); const pu = c.qtd && !emRS ? c.val/c.qtd : null;
-        return `<div class="ins-cr"><span>${dtC(c)}</span><span>${esc(c.forn)}${c.doc?`<small>doc ${esc(c.doc)}</small>`:''}</span><span class="mono">${c.qtd&&!emRS?nfq(c.qtd)+' '+esc(c.un):'—'}</span><span class="mono ${pu!=null&&it.med?(pu>it.med*1.05?'t-crit':pu<it.med*0.95?'t-good':''):''}">${pu!=null?brl2.format(pu):'—'}</span><b class="mono">${brl2.format(c.val)}</b></div>`; }).join('')}
+      ${cs.slice(0, lim).map(c => insCompra(c, it, false)).join('')}
       ${cs.length>lim?`<button class="chip" data-insmaisc="${esc(it.key)}" style="align-self:center">Ver mais ${Math.min(20, cs.length-lim)} compra(s)</button>`:''}
-      <p class="note muted">Vermelho = acima da média do item; verde = abaixo.</p></div>`:''}
+      <p class="note muted">Preço padrão = o preço da maior parte da quantidade comprada na obra (mediana), por isso uma compra isolada não mexe nele. Preço atual = o mesmo cálculo só nos últimos 3 meses com compra. Cada compra é comparada com as compras da mesma época (2 meses antes e depois): vermelho = acima, verde = abaixo.</p></div>`:''}
   </div>`;
 }
 
@@ -2677,6 +2708,7 @@ document.addEventListener('click', e => {
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
   if (t.dataset.instipo) { UI.insTipo = t.dataset.instipo; UI.insAberta = null; UI.insItem = null; keepScroll(render); return; }
   if (t.dataset.insfam) { UI.insAberta = UI.insAberta===t.dataset.insfam ? null : t.dataset.insfam; UI.insItem = null; keepScroll(render); return; }
+  if (t.dataset.insforamais) { (UI.insForaLim ??= {})[t.dataset.insforamais] = 999; keepScroll(render); return; }
   if (t.dataset.inssub) { UI.insSubAberto = UI.insSubAberto===t.dataset.inssub ? null : t.dataset.inssub; UI.insItem = null; keepScroll(render); return; }
   if (t.dataset.insitem) { UI.insItem = UI.insItem===t.dataset.insitem ? null : t.dataset.insitem; keepScroll(render); return; }
   if (t.dataset.insmais) { (UI.insLim ??= {})[t.dataset.insmais] = ((UI.insLim[t.dataset.insmais])||5) + 10; keepScroll(render); return; }
