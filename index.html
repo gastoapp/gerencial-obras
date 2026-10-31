@@ -691,12 +691,16 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.16 · 31/10';
+const APP_VERSAO = 'v2.17 · 31/10';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
 const ehAdmin = () => NUVEM.papel==='admin';
-const PAPEL_TXT = { admin:'administrador', editor:'visualiza e edita', leitor:'só visualiza' };
+const podeEditarEfetivo = () => podeEditar() || NUVEM.papel==='efetivo';
+/* o que cada perfil grava no banco (o banco confere de novo pelas regras de acesso) */
+const PARTES_DO_PAPEL = { efetivo:['efetivo','equipe'] };
+const PAPEL_TXT = { admin:'administrador', editor:'engenheiro', efetivo:'adm · altera só o efetivo', leitor:'visitante · só visualiza' };
+const PAPEL_NOME = { admin:'Administrador', editor:'Engenheiro', efetivo:'Adm', leitor:'Visitante' };
 const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos','estrutura'];
 
 function partesDaObra(o){
@@ -727,13 +731,14 @@ async function carregarNuvem(){
 }
 function statusNuvem(){
   document.querySelectorAll('.ver-tag').forEach(v => v.textContent = APP_VERSAO + ' · ' + AUTOR);
+  const bn = document.getElementById('btn-nova'); if (bn) bn.hidden = !!NUVEM.papel && !podeEditar();
   const [txt, st, tit] = NUVEM.papel==='leitor' ? ['Só leitura','ro',''] : NUVEM.erro ? ['Erro ao salvar','err',NUVEM.erro] : (NUVEM.salvando || NUVEM.pendente) ? ['Salvando…','busy',''] : ['Salvo na nuvem','ok',''];
   document.querySelectorAll('.nst').forEach(el => { el.textContent = txt; el.dataset.s = st; el.title = tit; });
 }
 function save(){
   UI.fornIdx = null; UI.anCache = null; UI.nivCache = null;
   try { localStorage.setItem(PREF, JSON.stringify({ atual:S.atual, mes:S.mes })); } catch(e) {}
-  if (!podeEditar()) { if (NUVEM.papel==='leitor' && !NUVEM.avisouRO) { NUVEM.avisouRO = true; toast('Seu acesso é só de leitura: as alterações não são salvas.'); } return; }
+  if (!podeEditarEfetivo()) { if (NUVEM.papel==='leitor' && !NUVEM.avisouRO) { NUVEM.avisouRO = true; toast('Seu acesso é de visitante: as alterações não são salvas.'); } return; }
   NUVEM.pendente = true; statusNuvem();
   clearTimeout(saveT); saveT = setTimeout(salvarNuvem, 700);
 }
@@ -742,6 +747,8 @@ async function salvarNuvem(){
   NUVEM.salvando = true; NUVEM.pendente = false; NUVEM.erro = null; statusNuvem();
   const quem = NUVEM.user?.email || '';
   try {
+    const permit = PARTES_DO_PAPEL[NUVEM.papel] || PARTES, so = !!PARTES_DO_PAPEL[NUVEM.papel];
+    if (so) { NUVEM.apagar.length = 0; NUVEM.mesesSujos.clear(); }
     for (const id of NUVEM.apagar.splice(0)) {
       let r = await NUVEM.sb.from('go_obra_mes').delete().eq('obra_id', id); if (r.error) throw r.error;
       r = await NUVEM.sb.from('go_obra_kv').delete().eq('obra_id', id); if (r.error) throw r.error;
@@ -750,7 +757,7 @@ async function salvarNuvem(){
     const linhas = [];
     for (const o of Object.values(S.obras)) {
       const p = partesDaObra(o);
-      for (const ch of PARTES) { const j = JSON.stringify(p[ch]); if (NUVEM.salvo[o.id+'|'+ch] !== j) linhas.push({ obra_id:o.id, chave:ch, valor:p[ch], atualizado_por:quem, atualizado_em:new Date().toISOString(), _j:j }); }
+      for (const ch of permit) { const j = JSON.stringify(p[ch]); if (NUVEM.salvo[o.id+'|'+ch] !== j) linhas.push({ obra_id:o.id, chave:ch, valor:p[ch], atualizado_por:quem, atualizado_em:new Date().toISOString(), _j:j }); }
     }
     if (linhas.length) {
       const { error } = await NUVEM.sb.from('go_obra_kv').upsert(linhas.map(({_j,...r})=>r), { onConflict:'obra_id,chave' }); if (error) throw error;
@@ -821,7 +828,7 @@ async function iniciar(){
   if (typeof supabase === 'undefined') { telaSimples(`<h1 class="sec">Sem conexão</h1><p class="lead">Não consegui carregar a biblioteca do banco de dados. Verifique a internet e recarregue a página.</p>`); return; }
   if (!C.supabaseUrl || !C.supabaseAnonKey || /COLE_AQUI/.test(C.supabaseUrl+C.supabaseAnonKey)) { telaSimples(`<h1 class="sec">Falta configurar</h1><p class="lead">Abra o arquivo <b>config.js</b> e cole o endereço (Project URL) e a chave pública (anon key) do seu projeto Supabase. O passo a passo está no LEIA-ME.</p>`); return; }
   NUVEM.sb = supabase.createClient(C.supabaseUrl, C.supabaseAnonKey);
-  NUVEM.sb.auth.onAuthStateChange((ev, sess) => { if (ev==='SIGNED_IN' && !NUVEM.user && sess) entrar(sess.user); if (ev==='SIGNED_OUT') { NUVEM.user = null; telaLogin(); } });
+  NUVEM.sb.auth.onAuthStateChange((ev, sess) => { if (ev==='SIGNED_IN' && !NUVEM.user && sess) entrar(sess.user); if (ev==='SIGNED_OUT') { NUVEM.user = null; NUVEM.papel = null; const m = UI.msgSaida; UI.msgSaida = null; telaLogin(m || '', m ? 'entrar' : undefined); } });
   const { data } = await NUVEM.sb.auth.getSession();
   if (data.session) entrar(data.session.user); else telaLogin();
 }
@@ -839,11 +846,11 @@ async function entrar(user){
   render(); statusNuvem();
   if (ehAdmin()) contarPedidos();
 }
+function sairCom(msg){ UI.msgSaida = msg; UI.lgMail = NUVEM.user?.email || UI.lgMail; NUVEM.sb.auth.signOut(); }
 async function telaPedido(user, msg){
   const { data } = await NUVEM.sb.from('go_solicitacoes').select('nome,criado_em').eq('email', user.email.toLowerCase()).maybeSingle();
-  if (data) telaSimples(`<h1 class="sec">Pedido enviado</h1><p class="lead">Seu pedido de acesso como <b>${esc(user.email)}</b> foi enviado em ${new Date(data.criado_em).toLocaleDateString('pt-BR')}. Assim que o administrador liberar, é só tocar em <b>Verificar de novo</b>.</p>
-    <div class="toolbar"><button class="btn" id="pd-check">Verificar de novo</button><button class="btn sec" id="sair">Sair</button></div>${msg?`<div class="banner">${msg}</div>`:''}`);
-  else telaSimples(`<h1 class="sec">Pedir acesso</h1><p class="lead">Sua conta <b>${esc(user.email)}</b> foi criada. Agora peça acesso ao administrador do app.</p>
+  if (data) { sairCom(`<b>Pedido de acesso aguardando liberação</b> (enviado em ${new Date(data.criado_em).toLocaleDateString('pt-BR')}). Quando for liberado, é só entrar com seu e-mail e senha.`); return; }
+  telaSimples(`<h1 class="sec">Pedir acesso</h1><p class="lead">Sua conta <b>${esc(user.email)}</b> foi criada. Agora peça acesso ao administrador do app.</p>
     <form id="f-pedido" class="login-f"><div class="field"><label for="pd-nome">Seu nome</label><input id="pd-nome" required placeholder="Nome e função, ex.: João · engenheiro"></div><button class="btn" type="submit">Pedir acesso</button></form>
     <button class="btn sec" id="sair">Sair</button>${msg?`<div class="banner">${msg}</div>`:''}`);
 }
@@ -896,19 +903,21 @@ function equipeHtml(){
   const lista = UI.membros, ped = UI.pedidos || [];
   const adm = ehAdmin();
   if (adm && !lista) setTimeout(carregarMembros);
-  const opcoes = v => `<select data-papel="${esc(v.email)}" aria-label="Acesso de ${esc(v.email)}"><option value="leitor"${v.papel==='leitor'?' selected':''}>Só visualizar</option><option value="editor"${v.papel==='editor'?' selected':''}>Visualizar e editar</option><option value="admin"${v.papel==='admin'?' selected':''}>Administrador</option></select>`;
+  const opcoes = v => `<select data-papel="${esc(v.email)}" aria-label="Perfil de ${esc(v.email)}">${['leitor','efetivo','editor','admin'].map(p=>`<option value="${p}"${v.papel===p?' selected':''}>${PAPEL_NOME[p]}</option>`).join('')}</select>`;
   return `<section class="panel" id="equipe">
     <h3 class="sub">Equipe</h3>
     <p class="note">Conectado como <b>${esc(me)}</b> · ${PAPEL_TXT[NUVEM.papel]||''}.</p>
     ${adm?`
       <div class="eq-sec"><span class="h4">Pedidos de acesso${ped.length?` (${ped.length})`:''}</span>
       ${ped.length?ped.map(p=>`<div class="ped"><div class="ped-q"><b>${esc(p.nome||'Sem nome')}</b><span>${esc(p.email)} · pediu em ${new Date(p.criado_em).toLocaleDateString('pt-BR')}</span></div>
-        <div class="ped-a"><button class="btn sec" data-aprovar="${esc(p.email)}" data-como="leitor">Só visualizar</button><button class="btn" data-aprovar="${esc(p.email)}" data-como="editor">Visualizar e editar</button><button class="x" data-recusar="${esc(p.email)}" aria-label="Recusar ${esc(p.email)}" title="Recusar">✕</button></div></div>`).join(''):'<p class="note muted">Nenhum pedido aguardando.</p>'}</div>
+        <div class="ped-a"><button class="btn sec" data-aprovar="${esc(p.email)}" data-como="leitor">Visitante</button><button class="btn sec" data-aprovar="${esc(p.email)}" data-como="efetivo">Adm</button><button class="btn" data-aprovar="${esc(p.email)}" data-como="editor">Engenheiro</button><button class="x" data-recusar="${esc(p.email)}" aria-label="Recusar ${esc(p.email)}" title="Recusar">✕</button></div></div>`).join(''):'<p class="note muted">Nenhum pedido aguardando.</p>'}</div>
       <div class="eq-sec"><span class="h4">Quem tem acesso</span>
       ${lista?.erro?`<div class="banner">${esc(lista.erro)}</div>`:''}
       ${Array.isArray(lista)?lista.map(m=>`<div class="ped"><div class="ped-q"><b>${esc(m.nome||m.email)}</b><span>${esc(m.email)}</span></div>
         <div class="ped-a">${m.email.toLowerCase()===me?`<span class="muted">você · administrador</span>`:`${opcoes(m)}<button class="x" data-rmembro="${esc(m.email)}" aria-label="Remover ${esc(m.email)}" title="Remover acesso">✕</button>`}</div></div>`).join(''):'<p class="note muted">Carregando…</p>'}</div>
-      <p class="note muted">Para entrar, a pessoa abre o app, toca em "Primeiro acesso? Criar senha" e depois em "Pedir acesso". O pedido aparece aqui.</p>`:''}
+      <div class="perfis"><span class="h4">Perfis</span>
+        <p class="note"><b>Engenheiro</b>: altera tudo (importa ERP e orçamento, lança avanço e efetivo), mas não libera nem remove pessoas.<br><b>Adm</b>: vê tudo e altera só a página Efetivo.<br><b>Visitante</b>: vê tudo e não altera nada.<br><b>Administrador</b>: tudo, inclusive liberar e remover pessoas.</p></div>
+      <p class="note muted">Para entrar, a pessoa abre o app, toca em "Primeiro acesso? Criar senha" e depois em "Pedir acesso". O pedido aparece aqui; depois de liberar, avise a pessoa para entrar com e-mail e senha.</p>`:''}
     <div class="toolbar"><button class="btn sec" id="sair">Sair da conta</button></div>
   </section>`;
 }
@@ -1197,6 +1206,14 @@ function renderTop(){
   const v = view();
   document.querySelectorAll('nav a[data-v]').forEach(a => { if (a.dataset.v===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
 }
+/* trava os campos das páginas que o perfil não pode alterar (o banco também bloqueia) */
+function somenteLeitura(el, vv){
+  const trava = (vv==='lancar' || vv==='orcamento') ? !podeEditar() : (vv==='efetivo' ? !podeEditarEfetivo() : false);
+  if (!trava) return;
+  el.querySelectorAll('input, select, textarea, button').forEach(c => { if (c.closest('#equipe') || c.dataset.lancmes || c.closest('nav')) return; c.disabled = true; });
+  el.querySelectorAll('.drop').forEach(d => d.style.display = 'none');
+  const t = el.querySelector('.pg-title'); if (t) t.insertAdjacentHTML('afterend', `<div class="banner ro-aviso">Seu perfil (<b>${PAPEL_NOME[NUVEM.papel]||NUVEM.papel}</b>) só visualiza esta página.</div>`);
+}
 function render(){
   if (!S) return;
   setTimeout(avisoPedidos);
@@ -1204,7 +1221,9 @@ function render(){
   renderTop();
   const el = document.getElementById('view');
   if (!obra()) { el.innerHTML = `<div class="panel empty"><h2 class="sec">Nenhuma obra ainda</h2>${podeEditar()?`<p class="note">Comece pela Etherea com os dados da planilha de set/26 (escolha o arquivo <b>dados-iniciais.json</b> que está no seu computador), ou crie uma obra nova.</p><div class="toolbar" style="justify-content:center"><button class="btn" id="imp-eth">Carregar Etherea (planilha set/26)</button><button class="btn sec" id="btn-nova2">+ Criar obra</button></div>`:'<p class="note">Quem administra o app ainda não cadastrou obras.</p>'}</div>`; return; }
+  const vv = view();
   ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, historico:renderHistorico, orcamento:renderOrcamento, analise:renderAnalise})[view()](el);
+  somenteLeitura(el, vv);
 }
 
 /* ---------- PAINEL (o mês selecionado) ---------- */
@@ -2446,7 +2465,6 @@ document.addEventListener('click', e => {
       if (error) { toast(error.message); t.disabled = false; return; }
       await NUVEM.sb.from('go_solicitacoes').delete().eq('email', mail); toast(`${p?.nome||mail} liberado: ${PAPEL_TXT[t.dataset.como]}.`); carregarMembros(); }); return; }
   if (t.dataset.recusar) { NUVEM.sb.from('go_solicitacoes').delete().eq('email', t.dataset.recusar).then(({error}) => { if (error) toast(error.message); else { toast('Pedido recusado.'); carregarMembros(); } }); return; }
-  if (t.id==='pd-check') { const u = NUVEM.user; NUVEM.user = null; entrar(u); return; }
   if (t.dataset.orcmodo) { UI.orcImp.modo = t.dataset.orcmodo; keepScroll(render); return; }
   if (t.id==='orc-cancel') { UI.orcImp = null; keepScroll(render); return; }
   if (t.id==='orc-aplicar') { const o = obra(); aplicarOrcamento(o, UI.orcImp.cats, insOk(UI.orcImp), UI.orcImp.estrutura); UI.orcImp = null; save(); toast('Orçamento de '+o.nome+' atualizado.'); render(); return; }
@@ -2539,7 +2557,7 @@ document.addEventListener('submit', e => {
       else telaLogin('Senha criada. O Supabase pediu confirmação: abra o e-mail que chegou, confirme e depois entre aqui com a senha.', 'entrar');
     }).catch(err => telaLogin(esc(err.message||String(err)))); return; }
   if (f.id==='f-pedido') { const nome = v('pd-nome').trim(), u = NUVEM.user; f.querySelector('button').disabled = true;
-    NUVEM.sb.from('go_solicitacoes').insert({ email: u.email.toLowerCase(), nome }).then(({error}) => telaPedido(u, error ? 'Não consegui enviar: '+esc(error.message) : '')); return; }
+    NUVEM.sb.from('go_solicitacoes').insert({ email: u.email.toLowerCase(), nome }).then(({error}) => { if (error) { telaPedido(u, 'Não consegui enviar: '+esc(error.message)); return; } sairCom('<b>Pedido realizado.</b> Aguarde a liberação. Quando for liberado, é só entrar com seu e-mail e senha.'); }); return; }
   if (f.id==='f-membro') { const mail = v('mb-mail').trim().toLowerCase();
     NUVEM.sb.from('go_membros').upsert({ email: mail, papel: v('mb-papel') }, { onConflict:'email' }).then(({error}) => { if (error) toast(error.message); else { toast('Acesso liberado para '+mail+'.'); carregarMembros(); } }); return; }
   if (!S || !obra() && f.id!=='f-nova') return;
