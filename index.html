@@ -649,9 +649,38 @@ body.fora header.top,body.fora nav.bottom{display:none}
   .ay-top{width:auto;height:clamp(36px,4.2vw,72px)}
 }
 @media (max-width:720px){header.top>.wrap{display:grid}.top-aux{margin:-4px 0 8px}}
-@media (min-width:721px) and (max-width:1400px){.st-desk .aut{display:none}nav.tabs a{padding-inline:9px}}
+@media (min-width:721px) and (max-width:1560px){.st-desk .aut{display:none}}
+@media (min-width:721px) and (max-width:1400px){nav.tabs a{padding-inline:9px}}
 @media (min-width:721px) and (max-width:1250px){.st-desk .ver-tag{display:none}}
 @media (min-width:721px) and (max-width:1080px){header.top .top-row{flex-wrap:nowrap}.brand span{display:none}.ay-top{height:30px}.top-aux{margin-left:12px;padding-left:14px}nav.tabs a{padding-inline:8px}}
+/* insumos */
+.ins-body{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px}
+.ins-ren{align-self:flex-start}
+.ins-it{border:1px solid var(--line);border-radius:9px;background:var(--surface2);overflow:hidden}
+.ins-ih{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px;align-items:center;padding:10px 12px;cursor:pointer}
+.ins-ih:hover{background:color-mix(in oklab,var(--accent) 6%,var(--surface2))}
+.ins-ih:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.ins-nm{font-size:13.5px;font-weight:500;line-height:1.3;min-width:0}
+.ins-nm small{display:block;color:var(--muted);font:400 11px var(--mono);margin-top:2px}
+.ins-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ins-g span{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ins-g i{font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ins-g b{font:500 13px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ins-g small{font-size:11px;color:var(--ink2)}
+.ins-cp{padding:4px 12px 12px;display:flex;flex-direction:column}
+.ins-cr{display:grid;grid-template-columns:90px minmax(0,1fr) 120px 110px 110px;gap:10px;padding:6px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:center}
+.ins-cr.h{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:0}
+.ins-cr span:nth-child(n+3),.ins-cr b{text-align:right}
+.ins-cr small{display:block;color:var(--muted);font-size:11px}
+.ins-cr b{font-weight:500}
+.mapa{padding:0;overflow:hidden}
+.mapa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px}
+.mapa summary::-webkit-details-marker{display:none}
+.mapa summary span:first-child{display:flex;flex-direction:column;gap:2px}
+.mapa summary small{font-size:12px;color:var(--muted)}
+.mapa-x{font:500 20px var(--mono);color:var(--muted)}
+.mapa[open]{padding-bottom:0}
+@media (max-width:720px){.ins-ih{grid-template-columns:1fr}.ins-g{grid-template-columns:repeat(2,minmax(0,1fr))}.ins-cr{grid-template-columns:70px minmax(0,1fr) auto;row-gap:2px}.ins-cr span:nth-child(3){grid-column:2;grid-row:2;text-align:left;color:var(--muted)}.ins-cr span:nth-child(4){grid-column:3;grid-row:2}.ins-cr b{grid-column:3;grid-row:1}.ins-cr.h{display:none}.ins-g b{white-space:normal}}
 </style>
 </head>
 <body>
@@ -672,9 +701,9 @@ body.fora header.top,body.fora nav.bottom{display:none}
       <a href="#painel" data-v="painel">Painel</a>
       <a href="#categorias" data-v="categorias">Categorias</a>
       <a href="#analise" data-v="analise">Análise</a>
+      <a href="#insumos" data-v="insumos">Insumos</a>
       <a href="#lancar" data-v="lancar">Lançar mês</a>
       <a href="#efetivo" data-v="efetivo">Efetivo</a>
-      <a href="#historico" data-v="historico">Mês a mês</a>
       <a href="#orcamento" data-v="orcamento">Obra e orçamento</a>
       <div class="top-st st-desk"><span class="ver-tag"></span><span class="nst" role="status"></span></div>
     </nav>
@@ -685,9 +714,9 @@ body.fora header.top,body.fora nav.bottom{display:none}
   <a href="#painel" data-v="painel"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Painel</a>
   <a href="#categorias" data-v="categorias"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="1.6"/></svg>Categorias</a>
   <a href="#analise" data-v="analise"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5M8 12.5v-2M10.5 12.5v-4M13 12.5v-3"/></svg>Análise</a>
+  <a href="#insumos" data-v="insumos"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>Insumos</a>
   <a href="#lancar" data-v="lancar"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 18v2h16v-2"/></svg>Lançar</a>
   <a href="#efetivo" data-v="efetivo"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.6c2.3.2 4 1.9 4.5 4.6"/></svg>Efetivo</a>
-  <a href="#historico" data-v="historico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Mês a mês</a>
   <a href="#orcamento" data-v="orcamento"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Obra</a>
 </nav>
 <div id="modal-root"></div>
@@ -707,7 +736,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v2.22 · 31/10';
+const APP_VERSAO = 'v3.0 · 31/10';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -717,16 +746,16 @@ const podeEditarEfetivo = () => podeEditar() || NUVEM.papel==='efetivo';
 const PARTES_DO_PAPEL = { efetivo:['efetivo','equipe'] };
 const PAPEL_TXT = { admin:'administrador', editor:'engenheiro', efetivo:'adm · altera só o efetivo', leitor:'visitante · só visualiza' };
 const PAPEL_NOME = { admin:'Administrador', editor:'Engenheiro', efetivo:'Adm', leitor:'Visitante' };
-const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos','estrutura'];
+const PARTES = ['info','categorias','avancos','ajustes','equipe','efetivo','mapa','insumos','estrutura','familias'];
 
 function partesDaObra(o){
   return { info:{ id:o.id, nome:o.nome, inicio:o.inicio, fim:o.fim, orcViab:o.orcViab||0, area:o.area||0 }, categorias:o.categorias||[], avancos:o.avancos||{}, ajustes:o.ajustes||[],
-    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{}, insumos:o.insumos||{}, estrutura:o.estrutura||{} };
+    equipe:{ funcoes:o.funcoes||[], empreiteiros:o.empreiteiros||[] }, efetivo:o.efetivo||{}, mapa:o.mapaCodigos||{}, insumos:o.insumos||{}, estrutura:o.estrutura||{}, familias:o.familias||{} };
 }
 function montarObra(id, kv){
   const info = kv.info || { id, nome:id };
   return { ...info, id, categorias: kv.categorias||[], avancos: kv.avancos||{}, ajustes: kv.ajustes||[], funcoes: kv.equipe?.funcoes||[], empreiteiros: kv.equipe?.empreiteiros||[],
-    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, insumos: kv.insumos||{}, estrutura: kv.estrutura||{}, gasto:{}, itens:{} };
+    efetivo: kv.efetivo||{}, mapaCodigos: kv.mapa||{}, insumos: kv.insumos||{}, estrutura: kv.estrutura||{}, familias: kv.familias||{}, gasto:{}, itens:{} };
 }
 async function lerTudo(tabela, colunas){
   const out = []; let de = 0;
@@ -752,7 +781,7 @@ function statusNuvem(){
   document.querySelectorAll('.nst').forEach(el => { el.textContent = txt; el.dataset.s = st; el.title = tit; });
 }
 function save(){
-  UI.fornIdx = null; UI.anCache = null; UI.nivCache = null;
+  UI.fornIdx = null; UI.anCache = null; UI.nivCache = null; UI.insCache = null;
   try { localStorage.setItem(PREF, JSON.stringify({ atual:S.atual, mes:S.mes })); } catch(e) {}
   if (!podeEditarEfetivo()) { if (NUVEM.papel==='leitor' && !NUVEM.avisouRO) { NUVEM.avisouRO = true; toast('Seu acesso é de visitante: as alterações não são salvas.'); } return; }
   NUVEM.pendente = true; statusNuvem();
@@ -789,7 +818,7 @@ async function salvarNuvem(){
 }
 function marcarMes(o, ym){ NUVEM.mesesSujos.add(o.id+'|'+ym); }
 const obra = () => S && S.obras ? S.obras[S.atual] : undefined;
-/* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem, cód. serviço, cód. item] */
+/* lançamentos do mês: [cat, dia, doc, item, fornecedor, qtd, unidade, valor unit., valor, MO?, origem, cód. serviço, cód. item, cód. alt. compra] */
 function itensDe(o, ym){
   const pack = (o.itens||{})[ym];
   const out = pack ? pack.i.map(r => ({ cat:r[0], dia:r[1], doc:r[2], item:pack.s[r[3]]??'', forn:pack.s[r[4]]??'', qtd:r[5], un:pack.s[r[6]]??'', vu:r[7], val:r[8], mo:!!r[9], orig:r[10], serv:r[11]||'' })) : [];
@@ -1209,7 +1238,7 @@ function filhosHtml(o, r, kn){
 function kNivelSemCache(o, M, k, n){ const save_ = UI.nivCache, g = UI.gNivel; UI.gNivel = 0; const v = kNivel(o, M, k, n); UI.nivCache = save_; UI.gNivel = g; return v; }
 
 /* ---------- topo e rotas ---------- */
-const VIEWS = ['painel','categorias','analise','lancar','efetivo','historico','orcamento'];
+const VIEWS = ['painel','categorias','analise','insumos','lancar','efetivo','orcamento'];
 const view = () => { const h = location.hash.replace('#',''); return VIEWS.includes(h) ? h : 'painel'; };
 function renderTop(){
   const so = document.getElementById('sel-obra');
@@ -1238,7 +1267,7 @@ function render(){
   const el = document.getElementById('view');
   if (!obra()) { el.innerHTML = `<div class="panel empty"><h2 class="sec">Nenhuma obra ainda</h2>${podeEditar()?`<p class="note">Comece pela Etherea com os dados da planilha de set/26 (escolha o arquivo <b>dados-iniciais.json</b> que está no seu computador), ou crie uma obra nova.</p><div class="toolbar" style="justify-content:center"><button class="btn" id="imp-eth">Carregar Etherea (planilha set/26)</button><button class="btn sec" id="btn-nova2">+ Criar obra</button></div>`:'<p class="note">Quem administra o app ainda não cadastrou obras.</p>'}</div>`; return; }
   const vv = view();
-  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, historico:renderHistorico, orcamento:renderOrcamento, analise:renderAnalise})[view()](el);
+  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, insumos:renderInsumos, orcamento:renderOrcamento, analise:renderAnalise})[view()](el);
   somenteLeitura(el, vv);
 }
 
@@ -1499,6 +1528,7 @@ function renderPainel(el){
         <button data-cm="gasto" aria-pressed="${UI.chqModo==='gasto'}">Gasto × cheque</button>
         <button data-cm="saldo" aria-pressed="${UI.chqModo==='saldo'}">${isMob()?'Saldo':'Saldo acumulado'}</button>
         <button data-cm="sobra" aria-pressed="${UI.chqModo==='sobra'}">${isMob()?'Sobra do mês':'Sobra de cada mês'}</button>
+        <button data-cm="acum" aria-pressed="${UI.chqModo==='acum'}">${isMob()?'Acumulado':'Incorrido × cheque'}</button>
       </div>
       <div class="seg" role="group" aria-label="Período">
         <button data-cp="12" aria-pressed="${UI.chqPer==='12'}">12 meses</button>
@@ -1549,7 +1579,14 @@ function drawCheque(k){
   const h = isMob() ? 240 : 290;
   const sel = d => { S.mes = d.ym; save(); render(); };
   const last = k.serie[k.serie.length-1] || { saldo:0, sobra:0, gasto:0 };
-  if (UI.chqModo==='saldo') {
+  if (UI.chqModo==='acum') {
+    leg.innerHTML = legendHtml([{name:'Cheque acumulado',color:'var(--s1)',line:true},{name:'Custo incorrido acumulado',color:'var(--s3)',line:true},{name:'Orçamento executivo',color:'var(--ink2)',line:true,dash:true}]);
+    lines(el, src.map(d=>MES[+d.ym.slice(5)-1]+'/'+d.ym.slice(2,4)), [
+      { name:'Cheque acumulado', short:'Cheque', color:'var(--s1)', values:src.map(d=>d.chequeAcum) },
+      { name:'Incorrido acumulado', short:'Incorrido', color:'var(--s3)', values:src.map(d=>d.acum), area:true },
+    ], { h, ref:k.orcExe, refLabel:'executivo '+money(k.orcExe), fmtAxis:axisMoney, fmtLabel:v=>money(v), fmtTip:v=>money(v), mark: src.findIndex(d=>d.ym===M), tipExtra:i=>`<div><b>Saldo: ${money(src[i].saldo)}</b></div>`, aria:'Custo incorrido acumulado comparado ao cheque acumulado' });
+    ex.innerHTML = `A distância entre as duas linhas é o saldo do cheque. Enquanto o incorrido fica abaixo do cheque, sobra dinheiro. Em ${ymLabel(M)}: cheque ${money(k.chequeAte)}, incorrido ${money(k.incorrido)}, saldo <b class="${k.saldoCheque<0?'t-crit':'t-good'}">${money(k.saldoCheque)}</b>.`;
+  } else if (UI.chqModo==='saldo') {
     leg.innerHTML = legendHtml([{name:'Saldo positivo (sobrando)',color:'var(--good)'},{name:'Saldo negativo (gasto acima)',color:'var(--crit)'}]);
     bars(el, src.map(d=>({ label:lab(d.ym), ym:d.ym, v:d.saldo, sel:d.ym===M, color: d.saldo>=0?'var(--good)':'var(--crit)', dim: d.ym!==M })), { h, fmtAxis:axisMoney, fmtLabel:v=>money(v), aria:'Saldo acumulado do cheque por mês',
       tip:d=>{ const r=k.serie.find(x=>x.ym===d.ym); return `<b>${ymLabel(d.ym)}</b>Cheque total: ${money(r.chequeAcum)}<br>Utilizado: ${money(r.acum)}<br><b>Saldo: ${money(r.saldo)}</b>`; }, onClick:sel });
@@ -1612,6 +1649,7 @@ function catGlobalHtml(k){
       </select>
     </div>
   </div>
+  ${mapaGastosHtml(obra(), k)}
   <div id="cat-list">${catList(k)}</div>
   <section class="${k.legado||k.grupos?'grid2':''}">
     <div class="panel"><div><h3 class="sub">Estouro e economia</h3><p class="lead">Os itens que mais passaram e os que mais sobraram do orçado.</p></div>${divergente(k)}</div>
@@ -1875,7 +1913,7 @@ function impPreview(){
   return `<div style="display:flex;flex-direction:column;gap:12px">
     <p class="note"><b>${esc(I.nome)}</b> · ${I.linhas.toLocaleString('pt-BR')} lançamentos em ${ms.length} meses${I.ignoradas?` · ${I.ignoradas} linhas sem data ou código ignoradas`:''}.</p>
     ${(()=>{ const mud = ms.filter(m=>I.meses[m].mudou); const dt = mud.reduce((s,m)=>s+I.meses[m].total-Object.values((o.gasto||{})[m]||{}).reduce((a,v)=>a+v[0]+v[1],0),0);
-      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), ${Math.abs(dt)<1?'sem mudar o total':`somando <b>${signed(dt)}</b>`}.${I.completar?` Inclui ${I.completar} mês(es) só para completar os códigos de serviço e item usados na Análise (os valores não mudam).`:''}${I.conteudo?` Inclui ${I.conteudo} mês(es) com o mesmo total, mas com lançamentos diferentes (ex.: fornecedor, descrição ou quantidade); os valores não mudam.`:''} Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
+      return mud.length ? `<div class="banner" style="background:var(--good-bg)"><span><b>${mud.length} mês(es) com novidade</b> (${mud.map(ymLabel).join(', ')}), ${Math.abs(dt)<1?'sem mudar o total':`somando <b>${signed(dt)}</b>`}.${I.completar?` Inclui ${I.completar} mês(es) só para completar os códigos usados na Análise e em Insumos (os valores não mudam).`:''}${I.conteudo?` Inclui ${I.conteudo} mês(es) com o mesmo total, mas com lançamentos diferentes (ex.: fornecedor, descrição ou quantidade); os valores não mudam.`:''} Já deixei marcados; os outros ${ms.length-mud.length} meses estão iguais ao app.</span></div>` : `<div class="banner" style="background:var(--good-bg)">Nada novo: todos os meses do arquivo já estão iguais ao app.</div>`; })()}
     ${sem.length?`<div class="banner" style="flex-direction:column;align-items:stretch"><b>${sem.length} código(s) sem categoria no orçamento.</b> Escolha para onde vão; o app lembra nas próximas importações.
       ${sem.map(([cod,v])=>`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="mono">${esc(cod)}</span><span class="muted" style="flex:1;min-width:120px">${esc(v.fase||'')} · ${money(v.total)}</span><select data-map="${esc(cod)}" aria-label="Categoria para ${esc(cod)}" style="max-width:100%"><option value="">Ignorar</option>${o.categorias.map(c=>`<option value="${esc(c.id)}"${I.map[cod]===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select></div>`).join('')}</div>`:''}
     <div class="tbl-wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th><input type="checkbox" id="imp-all" aria-label="Marcar todos" ${ms.every(m=>I.sel[m])?'checked':''}></th><th>Mês</th><th class="n">No arquivo</th><th class="n">No app</th><th class="n">Diferença</th></tr></thead><tbody>
@@ -1908,7 +1946,7 @@ function lerArquivo(file){
       }
       if (!found) { UI.imp = { erro:'Não achei a coluna "Valor Apropriação" no arquivo. Confira se é a exportação de itens recebidos do ERP.' }; render(); return; }
       const H = found.rows[found.h].map(norm), ix = n => H.indexOf(n);
-      const cCod = ix('cod. estruturado'), cVal = ix('valor apropriacao'), cDoc = ix('data documento'), cApr = ix('data apropriacao'), cDef = ix('definicao'), cForn = ix('fornecedor'), cFase = ix('descricao das fases'), cDocN = ix('documento'), cIt = ix('desc. item compra'), cDesc = ix('descricao'), cQ = ix('qtde. apropriada'), cUn = ix('unidade'), cVu = ix('valor unitario'), cOr = ix('origem'), cCi = ix('cod. item');
+      const cCod = ix('cod. estruturado'), cVal = ix('valor apropriacao'), cDoc = ix('data documento'), cApr = ix('data apropriacao'), cDef = ix('definicao'), cForn = ix('fornecedor'), cFase = ix('descricao das fases'), cDocN = ix('documento'), cIt = ix('desc. item compra'), cDesc = ix('descricao'), cQ = ix('qtde. apropriada'), cUn = ix('unidade'), cVu = ix('valor unitario'), cOr = ix('origem'), cCi = ix('cod. item'), cAlt = ix('cod. alt. compra');
       if (cCod<0) { UI.imp = { erro:'Não achei a coluna "Cód. Estruturado".' }; render(); return; }
       const cats = new Set(o.categorias.map(c=>c.id));
       const I = { nome:file.name, linhas:0, ignoradas:0, meses:{}, semCat:{}, map:{ ...(o.mapaCodigos||{}) }, raw:[], sel:{} };
@@ -1917,18 +1955,18 @@ function lerArquivo(file){
         if (!cod || !ym) { if (r.some(x=>x!=='')) I.ignoradas++; continue; }
         const niv = cod.slice(0,11), val = parseNum(r[cVal]);
         const dv = cDoc>=0&&r[cDoc]!==''?r[cDoc]:r[cApr]; const dia = dv instanceof Date ? String(new Date(dv.getTime()+43200000).getDate()).padStart(2,'0') : (typeof dv==='number' ? String(new Date(Math.round((dv-25569)*864e5)+43200000).getUTCDate()).padStart(2,'0') : String(dv).slice(0,2));
-        I.raw.push({ ym, niv, val, dia, doc: cDocN>=0?String(r[cDocN]):'', item: String((cIt>=0&&r[cIt]) || (cDesc>=0?r[cDesc]:'') || ''), qtd: cQ>=0?parseNum(r[cQ]):0, un: cUn>=0?String(r[cUn]):'', vu: cVu>=0?parseNum(r[cVu]):0, orig: cOr>=0?String(r[cOr]):'', mo: norm(r[cDef])==='mao de obra', forn: String(cForn>=0?r[cForn]:'').trim() || '(sem fornecedor)', serv: cod.length>11 ? cod : '', ci: cCi>=0 ? (parseInt(r[cCi])||0) : 0 }); I.linhas++;
+        I.raw.push({ ym, niv, val, dia, doc: cDocN>=0?String(r[cDocN]):'', item: String((cIt>=0&&r[cIt]) || (cDesc>=0?r[cDesc]:'') || ''), qtd: cQ>=0?parseNum(r[cQ]):0, un: cUn>=0?String(r[cUn]):'', vu: cVu>=0?parseNum(r[cVu]):0, orig: cOr>=0?String(r[cOr]):'', mo: norm(r[cDef])==='mao de obra', forn: String(cForn>=0?r[cForn]:'').trim() || '(sem fornecedor)', serv: cod.length>11 ? cod : '', ci: cCi>=0 ? (parseInt(r[cCi])||0) : 0, alt: cAlt>=0 ? String(r[cAlt]||'').trim() : '' }); I.linhas++;
         const mm = (I.meses[ym] ??= { n:0, total:0 }); mm.n++; mm.total += val;
         if (!cats.has(niv)) { const s = (I.semCat[niv] ??= { total:0, fase: cFase>=0?String(r[cFase]||''):'' }); s.total += val; }
       }
       const nApp = m => (o.itens?.[m]?.i?.length || 0), totApp = m => Object.values((o.gasto||{})[m]||{}).reduce((s,v)=>s+v[0]+v[1],0);
-      const semCod = m => nApp(m) > 0 && (o.itens[m].i[0].length < 13);
+      const semCod = m => nApp(m) > 0 && (o.itens[m].i[0].length < (cAlt>=0 ? 14 : 13));
       I.completar = cCi>=0 && Object.keys(I.meses).filter(semCod).length;
       // assinatura do conteúdo de cada mês: pega mudanças com o mesmo total (ex.: fornecedor que veio vazio e agora veio preenchido)
       const hash = arr => { arr.sort(); let h = 5381; for (const t of arr) for (let i=0;i<t.length;i++) h = ((h<<5) + h + t.charCodeAt(i)) | 0; return h; };
-      const linha = (dia, doc, item, forn, qtd, un, val, mo, serv, ci) => [dia, doc, item, forn, +qtd||0, un, Math.round((+val||0)*100)/100, mo?1:0, serv||'', +ci||0].join('|');
-      const sigArq = {}; I.raw.filter(it => cats.has(it.niv) || I.map[it.niv]).forEach(it => (sigArq[it.ym] ??= []).push(linha(it.dia, it.doc, it.item, it.forn, it.qtd, it.un, it.val, it.mo, it.serv, it.ci)));
-      const sigApp = m => { const p = o.itens?.[m]; if (!p) return null; return hash(p.i.map(r => linha(r[1], r[2], p.s[r[3]]??'', p.s[r[4]]??'', r[5], p.s[r[6]]??'', r[8], r[9], r[11], r[12]))); };
+      const linha = (dia, doc, item, forn, qtd, un, val, mo, serv, ci, alt) => [dia, doc, item, forn, +qtd||0, un, Math.round((+val||0)*100)/100, mo?1:0, serv||'', +ci||0, alt||''].join('|');
+      const sigArq = {}; I.raw.filter(it => cats.has(it.niv) || I.map[it.niv]).forEach(it => (sigArq[it.ym] ??= []).push(linha(it.dia, it.doc, it.item, it.forn, it.qtd, it.un, it.val, it.mo, it.serv, it.ci, it.alt)));
+      const sigApp = m => { const p = o.itens?.[m]; if (!p) return null; return hash(p.i.map(r => linha(r[1], r[2], p.s[r[3]]??'', p.s[r[4]]??'', r[5], p.s[r[6]]??'', r[8], r[9], r[11], r[12], p.s[r[13]]??''))); };
       I.conteudo = 0;
       Object.keys(I.meses).forEach(m => {
         const mm = I.meses[m], porValor = Math.abs(mm.total - totApp(m)) > 0.5 || mm.n !== nApp(m), porCod = cCi>=0 && semCod(m);
@@ -1951,7 +1989,7 @@ function aplicarImport(){
     const cat = cats.has(it.niv) ? it.niv : I.map[it.niv]; if (!cat) continue;
     const g = ((G[it.ym] ??= {})[cat] ??= [0,0]); g[it.mo?0:1] += it.val;
     const p = (P[it.ym] ??= { s:[], m:new Map(), i:[] }); const si = s => { if (!p.m.has(s)) { p.m.set(s, p.s.length); p.s.push(s); } return p.m.get(s); };
-    p.i.push([cat, it.dia, it.doc, si(it.item), si(it.forn), it.qtd, si(it.un), it.vu, Math.round(it.val*100)/100, it.mo?1:0, it.orig, it.serv, it.ci]);
+    p.i.push([cat, it.dia, it.doc, si(it.item), si(it.forn), it.qtd, si(it.un), it.vu, Math.round(it.val*100)/100, it.mo?1:0, it.orig, it.serv, it.ci, si(it.alt||'')]);
   }
   o.gasto ??= {}; o.itens ??= {};
   for (const m of sel) {
@@ -2075,54 +2113,155 @@ function renderEfetivo(el){
 }
 
 /* ---------- MÊS A MÊS ---------- */
-function renderHistorico(el){
-  const o = obra(), M = S.mes, k = calc(o, M), kn = kNivel(o, M, k);
-  const ms = monthsBetween(addMonths(M,-11), M);
-  const rows = kn.rows.filter(r=>!r.c.fora && (r.acum || r.orc>1)).sort((a,b)=>a.c.id.localeCompare(b.c.id));
-  if (!UI.histCat || !rows.find(r=>r.c.id===UI.histCat)) UI.histCat = (rows.slice().sort((a,b)=>a.saldo-b.saldo)[0]||{c:{}}).c.id;
-  let mx = 0; rows.forEach(r=>ms.forEach(m=>{ const v=(kn.A[m]||{})[r.c.id]; if(v) mx=Math.max(mx,v[0]+v[1]); }));
-  const cell = v => { if (!v) return `<td class="c muted">·</td>`; const a = Math.max(0.06, Math.min(1, Math.sqrt(v/mx))); return `<td class="c" style="background:color-mix(in oklab, var(--accent) ${Math.round(a*70)}%, transparent);${a>0.55?'color:var(--accent-ink)':''}" title="${money(v,false)}">${axisMoney(v)}</td>`; };
-  const totMes = ms.map(m=>rows.reduce((s,r)=>{ const v=(kn.A[m]||{})[r.c.id]; return s+(v?v[0]+v[1]:0); },0));
-  const rc = rows.find(r=>r.c.id===UI.histCat);
+/* ---------- INSUMOS · preços pagos por família (Cód. Alt. Compra do ERP: M/S + família + item) ---------- */
+const temAltCompra = o => { for (const m in o.itens||{}) { const r = o.itens[m]?.i?.[0]; if (r) return r.length > 13; } return false; };
+function nomeFamAuto(itens){
+  const limpa = d => norm(d).toUpperCase().replace(/^ORC?\s*-\s*/,'').replace(/^ORÇ?\s*-\s*/,'').replace(/^SRV\b/,'SERVICO').replace(/^SERVICO\s+(DE\s+)?/,'').replace(/[^\w\s/,.-]/g,' ').replace(/\s+/g,' ').trim();
+  const tot = itens.reduce((s,x)=>s+Math.abs(x.v),0) || 1;
+  const bests = {};
+  for (let L=3; L>=1; L--) {
+    const c = new Map();
+    itens.forEach(x => { const w = limpa(x.desc).split(' ').slice(0,L); if (w.length<L) return; const k = w.join(' ').replace(/[,.-]+$/,''); c.set(k, (c.get(k)||0) + Math.abs(x.v)); });
+    let best = null; for (const [k,v] of c) if (!best || v > best[1]) best = [k,v];
+    bests[L] = best;
+    if (best && best[1] >= ({3:0.75, 2:0.65, 1:0.4})[L]*tot && !/^(DE|E|DA|DO|EM|PARA)$/.test(best[0])) {
+      const nm = best[0].replace(/\s+(DE|E|DA|DO|EM|PARA|-)$/,'');
+      if (L===1 && nm.length<=4 && bests[2]) return bests[2][0].replace(/\s+(DE|E|DA|DO|EM|PARA|-)$/,'');   // palavra curta demais (ex.: "MAO"): usa duas
+      return nm;
+    }
+  }
+  return limpa(itens[0]?.desc||'') .split(' ').slice(0,2).join(' ') || 'SEM NOME';
+}
+function calcInsumos(o, M){
+  const ck = o.id+'|'+M;
+  if (UI.insCache?.k === ck) return UI.insCache.v;
+  const fams = new Map(), itens = new Map();
+  for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M).sort()) {
+    const p = o.itens[ym];
+    for (const r of p.i) {
+      const alt = String(p.s[r[13]] ?? '').trim(), mm = /^([A-Z])\.(\d{3})\./.exec(alt);
+      const tipo = mm ? (mm[1]==='S' ? 'S' : 'M') : (r[9] ? 'S' : 'M');
+      const fam = mm ? mm[1]+'.'+mm[2] : tipo+'.—';
+      const desc = p.s[r[3]] ?? '';
+      let un = unN(p.s[r[6]]), qtd = +r[5]||0; const val = +r[8]||0;
+      if (un==='TON') { un = 'KG'; qtd *= 1000; } else if (un==='MIL') { un = 'UN'; qtd *= 1000; }   // mesma unidade para comparar preços
+      const key = fam+'|'+(alt || desc);
+      const it = itens.get(key) || { key, fam, tipo, alt, desc, compras:[], v:0 };
+      it.compras.push({ ym, dia:r[1]||'', doc:r[2]||'', forn:p.s[r[4]]||'(sem fornecedor)', qtd, un, val });
+      it.v += val; itens.set(key, it);
+    }
+  }
+  for (const it of itens.values()) {
+    const porUn = {}; it.compras.forEach(c => porUn[c.un] = (porUn[c.un]||0) + Math.abs(c.val));
+    it.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
+    const pr = it.compras.filter(c => c.un===it.un && c.qtd>0 && c.val>0 && Math.abs(c.qtd-c.val) > 0.011*Math.max(1,c.val)).map(c => ({ ...c, pu:c.val/c.qtd }));
+    it.q = pr.reduce((s,c)=>s+c.qtd,0); it.vq = pr.reduce((s,c)=>s+c.val,0);
+    it.med = it.q ? it.vq/it.q : null;
+    it.min = pr.length ? Math.min(...pr.map(c=>c.pu)) : null; it.max = pr.length ? Math.max(...pr.map(c=>c.pu)) : null;
+    const ult = pr.slice().sort((a,b)=>(a.ym+String(a.dia).padStart(2,'0')).localeCompare(b.ym+String(b.dia).padStart(2,'0'))).pop();
+    it.ult = ult ? ult.pu : null; it.ultYm = ult?.ym; it.ultDia = ult?.dia;
+    it.nForn = new Set(it.compras.map(c=>c.forn)).size;
+    const f = fams.get(it.fam) || { cod:it.fam, tipo:it.tipo, itens:[], v:0 };
+    f.itens.push(it); f.v += it.v; fams.set(it.fam, f);
+  }
+  for (const f of fams.values()) {
+    f.itens.sort((a,b)=>b.v-a.v);
+    const porUn = {}; f.itens.forEach(i => { if (i.q) porUn[i.un] = (porUn[i.un]||0) + i.vq; });
+    f.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
+    const comUn = f.itens.filter(i => i.un===f.un && i.q);
+    const q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.vq,0);
+    f.med = q && f.un && f.un!=='VB' && v >= 0.8*f.v ? v/q : null;   // média só quando 80%+ da família tem preço na mesma unidade
+    f.auto = f.cod.endsWith('—') ? 'SEM CÓDIGO NO ERP' : nomeFamAuto(f.itens);
+  }
+  const v = { fams:[...fams.values()].sort((a,b)=>b.v-a.v) };
+  UI.insCache = { k:ck, v };
+  return v;
+}
+const nomeFam = (o, f) => (o.familias||{})[f.cod] || f.auto;
+const dtC = c => (c.dia ? String(c.dia).padStart(2,'0')+'/' : '') + MES[+c.ym.slice(5)-1] + '/' + c.ym.slice(2,4);
+const puU = (v, un) => v==null ? '—' : brl2.format(v) + (un && un!=='VB' ? '/'+un : '');
+
+function renderInsumos(el){
+  const o = obra(), M = S.mes;
+  const tipo = UI.insTipo || 'M';
+  const tem = temAltCompra(o);
   el.innerHTML = `
-  <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · até ${ymLabel(M)}</span><h2 class="sec">Mês a mês</h2></div>
-  <section class="panel">
-    <div><h3 class="sub">Incorrido × cheque acumulado</h3><p class="lead">A distância entre as duas linhas é o saldo do cheque. Enquanto o incorrido fica abaixo do cheque, sobra dinheiro.</p></div>
-    ${legendHtml([{name:'Cheque acumulado',color:'var(--s1)',line:true},{name:'Custo incorrido acumulado',color:'var(--s3)',line:true},{name:'Orçamento executivo',color:'var(--ink2)',line:true,dash:true}])}
-    <div class="chart" id="ch-acum"></div>
-  </section>
-  <section class="panel">
-    <div><h3 class="sub">Avanço × custo</h3><p class="lead">Se o custo (% do executivo) sobe mais rápido que o avanço, a obra tende a estourar.</p></div>
-    <div id="leg-av"></div>
-    <div class="chart" id="ch-av"></div>
-  </section>
-  <section class="panel" style="padding:0;overflow:hidden">
-    <div style="padding:16px 16px 0"><h3 class="sub">Mapa de gastos</h3><p class="lead">Últimos 12 meses por ${kn.legado||kn.nivel===4?'categoria':'item do nível '+kn.nivel}. Cor mais forte = gasto maior. Toque no mês para abrir o painel dele.</p>${nivelSeg(o)}</div>
-    <div class="tbl-wrap" style="border:0;border-top:1px solid var(--line);border-radius:0;margin-top:12px"><table class="heat"><thead><tr><th>Categoria</th>${ms.map(m=>`<th class="n"><button class="chip" style="padding:2px 8px" data-goto="${m}">${ymLabel(m)}</button></th>`).join('')}<th class="n">Acum.</th><th class="n">% orç.</th></tr></thead><tbody>
-    ${rows.map(r=>`<tr><td><div class="catname">${esc(r.c.nome)}</div></td>${ms.map(m=>{ const v=(kn.A[m]||{})[r.c.id]; return cell(v?v[0]+v[1]:0); }).join('')}<td class="c">${money(r.acum)}</td><td class="c ${r.st==='crit'?'t-crit':''}">${isFinite(r.p)?pct(r.p,0):'—'}</td></tr>`).join('')}
-    <tr class="total"><td><b>Total do mês</b></td>${totMes.map(v=>`<td class="c ${v>k.cheque?'t-crit':'t-good'}"><b>${axisMoney(v)}</b></td>`).join('')}<td class="c"><b>${money(k.incorrido)}</b></td><td class="c"><b>${pct(k.incorrido/(k.orcExe||1),0)}</b></td></tr>
-    <tr><td class="muted">Cheque mensal</td>${ms.map(()=>`<td class="c muted">${axisMoney(k.cheque)}</td>`).join('')}<td></td><td></td></tr>
-    </tbody></table></div>
-  </section>`;
-  const ser = k.serie;
-  lines(document.getElementById('ch-acum'), ser.map(d=>MES[+d.ym.slice(5)-1]+'/'+d.ym.slice(2,4)), [
-    { name:'Cheque acumulado', short:'Cheque', color:'var(--s1)', values:ser.map(d=>d.chequeAcum) },
-    { name:'Incorrido acumulado', short:'Incorrido', color:'var(--s3)', values:ser.map(d=>d.acum), area:true },
-  ], { h: isMob()?240:300, ref:k.orcExe, refLabel:'orçamento '+money(k.orcExe), fmtAxis:axisMoney, fmtLabel:v=>money(v), fmtTip:v=>money(v), tipExtra:i=>`<div><b>Saldo: ${money(ser[i].saldo)}</b></div>`, aria:'Custo incorrido acumulado comparado ao cheque acumulado' });
-  drawAvanco(o, k);
+  <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · compras até ${ymLabel(M)}</span><h2 class="sec">Insumos</h2></div>
+  <p class="lead">Preços pagos em cada compra, separados por família do ERP. Toque na família para ver os tipos e no tipo para ver cada compra.</p>
+  ${tem ? '' : `<div class="banner" style="flex-direction:column;align-items:flex-start;gap:8px"><span><b>Falta o código de família das compras.</b> Para separar os insumos por família (aço, concreto, bloco…), suba o arquivo do ERP de novo uma vez em <b>Lançar mês</b>. O app marca todos os meses sozinho e os valores não mudam.</span>${podeEditar()?'<a class="btn sec" href="#lancar">Ir para Lançar mês</a>':''}</div>`}
+  <div class="seg big" role="group" aria-label="Tipo">
+    <button data-instipo="M" aria-pressed="${tipo==='M'}">Materiais</button>
+    <button data-instipo="S" aria-pressed="${tipo==='S'}">Serviços</button>
+  </div>
+  <input id="ins-busca" type="search" placeholder="Buscar insumo, código ou fornecedor" value="${esc(UI.insBusca||'')}" aria-label="Buscar insumo">
+  <div id="ins-res" style="display:flex;flex-direction:column;gap:10px">${tem ? insLista(o, M, tipo) : ''}</div>`;
+}
+function insLista(o, M, tipo){
+  const A = calcInsumos(o, M), q = norm(UI.insBusca||'');
+  const casa = it => !q || norm(it.desc).includes(q) || norm(it.alt).includes(q) || it.compras.some(c=>norm(c.forn).includes(q));
+  let fams = A.fams.filter(f => f.tipo===tipo).map(f => ({ f, its: q ? f.itens.filter(casa) : f.itens })).filter(x => x.its.length || (q && norm(nomeFam(o,x.f)).includes(q)));
+  if (q) fams = fams.map(x => ({ ...x, its: x.its.length ? x.its : x.f.itens }));
+  const tot = fams.reduce((s,x)=>s+x.f.v,0), lim = UI.insLimFam || 30;
+  if (!fams.length) return `<div class="panel empty"><p class="note">${q?'Nada encontrado para “'+esc(UI.insBusca)+'”.':'Nenhuma compra deste tipo até '+ymLabel(M)+'.'}</p></div>`;
+  return `<p class="note"><b>${fams.length}</b> família(s) · <b>${money(tot)}</b> em ${tipo==='M'?'materiais':'serviços'} até ${ymLabel(M)}${fams.length>lim?` · mostrando as ${lim} maiores`:''}.</p>
+    <div class="cards">${fams.slice(0, lim).map(x => insFam(o, x.f, x.its, !!q)).join('')}</div>
+    ${fams.length>lim?`<button class="btn sec" id="ins-maisfam" style="align-self:center">Mostrar mais famílias</button>`:''}`;
+}
+function insFam(o, f, its, forcaAberto){
+  const aberto = forcaAberto || UI.insAberta === f.cod;
+  const lim = (UI.insLim||{})[f.cod] || 5;
+  return `<div class="mcard ins-fam ${aberto?'open':''}">
+    <button class="mc-head" data-insfam="${esc(f.cod)}" aria-expanded="${aberto}">
+      <div class="mc-l"><span class="catname">${esc(nomeFam(o, f))}<small>${esc(f.cod)} · ${f.itens.length} tipo(s) · ${money(f.v)}</small></span></div>
+      <div class="mc-r"><b>${f.med!=null?puU(f.med, f.un):money(f.v)}</b><span class="muted">${f.med!=null?'média da família':'total gasto'}</span></div>
+    </button>
+    ${aberto?`<div class="ins-body">
+      ${podeEditar()?`<button class="chip ins-ren" data-insren="${esc(f.cod)}">Renomear família</button>`:''}
+      ${its.slice(0, lim).map(it => insItem(it)).join('')}
+      ${its.length>lim?`<button class="chip" data-insmais="${esc(f.cod)}" style="align-self:center">Ver os outros ${its.length-lim} tipo(s)</button>`:''}
+    </div>`:''}
+  </div>`;
+}
+function insItem(it){
+  const aberto = UI.insItem === it.key;
+  const lim = (UI.insLimC||{})[it.key] || 20;
+  const cs = it.compras.slice().sort((a,b)=>(b.ym+String(b.dia).padStart(2,'0')).localeCompare(a.ym+String(a.dia).padStart(2,'0')));
+  return `<div class="ins-it ${aberto?'open':''}">
+    <button class="ins-ih" data-insitem="${esc(it.key)}" aria-expanded="${aberto}">
+      <span class="ins-nm">${esc(it.desc||it.alt)}<small>${esc(it.alt||'sem código')} · ${it.compras.length} compra(s) · ${it.nForn} fornecedor(es)</small></span>
+      <span class="ins-g">
+        <span><i>Último</i><b>${puU(it.ult, it.un)}</b><small>${it.ultYm?dtC({ym:it.ultYm,dia:it.ultDia}):''}</small></span>
+        <span><i>Média</i><b>${puU(it.med, it.un)}</b></span>
+        <span><i>Mín – máx</i><b>${it.min!=null?brl2.format(it.min)+' – '+brl2.format(it.max):'—'}</b></span>
+        <span><i>Comprado</i><b>${it.q?nfq(it.q)+' '+esc(it.un):'—'}</b><small>${money(it.v)}</small></span>
+      </span>
+    </button>
+    ${aberto?`<div class="ins-cp"><div class="ins-cr h"><span>Data</span><span>Fornecedor</span><span>Qtd.</span><span>Preço unit.</span><span>Valor</span></div>
+      ${cs.slice(0, lim).map(c => { const emRS = Math.abs(c.qtd-c.val) <= 0.011*Math.max(1,Math.abs(c.val)); const pu = c.qtd && !emRS ? c.val/c.qtd : null;
+        return `<div class="ins-cr"><span>${dtC(c)}</span><span>${esc(c.forn)}${c.doc?`<small>doc ${esc(c.doc)}</small>`:''}</span><span class="mono">${c.qtd&&!emRS?nfq(c.qtd)+' '+esc(c.un):'—'}</span><span class="mono ${pu!=null&&it.med?(pu>it.med*1.05?'t-crit':pu<it.med*0.95?'t-good':''):''}">${pu!=null?brl2.format(pu):'—'}</span><b class="mono">${brl2.format(c.val)}</b></div>`; }).join('')}
+      ${cs.length>lim?`<button class="chip" data-insmaisc="${esc(it.key)}" style="align-self:center">Ver mais ${Math.min(20, cs.length-lim)} compra(s)</button>`:''}
+      <p class="note muted">Vermelho = acima da média do tipo; verde = abaixo.</p></div>`:''}
+  </div>`;
 }
 
-
-function drawAvanco(o, k){
-  const el = document.getElementById('ch-av'); if (!el) return;
-  const ms = k.serie.map(d=>d.ym);
-  const series = [
-    { name:'Avanço físico', short:'Físico', color:'var(--s1)', values: ms.map(m => (o.avancos||{})[m]?.fisico ?? null) },
-    { name:'Avanço fís/fin', short:'Fís/fin', color:'var(--s2)', values: ms.map(m => (o.avancos||{})[m]?.fisfin ?? null) },
-    { name:'Custo incorrido (% executivo)', short:'Custo', color:'var(--s3)', values: k.serie.map(d => d.acum/(k.orcExe||1)) },
-  ];
-  document.getElementById('leg-av').innerHTML = legendHtml(series.map(s=>({name:s.name,color:s.color,line:true})));
-  lines(el, ms.map(m=>MES[+m.slice(5)-1]+'/'+m.slice(2,4)), series, { h: isMob()?220:260, max:1, fmtAxis:v=>Math.round(v*100)+'%', fmtLabel:v=>pct(v,1), fmtTip:v=>pct(v,1), aria:'Avanço físico, fís/fin e custo incorrido ao longo da obra' });
+/* mapa de gastos: últimos 12 meses por item do nível escolhido (fica recolhido em Categorias) */
+function mapaGastosHtml(o, kn){
+  const M = S.mes, ms = monthsBetween(addMonths(M,-11), M);
+  const aberto = !!UI.mapaAberto;
+  let corpo = '';
+  if (aberto) {
+    const rows = kn.rows.filter(r=>!r.c.fora && (r.acum || r.orc>1)).sort((a,b)=>a.c.id.localeCompare(b.c.id));
+    let mx = 0; rows.forEach(r=>ms.forEach(m=>{ const v=(kn.A[m]||{})[r.c.id]; if(v) mx=Math.max(mx,v[0]+v[1]); }));
+    const cell = v => { if (!v) return `<td class="c muted">·</td>`; const a = Math.max(0.06, Math.min(1, Math.sqrt(v/mx))); return `<td class="c" style="background:color-mix(in oklab, var(--accent) ${Math.round(a*70)}%, transparent);${a>0.55?'color:var(--accent-ink)':''}" title="${money(v,false)}">${axisMoney(v)}</td>`; };
+    const totMes = ms.map(m=>rows.reduce((s,r)=>{ const v=(kn.A[m]||{})[r.c.id]; return s+(v?v[0]+v[1]:0); },0));
+    corpo = `<p class="lead" style="padding:0 16px">Cor mais forte = gasto maior. Toque no mês para abrir o painel dele.</p>
+    <div class="tbl-wrap" style="border:0;border-top:1px solid var(--line);border-radius:0;margin-top:12px"><table class="heat"><thead><tr><th>${kn.legado||kn.nivel===4?'Categoria':'Nível '+kn.nivel}</th>${ms.map(m=>`<th class="n"><button class="chip" style="padding:2px 8px" data-goto="${m}">${ymLabel(m)}</button></th>`).join('')}<th class="n">Acum.</th><th class="n">% orç.</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td><div class="catname">${esc(r.c.nome)}</div></td>${ms.map(m=>{ const v=(kn.A[m]||{})[r.c.id]; return cell(v?v[0]+v[1]:0); }).join('')}<td class="c">${money(r.acum)}</td><td class="c ${r.st==='crit'?'t-crit':''}">${isFinite(r.p)?pct(r.p,0):'—'}</td></tr>`).join('')}
+    <tr class="total"><td><b>Total do mês</b></td>${totMes.map(v=>`<td class="c ${v>kn.cheque?'t-crit':'t-good'}"><b>${axisMoney(v)}</b></td>`).join('')}<td class="c"><b>${money(kn.incorrido)}</b></td><td class="c"><b>${pct(kn.incorrido/(kn.orcExe||1),0)}</b></td></tr>
+    <tr><td class="muted">Cheque mensal</td>${ms.map(()=>`<td class="c muted">${axisMoney(kn.cheque)}</td>`).join('')}<td></td><td></td></tr>
+    </tbody></table></div>`;
+  }
+  return `<details class="panel mapa" id="mapa-gastos"${aberto?' open':''}><summary><span><b class="sub">Mapa de gastos</b><small>Últimos 12 meses por ${kn.legado||kn.nivel===4?'categoria':'item do nível '+kn.nivel} · toque para ${aberto?'fechar':'abrir'}</small></span><span class="mapa-x" aria-hidden="true">${aberto?'−':'+'}</span></summary>${corpo}</details>`;
 }
 
 /* ---------- ORÇAMENTO E OBRA ---------- */
@@ -2508,6 +2647,13 @@ document.addEventListener('click', e => {
   if (t.dataset.goto) { S.mes = t.dataset.goto; save(); location.hash='#painel'; return; }
   if (t.dataset.lancmes) { S.mes = t.dataset.lancmes; save(); render(); window.scrollTo({ top:0, behavior:'smooth' }); return; }
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
+  if (t.dataset.instipo) { UI.insTipo = t.dataset.instipo; UI.insAberta = null; UI.insItem = null; UI.insLimFam = 30; keepScroll(render); return; }
+  if (t.dataset.insfam) { UI.insAberta = UI.insAberta===t.dataset.insfam ? null : t.dataset.insfam; UI.insItem = null; keepScroll(render); return; }
+  if (t.dataset.insitem) { UI.insItem = UI.insItem===t.dataset.insitem ? null : t.dataset.insitem; keepScroll(render); return; }
+  if (t.dataset.insmais) { (UI.insLim ??= {})[t.dataset.insmais] = ((UI.insLim[t.dataset.insmais])||5) + 10; keepScroll(render); return; }
+  if (t.dataset.insmaisc) { (UI.insLimC ??= {})[t.dataset.insmaisc] = ((UI.insLimC[t.dataset.insmaisc])||20) + 20; keepScroll(render); return; }
+  if (t.id==='ins-maisfam') { UI.insLimFam = (UI.insLimFam||30) + 30; keepScroll(render); return; }
+  if (t.dataset.insren) { const o2 = obra(), f = calcInsumos(o2, S.mes).fams.find(x=>x.cod===t.dataset.insren); const nv = window.prompt('Nome da família '+t.dataset.insren+' (deixe vazio para voltar ao automático):', nomeFam(o2, f)); if (nv==null) return; o2.familias ??= {}; if (nv.trim()) o2.familias[f.cod] = nv.trim().toUpperCase(); else delete o2.familias[f.cod]; save(); keepScroll(render); return; }
   if (t.dataset.ancat) { UI.anCat = t.dataset.ancat; UI.anLim = 40; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
   if (t.dataset.anef) { UI.anEf = t.dataset.anef; UI.anAba = null; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
   if (t.dataset.anaba) { UI.anAba = t.dataset.anaba; UI.anTipo = ''; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
@@ -2536,11 +2682,12 @@ document.addEventListener('click', e => {
   if (t.id==='confirm-no') { UI.confirm=null; render(); return; }
   if (t.id==='delobra-ok') { NUVEM.apagar.push(o.id); delete S.obras[o.id]; S.atual = Object.keys(S.obras)[0]; S.mes=null; UI.confirm=null; save(); location.hash='#painel'; render(); return; }
 });
-document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; }, true);
+document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
 document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
   if (e.target.id==='busca') { UI.busca = e.target.value; clearTimeout(UI.bgT); UI.bgT = setTimeout(()=>{ const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); const l = document.getElementById('cat-list'); if (l) { l.innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); } }, 200); }
   if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>atualizarParte(renderCategorias, 'mes-res'), 250); }
+  if (e.target.id==='ins-busca') { UI.insBusca = e.target.value; UI.insAberta = null; UI.insItem = null; clearTimeout(UI.insT); UI.insT = setTimeout(()=>atualizarParte(renderInsumos, 'ins-res'), 250); }
   if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 40; clearTimeout(UI.anT); UI.anT = setTimeout(()=>atualizarParte(renderAnalise, 'an-res'), 250); }
   if (e.target.dataset.ef) { setEf(e.target.dataset.ef, parseInt(e.target.value)||0); }
 });
