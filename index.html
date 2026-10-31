@@ -681,6 +681,8 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .mapa-x{font:500 20px var(--mono);color:var(--muted)}
 .mapa[open]{padding-bottom:0}
 @media (max-width:720px){.ins-ih{grid-template-columns:1fr}.ins-g{grid-template-columns:repeat(2,minmax(0,1fr))}.ins-cr{grid-template-columns:70px minmax(0,1fr) auto;row-gap:2px}.ins-cr span:nth-child(3){grid-column:2;grid-row:2;text-align:left;color:var(--muted)}.ins-cr span:nth-child(4){grid-column:3;grid-row:2}.ins-cr b{grid-column:3;grid-row:1}.ins-cr.h{display:none}.ins-g b{white-space:normal}}
+.ins-mv{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);padding:6px 0 8px}
+.ins-mv select{max-width:100%;padding:5px 8px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -736,7 +738,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.0 · 31/10';
+const APP_VERSAO = 'v3.1 · 31/10';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2113,44 +2115,38 @@ function renderEfetivo(el){
 }
 
 /* ---------- MÊS A MÊS ---------- */
-/* ---------- INSUMOS · preços pagos por família (Cód. Alt. Compra do ERP: M/S + família + item) ---------- */
-const temAltCompra = o => { for (const m in o.itens||{}) { const r = o.itens[m]?.i?.[0]; if (r) return r.length > 13; } return false; };
-function nomeFamAuto(itens){
-  const limpa = d => norm(d).toUpperCase().replace(/^ORC?\s*-\s*/,'').replace(/^ORÇ?\s*-\s*/,'').replace(/^SRV\b/,'SERVICO').replace(/^SERVICO\s+(DE\s+)?/,'').replace(/[^\w\s/,.-]/g,' ').replace(/\s+/g,' ').trim();
-  const tot = itens.reduce((s,x)=>s+Math.abs(x.v),0) || 1;
-  const bests = {};
-  for (let L=3; L>=1; L--) {
-    const c = new Map();
-    itens.forEach(x => { const w = limpa(x.desc).split(' ').slice(0,L); if (w.length<L) return; const k = w.join(' ').replace(/[,.-]+$/,''); c.set(k, (c.get(k)||0) + Math.abs(x.v)); });
-    let best = null; for (const [k,v] of c) if (!best || v > best[1]) best = [k,v];
-    bests[L] = best;
-    if (best && best[1] >= ({3:0.75, 2:0.65, 1:0.4})[L]*tot && !/^(DE|E|DA|DO|EM|PARA)$/.test(best[0])) {
-      const nm = best[0].replace(/\s+(DE|E|DA|DO|EM|PARA|-)$/,'');
-      if (L===1 && nm.length<=4 && bests[2]) return bests[2][0].replace(/\s+(DE|E|DA|DO|EM|PARA|-)$/,'');   // palavra curta demais (ex.: "MAO"): usa duas
-      return nm;
-    }
-  }
-  return limpa(itens[0]?.desc||'') .split(' ').slice(0,2).join(' ') || 'SEM NOME';
+/* ---------- INSUMOS · preços pagos, agrupados pelo NOME do item (regras de engenharia) ----------
+   Itens genéricos do ERP ("material faturamento direto", "insumo para troca de item"…) são classificados
+   pelo serviço do orçamento onde foram lançados. O que sobrar vai para "Outros" e pode ser movido à mão. */
+const INS_REGRAS = (() => { const R = {"generico": "FATURAMENTO DIRETO|TROCA DE ITEM|INSUMO PADRAO|VERBA PARA|^ORC?\\s*-\\s*(MATERIA|CUSTOMIZ|EQUIPAMENTOS PARA|LUMINARIAS|MOBILIA|CUSTOS DE INCORP)", "M": [["Água, energia e comunicação", "FORNECIMENTO DE ENERGIA|ENERGIA ELETRICA|CONSUMO DE|\\bTELEFON|\\bINTERNET"], ["Elevadores e equipamentos prediais", "\\bELEVADOR|\\bGERADOR|TRANSFORMADOR|\\bCABINE|PRESSURIZ|EXAUST|AR CONDICIONADO|\\bSPLIT\\b|CONDENSADORA|EVAPORADORA|\\bCHILLER|AQUECEDOR|AQUECIMENTO|\\bBOMBA\\b|BOMBAS|MOTOBOMBA|ELETROBOMBA|PISCINA|\\bSAUNA|AUTOMACAO|\\bCFTV|INTERFONE|\\bCAMERA|CARREGADOR|DESUMIDIF|PLATAFORMA ELEVAT|CATRACA|PORTAO AUTOM|HEADER PACK|QUADRO DE COMANDO|CUBICULO|HIDROMASSAGEM|ASPIRACAO CENTRAL|GLUTAO|\\bFORNO"], ["Mobília e decoração", "\\bMOVEIS|\\bMOVEL\\b|CORTINA|PERSIANA|DECORA|PAPEL DE PAREDE|ELETRODOM|ELETRONICO|TAPETE|ADESIVO DECOR|PENDENTE|LUSTRE|ARANDELA|\\bOBJETO|PLAYGROUND|FITNESS|PILATES|CAFETEIRA|SANDUICHEIRA|GELADEIRA|REFRIGERADOR|\\bFOGAO|MICRO.?ONDAS|TELEVIS|\\bTV\\b|\\bSOFA|POLTRONA|CADEIRA|\\bMESA\\b|ESPREGUI|ALMOFADA|QUADRO DECOR|\\bPET\\b|PETPLAY|PETCARE|SINUCA|ESCULTURA"], ["Aço e armadura", "\\bACO CA|VERGALH|TELA SOLDADA|\\bARAME|CORDOALHA|ESPACADOR|BARRA DE ACO|TRELICA|ANCORAGEM EM FERRO|APOIO METALICO P/PROTENS"], ["Concreto", "\\bCONCRETO|\\bGRAUTE|\\bGROUT|ADITIVO"], ["Argamassas e rejuntes", "ARGAMASSA|REJUNTE|CHAPISCO|AUTONIVEL"], ["Cimento, areia e brita", "\\bCIMENTO|\\bAREIA|\\bBRITA|PEDRISCO|\\bCAL\\b|PO DE PEDRA|RACHAO|SAIBRO|ARGILA EXP"], ["Blocos e tijolos", "BLOCO (CERAMICO|DE CONCRETO|CONCRETO|ESTRUTURAL|DE VEDACAO|SILICO|CELULAR)|\\bTIJOLO|CANALETA|\\bVERGA\\b|CONTRAVERGA|MEIO BLOCO"], ["Formas e madeira de obra", "COMPENSAD|\\bSARRAFO|\\bCAIBRO|\\bTABUA|PONTALETE|\\bVIGA (DE )?(MADEIRA|PINUS|CAMBARA|EUCALIPTO)|PINUS BRUTO|EUCALIPTO|\\bPREGO|DESMOLDANTE|\\bFORMAS?\\b|\\bESCORA|MADEIRA BRUTA|PERNAMANCA"], ["EPI, EPC e segurança", "\\bEPI\\b|\\bEPC\\b|LUVA DE|LUVA NIT|LUVA VAQ|CAPACETE|\\bBOTINA|BOTA DE|\\bOCULOS|\\bCINTO|TALABARTE|UNIFORME|CAMISETA|\\bCALCA\\b|PROTETOR|TELA FACHAD|FACHADEIRA|TELA TAPUME|TELA DE PROTE|TELA MONOFIL|SINALIZ|\\bCONE\\b|\\bCORDA\\b|CINTA P/|LINHA DE VIDA|PLACA DE SINAL|TAPUME|BANDEJA|REDES? DE PROTE|EXTINTOR"], ["Esquadrias, vidros e guarda-corpos", "ESQUADRIA|ALUMINIO|\\bVIDRO|ESPELHO\\b|GUARDA.?CORPO|CONTRAMARCO|\\bBRISE|\\bBOX\\b|\\bJANELA|VENEZIANA|PELE DE VIDRO|\\bACM\\b"], ["Portas e ferragens", "\\bPORTAS?\\b|\\bALIZAR|BATENTE|FECHADURA|DOBRADICA|MACANETA|PUXADOR|\\bMOLA\\b|\\bTRINCO|FERRAGEM"], ["Granitos e mármores", "GRANITO|MARMORE|\\bPEDRA|QUARTZO|\\bSOLEIRA|PINGADEIRA|\\bBANCADA|SILESTONE|NANOGLASS|TRAVERTINO|ARDOSIA"], ["Louças e metais", "\\bBACIA|LAVATORIO|\\bCUBA|TORNEIRA|MISTURADOR|CHUVEIRO|\\bDUCHA|\\bASSENTO|\\bLOUCA|METAIS SANIT|\\bSIFAO|\\bENGATE|BANHEIRA|MICTORIO|VALVULA DE DESCARGA|CAIXA ACOPLADA|ACABAMENTO (DE REGISTRO|MONOCOMANDO)|SABONETEIRA|PAPELEIRA|TOALHEIRO|\\bCABIDE|VASO SANIT|DESENTUPIDOR|\\bSPUD|ESPUDE"], ["Pisos e revestimentos", "PORCELANATO|CERAMIC|AZULEJO|PASTILHA|\\bPISO|LAMINADO|VINILICO|RODAPE|REVESTIMENTO|ASSOALHO|\\bDECK|CARPETE|EMBORRACHADO"], ["Tintas e pintura", "\\bTINTA|MASSA CORRIDA|MASSA ACRIL|SELADOR|TEXTURA|VERNIZ|ESMALTE|\\bLIXA|\\bROLO\\b|FUNDO PREPAR|SOLVENTE|THINNER|PINTURA|GRAFIATO|\\bSTAIN|EPOXI|MASSA P/CALAFETAR"], ["Gesso, drywall e forros", "\\bGESSO|DRYWALL|PLACA ST|PLACA RU|PLACA RF|MONTANTE|PERFIL GUIA|\\bFORRO|FITA DE PAPEL|DRYFIX"], ["Impermeabilização", "IMPERMEAB|\\bMANTA|ASFALT|\\bPRIMER|VEDACIT|EMULSAO|CRISTALIZ|POLIUREIA|GEOCOMPOSTO|GEOTEXTIL|DRENAGEM"], ["Elétrica e iluminação", "\\bCABOS?\\b|\\bFIOS?\\b|ELETRODUTO|DISJUNTOR|QUADRO DE DISTR|QUADROS? ELETR|\\bQDC|\\bQDL|MIOLO QD|\\bTOMADA|INTERRUPTOR|LUMINARIA|LAMPADA|\\bLED\\b|REFLETOR|CONDULETE|ELETROCALHA|PERFILADO|CAIXA 4 ?X|CAIXA DE LUZ|CAIXA DE PASSAGEM|CAIXA PASSAGEM|BARRAMENTO|TERMINAL|CONECTOR|\\bDPS\\b|\\bSPDA|ATERRAMENTO|\\bHASTE|\\bRELE|CONTATOR|\\bSENSOR|\\bPLUG|CABLE|MATERIAIS? ELETRIC|CAIXA ELETRICA|\\bVDI\\b|TAMPAO.*ELET|MEDICAO|\\bCHAVE DE SEG|INTERTRAV"], ["Hidráulica e gás", "\\bTUBOS?\\b|CONEXAO|CONEXOES|JOELHO|\\bLUVA\\b|\\bTE\\b|REGISTRO|VALVULA|\\bPVC|CPVC|\\bPPR|\\bPEX\\b|ESGOTO|\\bRALO|CAIXA SIFONADA|HIDROMETRO|COLA PVC|ADAPTADOR|BUCHA DE RED|\\bCURVA|\\bNIPLE|RESERVATORIO|CAIXA D.?AGUA|\\bGAS\\b|MANGUEIRA|HIDRANTE|SPRINKLER|INCENDIO|\\bABRIGO|COTOVELO|TUBULAC|FILTRO|TAMPAO|AGUA POTAVEL"], ["Serralheria e estrutura metálica", "METALON|PERFIL METAL|PERFIL U\\b|PERFIL I\\b|CHAPA DE ACO|CHAPA GALV|CHAPA XADREZ|CANTONEIRA|SERRALHERIA|CORRIMAO|\\bINOX|\\bTELHA|\\bCALHA|\\bRUFO|PERGOLA|ESTRUTURA METAL|GRADIL|ALAMBRADO|BARRA REDONDA|\\bFERRO\\b|ARMARIO ACO|OLHAL|CUNHA"], ["Ferramentas e consumíveis", "FERRAMENTA|\\bDISCO|\\bBROCA|\\bSERRA\\b|MARTELO|PARAFUSO|\\bBUCHA|\\bFITA|SILICONE|ESPUMA|\\bCOLA\\b|ADESIVO|ARRUELA|\\bPORCA|ABRACADEIRA|CHUMBADOR|ELETRODO|\\bSOLDA|\\bLAMINA|ESPATULA|DESEMPEN|\\bCOLHER|\\bTRENA|\\bNIVEL|CARRINHO|\\bBALDE|\\bPA\\b|ENXADA|VASSOURA|ESCOVA|ESTOPA|\\bLONA|\\bSACO|FIXADOR|\\bPINO|BARRA ROSCADA|SELANTE|PARABOLT|ESCADA|NEOPRENE|\\bOLEO|LUBRIFIC|PECAS E ACESS|\\bTRAVA|REBOLO|MACARICO|CAMARA PNEU|PNEU|\\bREDE DE NYLON|LAVADORA|EXTENSAO|PERFURADOR|ROLAMENTO|TERMOFUSORA|CAIXA PLASTICA|ORGANIZADORA|PROLONGADOR|TELA HEXAGONAL"], ["Canteiro, escritório e limpeza", "COMBUSTIV|DIESEL|GASOLINA|ETANOL|AGUA MINERAL|GALAO|\\bCAFE|ACUCAR|\\bPAPEL|LIMPEZA|DETERGENTE|DESINFET|SACO DE LIXO|ESCRITORIO|\\bTONER|CARTUCHO|IMPRESS|CANETA|\\bCOPO|ALIMENT|MEDICAMENTO|\\bGELO\\b|LANCHE|REFEIC|BARRACAO|CONTAINER|\\bBOLO\\b|REFRIGERANTE|PREMIO|SECONCI|POLIMERO|FLOCULA|ISOPOR|GRAMPEADOR|\\bLIVRO|\\bEVA\\b|LENCOL|TRAVESSEIRO|COLCHAO|AGUA SANITARIA|BRINDE|CARVAO|VALE REFEI|SEGURO DE VIDA"], ["Paisagismo", "\\bGRAMA|\\bMUDAS?\\b|\\bPLANTAS?\\b|TERRA VEGETAL|SUBSTRATO|PAISAG|\\bADUBO|JARDIM|ARVORE|PALMEIRA"], ["Locação de equipamentos", "\\bGRUA|MINI ESCAVADEIRA|COMPRESSOR|LOCACAO|CREMALHE"]], "S": [["Mão de obra própria e benefícios", "MAO D?E? ?OBRA PROPRIA|\\bMO PROPRIA|APROPR|\\bFOLHA|BENEFICIO|VALE TRANSP|VALE COMPRA|VALE ALIM|VALE REFEI|CARTAO MULTI|PLANO DE SAUDE|SEGURO DE VIDA|\\bPJ\\b|MESTRE DE OBRAS|ESTAGI|ENGENHEIRO|ENG RESIDENTE|\\bCLT\\b|TECNICO DE SEGURANCA|ALMOXARIF|APONTADOR|ENCARREGADO|RATEAD|MO GERAL|DISSIDIO|DIARIA DE|EXAMES|SECONCI|\\bCURSO|TREINAMENTO|APRENDIZ|RECRUTAMENTO|SERVENTE|RECEPCAO DE PESSOAS|URGENCIA|EMERGENCIA|ODONTOLOG"], ["Projetos, consultorias e ensaios", "PROJETO|CONSULTORIA|SERVICO TECNICO|ASSESSORIA|SONDAGEM|TOPOGRAF|\\bLAUDO|ENSAIO|CONTROLE TECNOLOG|ACOMPANHAMENTO|\\bART\\b|\\bTAXA|LICENCA|ALVARA|CARTORIO|DESPACHANTE|VISTORIA|AUDITORIA|PLOTAGEM|\\bCOPIAS?\\b|INSPECAO|ANALISE|COMISSIONAMENTO|IMPRESSAO|GRAFICO"], ["Terraplenagem, contenção e fundação", "ESCAVA|TERRAPLEN|\\bESTACA|TIRANTE|PAREDE DIAFRAGMA|\\bCORTINA|CONTENCAO|\\bSOLO\\b|\\bATERRO|BOTA.?FORA|DEMOLI|FUNDAC|BLOCO DE COROAMENTO|BALDRAME|REBAIXAMENTO|LENCOL FREATICO|\\bHELICE|\\bRAIZ\\b|\\bSAPATA|TREPANACAO|CORTINEIRO"], ["Estrutura: forma, armação e concreto", "\\bFORMAS?\\b|ARMACAO|ARMADURA|CORTE.*DOBRA|CONCRET|BOMBEAMENTO|PROTENS|CORDOALHA|ESCORAMENTO|DESFORMA|\\bLAJES?\\b|\\bPILAR|\\bVIGAS?\\b|ESTRUTURA DE CONCRETO"], ["Alvenaria", "ALVENARIA|MARCACAO|ENCUNHA|\\bVERGA|\\bBONECA|ENCHIMENTO"], ["Reboco, emboço e contrapiso", "\\bEMBOCO|\\bREBOCO|CHAPISCO|REQUADRO|TALISCA|CONTRAPISO|REGULARIZ|\\bFRISO|ARGAMASSA|PREPARO DE SUPERFICIE|TRATAMENTO (EM|DE) (PAREDE|PISO)"], ["Assentamento de pisos e revestimentos", "ASSENT|PORCELANATO|CERAMIC|\\bPISO|REJUNT|RODAPE|GRANITO|MARMORE|\\bPEDRA|REVESTIMENTO|PASTILHA|AZULEJO|LAMINADO|VINILICO|BANCADA|NICHO"], ["Pintura", "PINTURA|EMASSAMENTO|TEXTURA|SELADOR|FUNDO PREPAR|\\bMASSA\\b|LIXAMENTO|GRAFIATO|VERNIZ|\\bTINTA"], ["Gesso, drywall e forros", "\\bGESSO|DRYWALL|\\bFORRO|\\bSHAFT|ALCAPAO|JUNTA DE DILATACAO|STEEL"], ["Impermeabilização", "IMPERMEAB|\\bMANTA|PROTECAO MECANICA|MEMBRANA"], ["Instalações elétricas, hidráulicas e especiais", "ELETRIC|HIDRAUL|INSTALAC|\\bINST\\b|TUBULAC|ELETRODUTO|\\bGAS\\b|\\bSPDA|AUTOMAC|AR CONDIC|\\bVAC\\b|CLIMATIZ|INCENDIO|SPRINKLER|ELEVADOR|CABEAMENTO|LOGICA|\\bCFTV|INTERFONE|AQUECIMENTO|ASPIRACAO|PRESSURIZ|EXAUST|HEADER|CUBICULO|CABINE|RAMAL|EXTINTOR"], ["Esquadrias, serralheria e marcenaria", "ESQUADRIA|SERRALHERIA|CONTRAMARCO|\\bVIDRO|GUARDA.?CORPO|\\bPORTAS?\\b|MARCENARIA|\\bMOVEIS|CORRIMAO|\\bSOLDA|ESTRUTURA METAL|COBERTURA|TELHADO|\\bCALHA|\\bRUFO|ESCULTURA|TORNEARIA|PLAYGROUND|DECORACAO"], ["Locação de equipamentos", "LOCACAO|ALUGUEL|\\bMUNCK|GUINDASTE|\\bGRUA|CACAMBA|BOBCAT|RETROESCAV|ESCAVADEIRA|\\bCAMINHAO|CREMALH|COMPRESSOR|\\bGERADOR|DEPRECIACAO|BALANCIM|ANDAIME|GUINCHO|PLATAFORMA"], ["Limpeza, manutenção e resíduos", "LIMPEZA|MANUTENCAO|CONSERVA|DEDETIZ|DESRATIZ|\\bCOLETA|RESIDUO|ENTULHO|DESENTUPI|JARDINAGEM|PAISAG|LAVAGEM|\\bPODA|REPARO|DESTINACAO"], ["Fretes e transportes", "\\bFRETE|TRANSPORTE|CARRETO|CONHECIMENTO|MUDANCA"], ["Vigilância e portaria", "VIGIL|SEGURANCA PATRIM|SEGURANCA E VIGIL|PORTARIA|MONITORAMENTO|ZELADORIA"], ["Água, energia e comunicação", "ENERGIA|\\bAGUA\\b|SANEAMENTO|TELEFON|INTERNET|COMUNICACAO|CORREIO"], ["Alimentação, viagens e eventos", "REFEIC|ALIMENTA|LANCHE|HOSPEDAGEM|\\bHOTEL|PASSAGEM AEREA|VIAGEM|COMBUSTIV|PEDAGIO|ESTACIONAMENTO|CONFRATERNIZ|\\bEVENTOS?\\b|BRINDE|MARKETING|CHURRASCO|BUFFET"]]}; const c = t => R[t].map(([n,p]) => [n, new RegExp(p)]); return { M:c('M'), S:c('S'), gen:new RegExp(R.generico) }; })();
+const INS_GRUPOS = { M:INS_REGRAS.M.map(x=>x[0]), S:INS_REGRAS.S.map(x=>x[0]) };
+const insTxt = d => norm(d).toUpperCase().replace(/^ORC?\s*-\s*/,'').replace(/^SRV\b/,'SERVICO');
+function insClasse(tipo, desc, apoio){
+  const tenta = txt => { for (const t of [tipo, tipo==='S'?'M':'S']) for (const [n,rx] of INS_REGRAS[t]) if (rx.test(txt)) return n; return null; };
+  if (!INS_REGRAS.gen.test(norm(desc).toUpperCase())) { const c = tenta(insTxt(desc)); if (c) return [c, 'nome']; }
+  for (const a of apoio) { if (!a) continue; const c = tenta(insTxt(a)); if (c) return [c, 'serviço']; }
+  return ['Outros', null];
 }
+const temAltCompra = o => { for (const m in o.itens||{}) { const r = o.itens[m]?.i?.[0]; if (r) return r.length > 13; } return false; };
 function calcInsumos(o, M){
-  const ck = o.id+'|'+M;
+  const ck = o.id+'|'+M+'|'+JSON.stringify(o.familias||{}).length;
   if (UI.insCache?.k === ck) return UI.insCache.v;
-  const fams = new Map(), itens = new Map();
+  const itens = new Map(), est = o.estrutura||{}, sv = o.insumos?.serv||{}, cm = catMapa(o);
   for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M).sort()) {
     const p = o.itens[ym];
     for (const r of p.i) {
-      const alt = String(p.s[r[13]] ?? '').trim(), mm = /^([A-Z])\.(\d{3})\./.exec(alt);
+      const alt = String(p.s[r[13]] ?? '').trim(), mm = /^([A-Z])\.\d{3}\./.exec(alt);
       const tipo = mm ? (mm[1]==='S' ? 'S' : 'M') : (r[9] ? 'S' : 'M');
-      const fam = mm ? mm[1]+'.'+mm[2] : tipo+'.—';
-      const desc = p.s[r[3]] ?? '';
+      const desc = String(p.s[r[3]] ?? '').trim();
       let un = unN(p.s[r[6]]), qtd = +r[5]||0; const val = +r[8]||0;
       if (un==='TON') { un = 'KG'; qtd *= 1000; } else if (un==='MIL') { un = 'UN'; qtd *= 1000; }   // mesma unidade para comparar preços
-      const key = fam+'|'+(alt || desc);
-      const it = itens.get(key) || { key, fam, tipo, alt, desc, compras:[], v:0 };
+      const key = tipo+'|'+(alt || desc);
+      const it = itens.get(key) || { key, tipo, alt, desc, compras:[], v:0, serv:r[11]||'', cat:r[0] };
       it.compras.push({ ym, dia:r[1]||'', doc:r[2]||'', forn:p.s[r[4]]||'(sem fornecedor)', qtd, un, val });
       it.v += val; itens.set(key, it);
     }
   }
+  const grupos = new Map(), ov = o.familias||{};
   for (const it of itens.values()) {
     const porUn = {}; it.compras.forEach(c => porUn[c.un] = (porUn[c.un]||0) + Math.abs(c.val));
     it.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
@@ -2161,23 +2157,27 @@ function calcInsumos(o, M){
     const ult = pr.slice().sort((a,b)=>(a.ym+String(a.dia).padStart(2,'0')).localeCompare(b.ym+String(b.dia).padStart(2,'0'))).pop();
     it.ult = ult ? ult.pu : null; it.ultYm = ult?.ym; it.ultDia = ult?.dia;
     it.nForn = new Set(it.compras.map(c=>c.forn)).size;
-    const f = fams.get(it.fam) || { cod:it.fam, tipo:it.tipo, itens:[], v:0 };
-    f.itens.push(it); f.v += it.v; fams.set(it.fam, f);
+    const apoio = [sv[it.serv], est[String(it.serv).slice(0,14)]?.[1], cm[it.cat]?.nome];
+    const [g, via] = ov[it.key] ? [ov[it.key], 'manual'] : insClasse(it.tipo, it.desc, apoio);
+    it.grupo = g; it.via = via;
+    const gk = it.tipo+'|'+g;
+    const G = grupos.get(gk) || { key:gk, nome:g, tipo:it.tipo, itens:[], v:0 };
+    G.itens.push(it); G.v += it.v; grupos.set(gk, G);
   }
-  for (const f of fams.values()) {
-    f.itens.sort((a,b)=>b.v-a.v);
-    const porUn = {}; f.itens.forEach(i => { if (i.q) porUn[i.un] = (porUn[i.un]||0) + i.vq; });
-    f.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
-    const comUn = f.itens.filter(i => i.un===f.un && i.q);
+  for (const G of grupos.values()) {
+    G.itens.sort((a,b)=>b.v-a.v);
+    const porUn = {}; G.itens.forEach(i => { if (i.q) porUn[i.un] = (porUn[i.un]||0) + i.vq; });
+    G.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
+    const comUn = G.itens.filter(i => i.un===G.un && i.q);
     const q = comUn.reduce((s,i)=>s+i.q,0), v = comUn.reduce((s,i)=>s+i.vq,0);
-    f.med = q && f.un && f.un!=='VB' && v >= 0.8*f.v ? v/q : null;   // média só quando 80%+ da família tem preço na mesma unidade
-    f.auto = f.cod.endsWith('—') ? 'SEM CÓDIGO NO ERP' : nomeFamAuto(f.itens);
+    const m = q ? v/q : 0, cv = m ? Math.sqrt(comUn.reduce((s,i)=>s+i.vq*(i.med-m)**2,0)/(v||1))/m : 9;
+    const vPrecos = G.itens.reduce((s,i)=>s+(i.q?i.vq:0),0);
+    G.med = q && G.un && G.un!=='VB' && v >= 0.8*vPrecos && cv <= 0.5 ? m : null;   // média só quando o grupo é homogêneo: 80%+ na mesma unidade e preços parecidos
   }
-  const v = { fams:[...fams.values()].sort((a,b)=>b.v-a.v) };
+  const v = { grupos:[...grupos.values()].sort((a,b)=> (a.nome==='Outros')-(b.nome==='Outros') || b.v-a.v) };
   UI.insCache = { k:ck, v };
   return v;
 }
-const nomeFam = (o, f) => (o.familias||{})[f.cod] || f.auto;
 const dtC = c => (c.dia ? String(c.dia).padStart(2,'0')+'/' : '') + MES[+c.ym.slice(5)-1] + '/' + c.ym.slice(2,4);
 const puU = (v, un) => v==null ? '—' : brl2.format(v) + (un && un!=='VB' ? '/'+un : '');
 
@@ -2187,60 +2187,60 @@ function renderInsumos(el){
   const tem = temAltCompra(o);
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">${esc(o.nome)} · compras até ${ymLabel(M)}</span><h2 class="sec">Insumos</h2></div>
-  <p class="lead">Preços pagos em cada compra, separados por família do ERP. Toque na família para ver os tipos e no tipo para ver cada compra.</p>
-  ${tem ? '' : `<div class="banner" style="flex-direction:column;align-items:flex-start;gap:8px"><span><b>Falta o código de família das compras.</b> Para separar os insumos por família (aço, concreto, bloco…), suba o arquivo do ERP de novo uma vez em <b>Lançar mês</b>. O app marca todos os meses sozinho e os valores não mudam.</span>${podeEditar()?'<a class="btn sec" href="#lancar">Ir para Lançar mês</a>':''}</div>`}
+  <p class="lead">Preços pagos em cada compra, agrupados pelo tipo de insumo. Toque no grupo para ver os itens e no item para ver cada compra.</p>
+  ${tem ? '' : `<div class="banner" style="flex-direction:column;align-items:flex-start;gap:8px"><span><b>Falta completar os códigos das compras.</b> Suba o arquivo do ERP de novo uma vez em <b>Lançar mês</b> para separar melhor materiais e serviços. Os valores não mudam.</span>${podeEditar()?'<a class="btn sec" href="#lancar">Ir para Lançar mês</a>':''}</div>`}
   <div class="seg big" role="group" aria-label="Tipo">
     <button data-instipo="M" aria-pressed="${tipo==='M'}">Materiais</button>
     <button data-instipo="S" aria-pressed="${tipo==='S'}">Serviços</button>
   </div>
   <input id="ins-busca" type="search" placeholder="Buscar insumo, código ou fornecedor" value="${esc(UI.insBusca||'')}" aria-label="Buscar insumo">
-  <div id="ins-res" style="display:flex;flex-direction:column;gap:10px">${tem ? insLista(o, M, tipo) : ''}</div>`;
+  <div id="ins-res" style="display:flex;flex-direction:column;gap:10px">${insLista(o, M, tipo)}</div>`;
 }
 function insLista(o, M, tipo){
   const A = calcInsumos(o, M), q = norm(UI.insBusca||'');
   const casa = it => !q || norm(it.desc).includes(q) || norm(it.alt).includes(q) || it.compras.some(c=>norm(c.forn).includes(q));
-  let fams = A.fams.filter(f => f.tipo===tipo).map(f => ({ f, its: q ? f.itens.filter(casa) : f.itens })).filter(x => x.its.length || (q && norm(nomeFam(o,x.f)).includes(q)));
-  if (q) fams = fams.map(x => ({ ...x, its: x.its.length ? x.its : x.f.itens }));
-  const tot = fams.reduce((s,x)=>s+x.f.v,0), lim = UI.insLimFam || 30;
-  if (!fams.length) return `<div class="panel empty"><p class="note">${q?'Nada encontrado para “'+esc(UI.insBusca)+'”.':'Nenhuma compra deste tipo até '+ymLabel(M)+'.'}</p></div>`;
-  return `<p class="note"><b>${fams.length}</b> família(s) · <b>${money(tot)}</b> em ${tipo==='M'?'materiais':'serviços'} até ${ymLabel(M)}${fams.length>lim?` · mostrando as ${lim} maiores`:''}.</p>
-    <div class="cards">${fams.slice(0, lim).map(x => insFam(o, x.f, x.its, !!q)).join('')}</div>
-    ${fams.length>lim?`<button class="btn sec" id="ins-maisfam" style="align-self:center">Mostrar mais famílias</button>`:''}`;
+  let gs = A.grupos.filter(g => g.tipo===tipo).map(g => ({ g, its: q ? g.itens.filter(casa) : g.itens })).filter(x => x.its.length || (q && norm(x.g.nome).includes(q)));
+  if (q) gs = gs.map(x => ({ ...x, its: x.its.length ? x.its : x.g.itens }));
+  const tot = gs.reduce((s,x)=>s+x.g.v,0);
+  if (!gs.length) return `<div class="panel empty"><p class="note">${q?'Nada encontrado para “'+esc(UI.insBusca)+'”.':'Nenhuma compra deste tipo até '+ymLabel(M)+'.'}</p></div>`;
+  return `<p class="note"><b>${gs.length}</b> grupo(s) · <b>${money(tot)}</b> em ${tipo==='M'?'materiais':'serviços'} até ${ymLabel(M)}.</p>
+    <div class="cards">${gs.map(x => insGrupo(o, x.g, x.its, !!q)).join('')}</div>`;
 }
-function insFam(o, f, its, forcaAberto){
-  const aberto = forcaAberto || UI.insAberta === f.cod;
-  const lim = (UI.insLim||{})[f.cod] || 5;
+function insGrupo(o, g, its, forcaAberto){
+  const aberto = forcaAberto || UI.insAberta === g.key;
+  const lim = (UI.insLim||{})[g.key] || 5;
   return `<div class="mcard ins-fam ${aberto?'open':''}">
-    <button class="mc-head" data-insfam="${esc(f.cod)}" aria-expanded="${aberto}">
-      <div class="mc-l"><span class="catname">${esc(nomeFam(o, f))}<small>${esc(f.cod)} · ${f.itens.length} tipo(s) · ${money(f.v)}</small></span></div>
-      <div class="mc-r"><b>${f.med!=null?puU(f.med, f.un):money(f.v)}</b><span class="muted">${f.med!=null?'média da família':'total gasto'}</span></div>
+    <button class="mc-head" data-insfam="${esc(g.key)}" aria-expanded="${aberto}">
+      <div class="mc-l"><span class="catname">${esc(g.nome)}<small>${g.itens.length} item(ns) · ${money(g.v)}</small></span></div>
+      <div class="mc-r"><b>${g.med!=null?puU(g.med, g.un):money(g.v)}</b><span class="muted">${g.med!=null?'preço médio':'total gasto'}</span></div>
     </button>
     ${aberto?`<div class="ins-body">
-      ${podeEditar()?`<button class="chip ins-ren" data-insren="${esc(f.cod)}">Renomear família</button>`:''}
-      ${its.slice(0, lim).map(it => insItem(it)).join('')}
-      ${its.length>lim?`<button class="chip" data-insmais="${esc(f.cod)}" style="align-self:center">Ver os outros ${its.length-lim} tipo(s)</button>`:''}
+      ${its.slice(0, lim).map(it => insItem(o, it)).join('')}
+      ${its.length>lim?`<button class="chip" data-insmais="${esc(g.key)}" style="align-self:center">Ver os outros ${its.length-lim} item(ns)</button>`:''}
     </div>`:''}
   </div>`;
 }
-function insItem(it){
+function insItem(o, it){
   const aberto = UI.insItem === it.key;
   const lim = (UI.insLimC||{})[it.key] || 20;
   const cs = it.compras.slice().sort((a,b)=>(b.ym+String(b.dia).padStart(2,'0')).localeCompare(a.ym+String(a.dia).padStart(2,'0')));
   return `<div class="ins-it ${aberto?'open':''}">
     <button class="ins-ih" data-insitem="${esc(it.key)}" aria-expanded="${aberto}">
-      <span class="ins-nm">${esc(it.desc||it.alt)}<small>${esc(it.alt||'sem código')} · ${it.compras.length} compra(s) · ${it.nForn} fornecedor(es)</small></span>
+      <span class="ins-nm">${esc(it.desc||it.alt)}<small>${esc(it.alt||'sem código')} · ${it.compras.length} compra(s) · ${it.nForn} fornecedor(es)${it.via==='serviço'?' · classificado pelo serviço':it.via==='manual'?' · classificado à mão':''}</small></span>
       <span class="ins-g">
-        <span><i>Último</i><b>${puU(it.ult, it.un)}</b><small>${it.ultYm?dtC({ym:it.ultYm,dia:it.ultDia}):''}</small></span>
+        <span><i>Último</i><b>${puU(it.ult, it.un)}</b><small>${it.ultYm?dtC({ym:it.ultYm,dia:it.ultDia}):'lançado só em R$, sem quantidade'}</small></span>
         <span><i>Média</i><b>${puU(it.med, it.un)}</b></span>
         <span><i>Mín – máx</i><b>${it.min!=null?brl2.format(it.min)+' – '+brl2.format(it.max):'—'}</b></span>
         <span><i>Comprado</i><b>${it.q?nfq(it.q)+' '+esc(it.un):'—'}</b><small>${money(it.v)}</small></span>
       </span>
     </button>
-    ${aberto?`<div class="ins-cp"><div class="ins-cr h"><span>Data</span><span>Fornecedor</span><span>Qtd.</span><span>Preço unit.</span><span>Valor</span></div>
+    ${aberto?`<div class="ins-cp">
+      ${podeEditar()?`<label class="ins-mv">Grupo <select data-insmover="${esc(it.key)}" aria-label="Mover para outro grupo">${['__auto', ...INS_GRUPOS[it.tipo], 'Outros'].map(n=>`<option value="${esc(n)}"${n==='__auto'?(!(o.familias||{})[it.key]?' selected':''):((o.familias||{})[it.key]===n?' selected':'')}>${n==='__auto'?'Automático ('+esc(insClasse(it.tipo, it.desc, [o.insumos?.serv?.[it.serv], o.estrutura?.[String(it.serv).slice(0,14)]?.[1], catMapa(o)[it.cat]?.nome])[0])+')':esc(n)}</option>`).join('')}</select></label>`:''}
+      <div class="ins-cr h"><span>Data</span><span>Fornecedor</span><span>Qtd.</span><span>Preço unit.</span><span>Valor</span></div>
       ${cs.slice(0, lim).map(c => { const emRS = Math.abs(c.qtd-c.val) <= 0.011*Math.max(1,Math.abs(c.val)); const pu = c.qtd && !emRS ? c.val/c.qtd : null;
         return `<div class="ins-cr"><span>${dtC(c)}</span><span>${esc(c.forn)}${c.doc?`<small>doc ${esc(c.doc)}</small>`:''}</span><span class="mono">${c.qtd&&!emRS?nfq(c.qtd)+' '+esc(c.un):'—'}</span><span class="mono ${pu!=null&&it.med?(pu>it.med*1.05?'t-crit':pu<it.med*0.95?'t-good':''):''}">${pu!=null?brl2.format(pu):'—'}</span><b class="mono">${brl2.format(c.val)}</b></div>`; }).join('')}
       ${cs.length>lim?`<button class="chip" data-insmaisc="${esc(it.key)}" style="align-self:center">Ver mais ${Math.min(20, cs.length-lim)} compra(s)</button>`:''}
-      <p class="note muted">Vermelho = acima da média do tipo; verde = abaixo.</p></div>`:''}
+      <p class="note muted">Vermelho = acima da média do item; verde = abaixo.</p></div>`:''}
   </div>`;
 }
 
@@ -2647,13 +2647,11 @@ document.addEventListener('click', e => {
   if (t.dataset.goto) { S.mes = t.dataset.goto; save(); location.hash='#painel'; return; }
   if (t.dataset.lancmes) { S.mes = t.dataset.lancmes; save(); render(); window.scrollTo({ top:0, behavior:'smooth' }); return; }
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
-  if (t.dataset.instipo) { UI.insTipo = t.dataset.instipo; UI.insAberta = null; UI.insItem = null; UI.insLimFam = 30; keepScroll(render); return; }
+  if (t.dataset.instipo) { UI.insTipo = t.dataset.instipo; UI.insAberta = null; UI.insItem = null; keepScroll(render); return; }
   if (t.dataset.insfam) { UI.insAberta = UI.insAberta===t.dataset.insfam ? null : t.dataset.insfam; UI.insItem = null; keepScroll(render); return; }
   if (t.dataset.insitem) { UI.insItem = UI.insItem===t.dataset.insitem ? null : t.dataset.insitem; keepScroll(render); return; }
   if (t.dataset.insmais) { (UI.insLim ??= {})[t.dataset.insmais] = ((UI.insLim[t.dataset.insmais])||5) + 10; keepScroll(render); return; }
   if (t.dataset.insmaisc) { (UI.insLimC ??= {})[t.dataset.insmaisc] = ((UI.insLimC[t.dataset.insmaisc])||20) + 20; keepScroll(render); return; }
-  if (t.id==='ins-maisfam') { UI.insLimFam = (UI.insLimFam||30) + 30; keepScroll(render); return; }
-  if (t.dataset.insren) { const o2 = obra(), f = calcInsumos(o2, S.mes).fams.find(x=>x.cod===t.dataset.insren); const nv = window.prompt('Nome da família '+t.dataset.insren+' (deixe vazio para voltar ao automático):', nomeFam(o2, f)); if (nv==null) return; o2.familias ??= {}; if (nv.trim()) o2.familias[f.cod] = nv.trim().toUpperCase(); else delete o2.familias[f.cod]; save(); keepScroll(render); return; }
   if (t.dataset.ancat) { UI.anCat = t.dataset.ancat; UI.anLim = 40; UI.anAberto = null; render(); document.getElementById('an-lista')?.scrollIntoView({block:'start'}); return; }
   if (t.dataset.anef) { UI.anEf = t.dataset.anef; UI.anAba = null; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
   if (t.dataset.anaba) { UI.anAba = t.dataset.anaba; UI.anTipo = ''; UI.anLim = 40; UI.anAberto = null; keepScroll(render); return; }
@@ -2697,6 +2695,7 @@ document.addEventListener('change', e => {
   if (t.id==='ordem') { UI.ordem = t.value; keepScroll(render); }
   if (t.id==='ordem-mes') { UI.ordemMes = t.value; keepScroll(render); }
   if (t.id==='an-cat') { UI.anCat = t.value; UI.anLim = 60; UI.anAberto = null; keepScroll(render); }
+  if (t.dataset.insmover) { const o2 = obra(); o2.familias ??= {}; if (t.value==='__auto') delete o2.familias[t.dataset.insmover]; else o2.familias[t.dataset.insmover] = t.value; UI.insCache = null; save(); toast('Item movido para '+(t.value==='__auto'?'o grupo automático':t.value)+'.'); keepScroll(render); return; }
   if (t.id==='agrupa-niv') { UI.gNivel = +t.value; keepScroll(render); }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
