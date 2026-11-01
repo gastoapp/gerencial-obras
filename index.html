@@ -654,6 +654,8 @@ body.fora header.top,body.fora nav.bottom{display:none}
 @media (min-width:721px) and (max-width:1250px){.st-desk .ver-tag{display:none}}
 @media (min-width:721px) and (max-width:1080px){header.top .top-row{flex-wrap:nowrap}.brand span{display:none}.ay-top{height:30px}.top-aux{margin-left:12px;padding-left:14px}nav.tabs a{padding-inline:8px}}
 /* insumos */
+.fx-bl{display:flex;flex-direction:column;gap:10px;margin-top:10px}.fx-r{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto 40px;gap:12px;align-items:center;font-size:13px}.fx-r b{font:500 13px var(--mono);white-space:nowrap}.fx-r em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}.cs small b.fx-fim{display:inline;font-size:inherit;font-weight:700}
+@media (max-width:720px){.fx-r{grid-template-columns:minmax(0,1fr) auto 34px;row-gap:4px}.fx-r .mtrack{grid-column:1/-1;grid-row:2}}
 .ins-fam{overflow:visible}
 .ins-fam.open>.mc-head{position:sticky;top:calc(var(--top-h,0px) + env(safe-area-inset-top,0px));z-index:8;background:var(--surface);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
 .ins-fam .ins-sub{overflow:visible}
@@ -756,7 +758,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.11 · 01/11';
+const APP_VERSAO = 'v3.12 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1437,6 +1439,63 @@ function drawPrev(){
   });
   el.innerHTML = s + '</svg>';
 }
+/* ---------- CUSTO FIXO: o que custa manter a obra aberta ----------
+   Categorias de indiretos (01.01.02 — canteiro, equipamentos, MO própria, segurança, vizinhança), sem o que segue a produção
+   (andaime, balancim, munck, escoras). Separado em blocos pelo nome do lançamento. */
+const mesesEntre = (a,b) => (+b.slice(0,4)*12 + +b.slice(5,7)) - (+a.slice(0,4)*12 + +a.slice(5,7));
+const FIXO_PROD = /ANDAIME|BALANCIM|MUNCK|ESCORA|SERRALHERIA/;
+const FIXO_BL = [["Equipe ADM e técnica",/FOLHA - ADM|ENGENHARIA CIVIL|BENEFICIO|PLANO DE|VALE TRANSP|ALIMENTA|CAFE|VIAGE|REFEIC|URGENCIA|ASSESSORIA ADM/],["Equipe de apoio à produção",/APOIO A PRODUCAO|VALE COMPRA|PREMIO/],["Equipamentos de prazo",/CREMALHE|LOCACAO DE EQUIP|MANUTENCAO DE EQUIP|PECAS|EQUIPAMENTO/],["Canteiro e consumos",/ENERGIA|AGUA|TELEFON|INTERNET|VIGILANCIA|LIMPEZA|CACAMBA|RESIDUO|PIPA|CATRACA|RADIO|COPIADORA|BARRACAO|AMBIENTAL|TOPOGRAF/],["Segurança do trabalho",/EXAMES|SEGURANCA DO TRAB|TELA FACHAD|BANDEJA|REDE DE SEG|UNIFORME|\bEPI\b/]];
+const fixoInd = c => /^01\.01\.02/.test(c);
+function fixoCalc(o, M){
+  if (!o.categorias.some(c => fixoInd(c.id))) return null;
+  const meses = Object.keys(o.itens||{}).filter(m=>m<=M).sort(); if (!meses.length) return null;
+  const porM = {}, porB = {}; let gastoInd = 0;
+  for (const m of meses) { const pk = o.itens[m]; for (const r of pk.i) { if (!fixoInd(r[0])) continue; gastoInd += +r[8]||0; const d = norm(pk.s[r[3]]||'').toUpperCase(); if (FIXO_PROD.test(d)) continue; porM[m] = (porM[m]||0) + (+r[8]||0); const b = (FIXO_BL.find(([,rx])=>rx.test(d))||['Outros do indireto'])[0]; ((porB[b] ??= {})[m] = (porB[b][m]||0) + (+r[8]||0)); } }
+  const ult = meses.slice(-6), med = ult.reduce((s,m)=>s+(porM[m]||0),0)/ult.length;
+  const orcInd = o.categorias.filter(c=>fixoInd(c.id)).reduce((s,c)=>s+(+c.eq||0)+(+c.mo||0)+(+c.mat||0),0);
+  const A = o.avancos||{}, fk = Object.keys(A).filter(k=>A[k].fisico!=null && k<=M).sort();
+  const serie = [...Array(12)].map((_,i)=>addMonths(M, i-11)).map(m => { const i = fk.indexOf(m), dv = i>0 ? A[m].fisico - A[fk[i-1]].fisico : null; return { m, fixo: porM[m]||0, pp: dv>0.001 ? (porM[m]||0)/(dv*100) : null }; });
+  const fis = A[fk.at(-1)]?.fisico || 0, u = fk.slice(-4), ritmo = u.length>1 ? (A[u.at(-1)].fisico - A[u[0]].fisico)/(u.length-1) : null;
+  const termino = fis >= 0.999 ? M : ritmo>0 ? addMonths(M, Math.ceil((1-fis)/ritmo - 1e-9)) : null;
+  const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length]).filter(x=>x[1]>0.5).sort((a,b)=>b[1]-a[1]);
+  return { med, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos };
+}
+function fixoHtml(o, M){
+  const F = fixoCalc(o, M); if (!F || !F.med) return '';
+  const mi = v => nf2.format(v/1e6)+' mi';
+  const pps = F.serie.filter(x=>x.pp!=null), atual = pps.find(x=>x.m===M), ini = pps.find(x=>x.m>=addMonths(M,-5));
+  const caro = atual && ini && atual !== ini && atual.pp > ini.pp*1.5;
+  const alvo = [F.termino, F.fim].filter(Boolean).sort().pop();
+  const nRest = alvo ? Math.max(0, mesesEntre(M, alvo)) : 0, aVir = nRest*F.med;
+  const estAt = F.gastoInd - F.orcInd, estFim = estAt + aVir;
+  const atraso = F.termino && F.fim && F.termino > F.fim ? mesesEntre(F.fim, F.termino) : 0;
+  UI.fixoData = { F, M };
+  return `<section class="panel p-fixo" aria-labelledby="t-fixo">
+    <div><h3 class="sub" id="t-fixo">Custo fixo</h3><p class="lead">O que custa manter a obra aberta: equipe, canteiro, equipamentos de prazo e segurança. Não entra andaime, balancim e munck, que seguem a produção.</p></div>
+    <div class="cheque-stats">
+      <div class="cs k-acc"><span>Custo fixo por mês</span><b>${money(F.med)}</b><small>média dos últimos 6 meses · ≈ ${money(F.med/30)} por dia</small></div>
+      <div class="cs ${caro?'k-crit':''}"><span>Fixo para cada 1% de avanço</span><b class="${caro?'t-crit':''}">${atual?money(atual.pp):'—'}</b><small>${atual?ymLabel(M)+(ini&&ini!==atual?` · era ${money(ini.pp)} em ${ymLabel(ini.m)}`:''):'lance o avanço físico do mês'}</small></div>
+      <div class="cs"><span>Fixo até o fim da obra</span><b>${money(aVir)}</b><small>${nRest} ${nRest===1?'mês':'meses'} × fixo${F.termino?` · término pelo ritmo ${ymLabel(F.termino)}`:''}${F.fim?` · contrato ${ymLabel(F.fim)}`:''}</small></div>
+      <div class="cs ${estFim>0?'k-crit':'k-good'}"><span>Indireto ${estAt>0?'acima':'abaixo'} do orçado</span><b class="${estAt>0?'t-crit':'t-good'}">${estAt>0?'+':'−'}${money(Math.abs(estAt))}</b><small>orçado ${mi(F.orcInd)} · gasto ${mi(F.gastoInd)}<br>no fim da obra: <b class="fx-fim ${estFim>0?'t-crit':'t-good'}">${estFim>0?'+':'−'}${mi(Math.abs(estFim))}</b></small></div>
+    </div>
+    ${atraso?`<div class="banner">O término pelo ritmo de avanço está ${atraso} ${atraso===1?'mês':'meses'} depois do contrato: são <b>${money(atraso*F.med)}</b> a mais de custo fixo.</div>`:`<p class="note">Cada mês a mais de obra custa <b>${money(F.med)}</b> só para mantê-la aberta.</p>`}
+    <div><span class="h4">Custo fixo mês a mês (R$ mil)</span><div class="chart" id="ch-fixo"></div></div>
+    <details class="pv-det" id="fx-det"${UI.fxAberto?' open':''}><summary><span>Do que é feito o fixo<small>média dos últimos 6 meses · toque para ${UI.fxAberto?'fechar':'abrir'}</small></span><b>${money(F.med)}</b></summary>
+      <div class="fx-bl">${F.blocos.map(([b,v])=>`<div class="fx-r"><span>${esc(b)}</span><div class="mtrack"><div class="mfill acc" style="width:${(v/F.blocos[0][1]*100).toFixed(1)}%"></div></div><b>${money(v)}</b><em>${pct(v/F.med,0)}</em></div>`).join('')}</div>
+    </details>
+  </section>`;
+}
+function drawFixo(){
+  const el = document.getElementById('ch-fixo'), D = UI.fixoData; if (!el || !D) return;
+  const { F, M } = D, mob = isMob(), W = Math.max(280, el.clientWidth||600), H = mob ? 150 : 180, pad = 4, top = 22, bot = 22;
+  const mx = Math.max(...F.serie.map(x=>x.fixo), F.med) || 1, bw = (W-pad*2)/F.serie.length, y = v => H-bot-(v/mx)*(H-top-bot);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Custo fixo de cada mês nos últimos 12 meses">`;
+  F.serie.forEach((x,i) => { const cx = pad+i*bw, h = H-bot-y(x.fixo), alto = x.fixo > F.med*1.15;
+    if (x.fixo) s += `<rect x="${cx+bw*.17}" y="${y(x.fixo)}" width="${bw*.66}" height="${h}" rx="3" fill="${alto?'var(--crit)':'var(--s1)'}" opacity="${x.m===M?1:.72}"/><text x="${cx+bw/2}" y="${y(x.fixo)-5}" text-anchor="middle" style="font:600 ${mob?9.5:11}px var(--mono);fill:var(--ink)">${Math.round(x.fixo/1e3)}</text>`;
+    s += `<text x="${cx+bw/2}" y="${H-6}" text-anchor="middle" style="font:${mob?10:11}px var(--body);fill:var(--muted)">${MES[+x.m.slice(5)-1]}</text>`; });
+  s += `<line x1="${pad}" x2="${W-pad}" y1="${y(F.med)}" y2="${y(F.med)}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  el.innerHTML = s + `</svg><p class="note muted"><span style="color:var(--warn)">- - -</span> média dos últimos 6 meses (${money(F.med)}) · barra vermelha: mês 15% acima dessa média.</p>`;
+}
 function renderPainel(el){
   const o = obra(), M = S.mes;
   if (!o.categorias.length) { el.innerHTML = `<div class="panel empty"><h2 class="sec">${esc(o.nome)}</h2><p class="note">Esta obra ainda não tem orçamento. Cadastre as categorias para o painel calcular os índices.</p><a class="btn" href="#orcamento">Cadastrar orçamento</a></div>`; return; }
@@ -1534,6 +1593,7 @@ function renderPainel(el){
     </a>
   </div>
 
+  ${fixoHtml(o, M)}
   ${prevHtml(previsao(o, k, M))}
   <section class="panel" aria-labelledby="t-cheque">
     <div><h3 class="sub" id="t-cheque">Cheque da obra</h3><p class="lead">Quanto a obra ainda poderia ter gasto até ${ymLabel(M)}.</p></div>
@@ -1570,7 +1630,7 @@ function renderPainel(el){
     <div class="chart" id="ch-fc"></div>
   </section>`;
 
-  drawPrev();
+  drawPrev(); drawFixo();
   drawCheque(k);
   drawForecast(o);
 }
@@ -2845,7 +2905,7 @@ document.addEventListener('click', e => {
   if (t.id==='confirm-no') { UI.confirm=null; render(); return; }
   if (t.id==='delobra-ok') { NUVEM.apagar.push(o.id); delete S.obras[o.id]; S.atual = Object.keys(S.obras)[0]; S.mes=null; UI.confirm=null; save(); location.hash='#painel'; render(); return; }
 });
-document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
+document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = 'média dos últimos 6 meses · toque para '+(e.target.open?'fechar':'abrir'); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
 document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
   if (e.target.id==='busca') { UI.busca = e.target.value; clearTimeout(UI.bgT); UI.bgT = setTimeout(()=>{ const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); const l = document.getElementById('cat-list'); if (l) { l.innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); } }, 200); }
