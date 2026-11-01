@@ -752,7 +752,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.5 · 31/10';
+const APP_VERSAO = 'v3.6 · 31/10';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2138,10 +2138,18 @@ const INS_GRUPOS = { M:[...new Set(INS_REGRAS.M.map(x=>x[0]))], S:[...new Set(IN
 const INS_SUB = (() => { const R = {"Elétrica e iluminação": [["Quadros, disjuntores e barramentos", "\\bQUADROS?\\b|\\bQDL|\\bQDC|MIOLO QD|DISJUNTOR|\\bDR\\b|INTERRUPTOR DIF|\\bDPS\\b|BARRAMENTO|CONTATOR|\\bRELE|BARRA DE COBRE|BARRA NEUTRO|MEDICAO|MEDIDOR|CHAVE DE SEG|INTERTRAV|\\bFUSIVEL|\\bTRAFO"], ["Cabos e fios", "\\bCABOS?\\b|\\bFIOS?\\b|CORDAO|\\bCABLE"], ["Eletrodutos, eletrocalhas e perfilados", "ELETRODUTO|ELETROCALHA|PERFILADO|LEITO PARA CABO|\\bDUTO|CORRUGADO|\\bVERGALHAO ROSC|TAMPA DE ELETROCALHA|SAIDA HORIZONTAL|SAIDA VERTICAL"], ["Caixas e conduletes", "\\bCAIXA|CONDULETE|\\bTAMPAO|\\bTAMPA CEGA"], ["Tomadas, interruptores e placas", "\\bTOMADA|INTERRUPTOR|\\bESPELHO|\\bPLACA\\b|\\bMODULO|\\bPLUG|\\bPULSADOR|\\bCAMPAINHA|DIMMER|SUPORTE 4X|\\bSUPORTE P/ ?(PLACA|MODULO)"], ["Iluminação", "LUMINARIA|LAMPADA|\\bLED\\b|REFLETOR|\\bSPOT|\\bARANDELA|\\bPLAFON|\\bFITA LED|DRIVER|REATOR|\\bBALIZADOR|ILUMINAC"], ["Aterramento e SPDA", "\\bSPDA|ATERRAMENTO|HASTE (DE )?COBRE|HASTE P/ ?ATERR|HASTE DE ATERR|CORDOALHA DE COBRE|MUFLA|CAPTOR|CAIXA DE INSPECAO"], ["Conectores, terminais e acessórios", "CONECTOR|TERMINAL|\\bFITA ISOL|\\bBUCHA|\\bARRUELA|ABRACADEIRA|\\bLACRE|\\bANILHA|IDENTIFIC|SPLIT BOLT|PRENSA.?CABO"], ["Sensores e automação", "\\bSENSOR|AUTOMAC|\\bTIMER|FOTOCELULA|MINUTERIA"]], "Hidráulica e gás": [["Incêndio", "HIDRANTE|SPRINKLER|\\bABRIGO|EXTINTOR|INCENDIO|\\bESGUICHO|MANGUEIRA DE INCE|CHUVEIRO AUTOM|\\bRECALQUE"], ["Gás", "\\bGAS\\b|\\bGLP|\\bGN\\b|REGULADOR DE PRESS"], ["Registros e válvulas", "REGISTRO|VALVULA|\\bTORNEIRA DE BOIA|\\bBOIA\\b|\\bRETENCAO"], ["Conexões", "CONEXAO|CONEXOES|JOELHO|\\bLUVA\\b|\\bTE\\b|\\bCURVA|ADAPTADOR|\\bNIPLE|BUCHA DE RED|COTOVELO|\\bJUNCAO|\\bTAMPAO|\\bCAP\\b|\\bPLUG|\\bUNIAO|\\bREDUCAO|\\bCRUZETA|FLANGE|ANEL DE VEDA|\\bCOLAR"], ["Tubos PEX, PPR e CPVC (água quente e fria)", "\\bPEX\\b|\\bPPR\\b|\\bCPVC|MULTICAMADA|MONOCAMADA|AQUATHERM|\\bPP-?R"], ["Tubos PVC e esgoto", "\\bTUBOS?\\b|ESGOTO|\\bPVC"], ["Ralos, caixas, mangueiras e acessórios", "\\bRALO|CAIXA SIFON|\\bCAIXA|\\bGRELHA|\\bSIFAO|HIDROMETRO|FILTRO|RESERVATORIO|CAIXA D.?AGUA|\\bCOLA\\b|ADESIVO|SOLUCAO LIMPADORA|VEDA ?ROSCA|\\bFITA|MANGUEIRA|CONTROLADOR|\\bTUBULAC"]]}; const o = {}; for (const g in R) o[g] = R[g].map(([n,p]) => [n, new RegExp(p)]); return o; })();
 const insSub = (grupo, desc) => { const rs = INS_SUB[grupo]; if (!rs) return null; const t = insTxt(desc); for (const [n,rx] of rs) if (rx.test(t)) return n; return 'Outros'; };
 const insTxt = d => norm(d).toUpperCase().replace(/^ORC?\s*-\s*/,'').replace(/^SRV\b/,'SERVICO');
+/* Regras de precisão (materiais): o que o item É vale mais que onde ele vai ("base de registro p/ drywall" é hidráulica) */
+const INS_PRE = [["EPI, EPC e segurança", "TRAVA.?QUEDA|SINALIZ|BANDEJA"], ["Elevadores e equipamentos prediais", "ASPIRACAO CENTRAL"], ["Louças e metais", "P/ ?(LAVATORIO|DUCHA|CHUVEIRO)|PARA (LAVATORIO|DUCHA|CHUVEIRO)"], ["Elétrica e iluminação", "P/ ?(ELETRODUTO|ELETROCALHA|CONDULETE|PERFILADO|TOMADAS?|ATERRAMENTO)\\b"], ["Ferramentas e consumíveis", "P/ ?CABO (DE )?ACO|^CABO (DE )?MADEIRA|^MANILHA|^ESTICADOR|^PENEIRA|^BALDE|^NIVELADOR|PARA MAQUINA|P/ ?MAQUINA"], ["Elevadores e equipamentos prediais", "P/ ?(PISCINA|ELEVADOR)"], ["Louças e metais", "^PIA\\b|SABONET"], ["Argamassas e rejuntes", "ADESIVO.*P/ ?(ARGAMASSA|CHAPISCO)"], ["Gesso, drywall e forros", "^(FITA|PARAFUSO|MASSA|PERFIL|CANTONEIRA)\\b.*P/ ?(PLACA )?DRY.?WALL"], ["Pisos e revestimentos", "MANTA.*ACUSTIC"], ["Canteiro, escritório e limpeza", "PROTECAO DE PISO|GEL ADESIVO"]].map(([n,p]) => [n, new RegExp(p)]);
 function insClasse(tipo, desc, apoio){
   const tenta = txt => { for (const t of [tipo, tipo==='S'?'M':'S']) for (const [n,rx] of INS_REGRAS[t]) if (rx.test(txt)) return n; return null; };
   const nomeBase = String(desc).split(' · ')[0];
-  if (!INS_REGRAS.gen.test(norm(nomeBase).toUpperCase())) { const c = tenta(insTxt(nomeBase)); if (c) return [c, 'nome']; }
+  if (!INS_REGRAS.gen.test(norm(nomeBase).toUpperCase())) {
+    const nome = insTxt(nomeBase);
+    if (tipo==='M') for (const [n,rx] of INS_PRE) if (rx.test(nome)) return [n, 'nome'];
+    const m = /\s(?:P\/|P\.\s|PARA\s|PRA\s)/.exec(nome);       // "X p/ Y": classifica pelo X (o que é), não pelo Y (onde vai)
+    if (m) { const h = nome.slice(0, m.index); for (const [n,rx] of INS_REGRAS[tipo]) if (rx.test(h)) return [n, 'nome']; }
+    const c = tenta(nome); if (c) return [c, 'nome'];
+  }
   for (const a of apoio) { if (!a) continue; const c = tenta(insTxt(a)); if (c) return [c, 'serviço']; }
   return ['Outros', null];
 }
@@ -2207,7 +2215,7 @@ function calcInsumos(o, M){
       it.v += val; itens.set(key, it);
     }
   }
-  const grupos = new Map(), ov = o.familias||{};
+  const grupos = new Map(), ov = o.familias||{}, semPreco = { M:{ n:0, v:0 }, S:{ n:0, v:0 } };
   for (const it of itens.values()) {
     const porUn = {}; it.compras.forEach(c => porUn[c.un] = (porUn[c.un]||0) + Math.abs(c.val));
     it.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
@@ -2228,6 +2236,7 @@ function calcInsumos(o, M){
     const ult = pr.slice().sort((a,b)=>(a.ym+String(a.dia).padStart(2,'0')).localeCompare(b.ym+String(b.dia).padStart(2,'0'))).pop();
     it.ult = ult ? ult.pu : null; it.ultYm = ult?.ym; it.ultDia = ult?.dia;
     it.nForn = new Set(it.compras.map(c=>c.forn)).size;
+    if (!it.pad || it.un==='VB') { semPreco[it.tipo].n++; semPreco[it.tipo].v += it.v; continue; }   // sem quantidade/preço unitário: não mostra
     const apoio = [sv[it.serv], est[String(it.serv).slice(0,14)]?.[1], cm[it.cat]?.nome].filter(t => t && !insGenerico(t));
     const auto = it.gen ? insClasseGen(o, it) : insClasse(it.tipo, it.desc, []);   // item com nome: só pelo nome; se o nome não diz, vai para Outros (com o nome à vista)
     it.auto = auto[0]; it.motivo = auto[2] || '';
@@ -2259,7 +2268,7 @@ function calcInsumos(o, M){
     const vPrecos = G.itens.reduce((s,i)=>s+(i.q?i.vq:0),0);
     G.med = q && G.un && G.un!=='VB' && v >= 0.8*vPrecos && cv <= 0.5 ? m : null;   // média só quando o grupo é homogêneo: 80%+ na mesma unidade e preços parecidos
   }
-  const v = { grupos:[...grupos.values()].sort((a,b)=> (a.nome==='Outros')-(b.nome==='Outros') || b.v-a.v) };
+  const v = { semPreco, grupos:[...grupos.values()].sort((a,b)=> (a.nome==='Outros')-(b.nome==='Outros') || b.v-a.v) };
   UI.insCache = { k:ck, v };
   return v;
 }
@@ -2292,7 +2301,7 @@ function insLista(o, M, tipo){
   const tot = gs.reduce((s,x)=>s+x.g.v,0);
   const foraHtml = foraIts.length ? insForaHtml(o, foraG, foraIts) : '';
   if (!gs.length) return foraHtml || `<div class="panel empty"><p class="note">${q?'Nada encontrado para “'+esc(UI.insBusca)+'”.':'Nenhuma compra deste tipo até '+ymLabel(M)+'.'}</p></div>`;
-  return `<p class="note"><b>${gs.length}</b> grupo(s) · <b>${money(tot)}</b> em ${tipo==='M'?'materiais':'serviços'} até ${ymLabel(M)}.</p>
+  return `<p class="note"><b>${gs.length}</b> grupo(s) · <b>${money(tot)}</b> em ${tipo==='M'?'materiais':'serviços'} com preço unitário até ${ymLabel(M)}.${A.semPreco[tipo].n?` <span class="muted">Lançamentos só em R$ (sem quantidade) não aparecem.</span>`:''}</p>
     <div class="cards">${gs.map(x => insGrupo(o, x.g, x.its, !!q)).join('')}</div>${foraHtml}`;
 }
 /* compras genéricas sem identificação segura: ficam à parte, fora dos grupos e das médias */
