@@ -758,7 +758,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.13 · 01/11';
+const APP_VERSAO = 'v3.14 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1459,9 +1459,9 @@ function fixoCalc(o, M){
   const serie = [...Array(12)].map((_,i)=>addMonths(M, i-11)).map(m => { const i = fk.indexOf(m), dv = i>0 ? A[m].fisico - A[fk[i-1]].fisico : null; return { m, fixo: porM[m]||0, pp: dv>0.001 ? (porM[m]||0)/(dv*100) : null }; });
   const fis = A[fk.at(-1)]?.fisico || 0, u = fk.slice(-4), ritmo = u.length>1 ? (A[u.at(-1)].fisico - A[u[0]].fisico)/(u.length-1) : null;
   const termino = fis >= 0.999 ? M : ritmo>0 ? addMonths(M, Math.ceil((1-fis)/ritmo - 1e-9)) : null;
-  const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length]).filter(x=>x[1]>0.5).sort((a,b)=>b[1]-a[1]);
+  const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length, v[M]||0]).filter(x=>x[1]>0.5||x[2]>0.5).sort((a,b)=>b[1]-a[1]);
   const itens = Object.fromEntries(Object.entries(its).map(([b,m]) => [b, Object.values(m).filter(x=>Math.abs(x.t)>0.5).map(x=>({ ...x, med:x.t/ult.length, forn:Object.entries(x.forn).sort((a,b)=>b[1]-a[1]) })).sort((a,b)=>b.t-a.t)]));
-  return { med, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos, itens, n:ult.length };
+  return { med, mes: porM[M]||0, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos, itens, n:ult.length };
 }
 function fixoHtml(o, M){
   const F = fixoCalc(o, M); if (!F || !F.med) return '';
@@ -1476,16 +1476,16 @@ function fixoHtml(o, M){
   return `<section class="panel p-fixo" aria-labelledby="t-fixo">
     <div><h3 class="sub" id="t-fixo">Custo fixo</h3><p class="lead">O que custa manter a obra aberta: equipe, canteiro, equipamentos de prazo e segurança. Não entra andaime, balancim e munck, que seguem a produção.</p></div>
     <div class="cheque-stats">
-      <div class="cs k-acc"><span>Custo fixo por mês</span><b>${money(F.med)}</b><small>média dos últimos 6 meses · ≈ ${money(F.med/30)} por dia</small></div>
+      <div class="cs ${F.mes>F.med*1.15?'k-crit':'k-acc'}"><span>Custo fixo de ${ymLabel(M)}</span><b class="${F.mes>F.med*1.15?'t-crit':''}">${money(F.mes)}</b><small>média de 6 meses ${money(F.med)} (${F.med?(F.mes>=F.med?'+':'−')+pct(Math.abs(F.mes/F.med-1),0):'—'}) · ≈ ${money(F.med/30)} por dia</small></div>
       <div class="cs ${caro?'k-crit':''}"><span>Fixo para cada 1% de avanço</span><b class="${caro?'t-crit':''}">${atual?money(atual.pp):'—'}</b><small>${atual?ymLabel(M)+(ini&&ini!==atual?` · era ${money(ini.pp)} em ${ymLabel(ini.m)}`:''):'lance o avanço físico do mês'}</small></div>
       <div class="cs"><span>Fixo até o fim da obra</span><b>${money(aVir)}</b><small>${nRest} ${nRest===1?'mês':'meses'} × fixo${F.termino?` · término pelo ritmo ${ymLabel(F.termino)}`:''}${F.fim?` · contrato ${ymLabel(F.fim)}`:''}</small></div>
       <div class="cs ${estFim>0?'k-crit':'k-good'}"><span>Indireto ${estAt>0?'acima':'abaixo'} do orçado</span><b class="${estAt>0?'t-crit':'t-good'}">${estAt>0?'+':'−'}${money(Math.abs(estAt))}</b><small>orçado ${mi(F.orcInd)} · gasto ${mi(F.gastoInd)}<br>no fim da obra: <b class="fx-fim ${estFim>0?'t-crit':'t-good'}">${estFim>0?'+':'−'}${mi(Math.abs(estFim))}</b></small></div>
     </div>
     ${atraso?`<div class="banner">O término pelo ritmo de avanço está ${atraso} ${atraso===1?'mês':'meses'} depois do contrato: são <b>${money(atraso*F.med)}</b> a mais de custo fixo.</div>`:`<p class="note">Cada mês a mais de obra custa <b>${money(F.med)}</b> só para mantê-la aberta.</p>`}
     <div><span class="h4">Custo fixo mês a mês (R$ mil)</span><div class="chart" id="ch-fixo"></div></div>
-    <details class="pv-det" id="fx-det"${UI.fxAberto?' open':''}><summary><span>Do que é feito o fixo<small>média dos últimos 6 meses · toque para ${UI.fxAberto?'fechar':'abrir'}</small></span><b>${money(F.med)}</b></summary>
-      <div class="fx-bl">${F.blocos.map(([b,v])=>{ const ab = UI.fxBl===b, its = F.itens[b]||[], lim = UI.fxTodos===b ? its.length : 8;
-        return `<div class="fx-g ${ab?'open':''}"><button class="fx-r" data-fxbl="${esc(b)}" aria-expanded="${ab}"><span>${esc(b)}<small>${its.length} item(ns) · toque para ${ab?'fechar':'ver'}</small></span><div class="mtrack"><div class="mfill acc" style="width:${(v/F.blocos[0][1]*100).toFixed(1)}%"></div></div><b>${money(v)}</b><em>${pct(v/F.med,0)}</em></button>
+    <details class="pv-det" id="fx-det"${UI.fxAberto?' open':''}><summary><span>Do que é feito o fixo<small>média dos últimos 6 meses · ${ymLabel(M)}: ${money(F.mes)} · toque para ${UI.fxAberto?'fechar':'abrir'}</small></span><b>${money(F.med)}</b></summary>
+      <div class="fx-bl">${F.blocos.map(([b,v,vm])=>{ const ab = UI.fxBl===b, its = F.itens[b]||[], lim = UI.fxTodos===b ? its.length : 8;
+        return `<div class="fx-g ${ab?'open':''}"><button class="fx-r" data-fxbl="${esc(b)}" aria-expanded="${ab}"><span>${esc(b)}<small>${ymLabel(M)}: ${money(vm)} · ${its.length} item(ns) · toque para ${ab?'fechar':'ver'}</small></span><div class="mtrack"><div class="mfill acc" style="width:${(v/F.blocos[0][1]*100).toFixed(1)}%"></div></div><b>${money(v)}</b><em>${pct(v/F.med,0)}</em></button>
         ${ab?`<div class="fx-its"><div class="fx-i h"><span>Item e fornecedor</span><span>Média/mês</span><span>${ymLabel(M)}</span></div>
           ${its.slice(0, lim).map(x=>`<div class="fx-i"><span>${esc(x.desc)}<small>${x.forn.slice(0,2).map(([n])=>esc(n)).join(' · ')}${x.forn.length>2?` · +${x.forn.length-2}`:''}</small></span><b>${money(x.med)}</b><b class="${x.mes?'':'muted'}">${x.mes?money(x.mes):'—'}</b></div>`).join('')}
           ${its.length>lim?`<button class="chip" data-fxtodos="${esc(b)}" style="align-self:center">Ver os outros ${its.length-lim} item(ns)</button>`:''}</div>`:''}</div>`; }).join('')}</div>
@@ -2915,7 +2915,7 @@ document.addEventListener('click', e => {
   if (t.id==='confirm-no') { UI.confirm=null; render(); return; }
   if (t.id==='delobra-ok') { NUVEM.apagar.push(o.id); delete S.obras[o.id]; S.atual = Object.keys(S.obras)[0]; S.mes=null; UI.confirm=null; save(); location.hash='#painel'; render(); return; }
 });
-document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = 'média dos últimos 6 meses · toque para '+(e.target.open?'fechar':'abrir'); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
+document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = sm.textContent.replace(/toque para \w+$/, 'toque para '+(e.target.open?'fechar':'abrir')); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
 document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
   if (e.target.id==='busca') { UI.busca = e.target.value; clearTimeout(UI.bgT); UI.bgT = setTimeout(()=>{ const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); const l = document.getElementById('cat-list'); if (l) { l.innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); } }, 200); }
