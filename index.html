@@ -647,11 +647,15 @@ body.fora header.top,body.fora nav.bottom{display:none}
   header.top nav.tabs{grid-area:tabs}
   .top-aux{grid-area:aux;height:auto;align-self:stretch;margin:10px 0 10px 18px;padding-left:22px;border-left:1px solid var(--band-line);display:flex;align-items:center}
   .ay-top{width:auto;height:clamp(36px,4.2vw,72px)}
+  .top-aux{flex-direction:column;justify-content:center;align-items:flex-end;gap:6px}
+  .st-desk .nst{display:none}
 }
+.nst-ay{display:none}
+@media (min-width:721px){.nst-ay{display:inline;align-self:flex-end;margin-right:2px}}
 @media (max-width:720px){header.top>.wrap{display:grid}.top-aux{margin:-4px 0 8px}}
-@media (min-width:721px) and (max-width:1560px){.st-desk .aut{display:none}}
+@media (min-width:721px) and (max-width:1280px){.st-desk .aut{display:none}}
 @media (min-width:721px) and (max-width:1400px){nav.tabs a{padding-inline:9px}}
-@media (min-width:721px) and (max-width:1250px){.st-desk .ver-tag{display:none}}
+@media (min-width:721px) and (max-width:1000px){.st-desk .ver-tag{display:none}}
 @media (min-width:721px) and (max-width:1080px){header.top .top-row{flex-wrap:nowrap}.brand span{display:none}.ay-top{height:30px}.top-aux{margin-left:12px;padding-left:14px}nav.tabs a{padding-inline:8px}}
 /* insumos */
 .fx-bl{display:flex;flex-direction:column;gap:6px;margin-top:10px}.fx-g{border-radius:8px}.fx-g.open{background:var(--surface2);padding-bottom:8px}button.fx-r{background:none;border:0;color:inherit;font:inherit;text-align:left;box-sizing:border-box;width:100%;cursor:pointer;padding:6px 8px;border-radius:8px}button.fx-r:hover{background:var(--surface2)}.fx-r span small{display:block;color:var(--muted);font-size:11px;margin-top:1px}.fx-its{display:flex;flex-direction:column;padding:0 10px}.fx-i{display:grid;grid-template-columns:minmax(0,1fr) 110px 110px;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:center}.fx-i.h{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:0}.fx-i span:nth-child(n+2),.fx-i b{text-align:right}.fx-i b{font:500 12.5px var(--mono);white-space:nowrap}.fx-i small{display:block;color:var(--muted);font-size:11px}.fx-its .chip{margin-top:6px}@media (max-width:720px){.fx-i{grid-template-columns:minmax(0,1fr) 84px 84px;gap:8px}.fx-i b{font-size:11.5px}}.fx-r{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto 40px;gap:12px;align-items:center;font-size:13px}.fx-r b{font:500 13px var(--mono);white-space:nowrap}.fx-r em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}.cs small b.fx-fim{display:inline;font-size:inherit;font-weight:700}
@@ -718,7 +722,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
       <button class="btn-band" id="btn-nova" aria-label="Nova obra">+ Obra</button>
       </div></div>
     </div>
-    <div class="top-aux"><img class="ay-top" src="ayoshii.svg" alt="A.Yoshii" width="170" height="26"><div class="top-st st-mob"><span class="ver-tag"></span><span class="nst" role="status"></span></div></div>
+    <div class="top-aux"><img class="ay-top" src="ayoshii.svg" alt="A.Yoshii" width="170" height="26"><span class="nst nst-ay" role="status"></span><div class="top-st st-mob"><span class="ver-tag"></span><span class="nst" role="status"></span></div></div>
     <nav class="tabs" aria-label="Páginas">
       <a href="#painel" data-v="painel">Painel</a>
       <a href="#categorias" data-v="categorias">Categorias</a>
@@ -758,7 +762,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.19 · 01/11';
+const APP_VERSAO = 'v3.20 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
