@@ -756,7 +756,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.10 · 01/11';
+const APP_VERSAO = 'v3.11 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2197,8 +2197,20 @@ function insOnde(o, serv, cat){
   const a = o.insumos?.serv?.[serv], b = o.estrutura?.[String(serv).slice(0,14)]?.[1], c = catMapa(o)[cat]?.nome;
   return [a,b,c].find(ok) || '';
 }
+/* Grupo escolhido à mão vale para todas as obras (mesmo código do ERP). Itens genéricos (por serviço) ficam só na obra. */
+const insChaveLocal = k => k.split('|').length > 2;
+function insEscolhas(o){
+  const r = {};
+  for (const x of Object.values(S.obras||{})) if (x !== o) for (const [k,g] of Object.entries(x.familias||{})) if (!insChaveLocal(k)) r[k] = g;
+  return Object.assign(r, o.familias||{});
+}
+function insMover(o, k, g){
+  const alvo = insChaveLocal(k) ? [o] : Object.values(S.obras||{});
+  for (const x of alvo) { if (g==='__auto') { if (x.familias) delete x.familias[k]; } else (x.familias ??= {})[k] = g; }
+  return alvo.length;
+}
 function calcInsumos(o, M){
-  const ck = o.id+'|'+M+'|'+JSON.stringify(o.familias||{}).length;
+  const ovT = insEscolhas(o), ck = o.id+'|'+M+'|'+JSON.stringify(ovT).length;
   if (UI.insCache?.k === ck) return UI.insCache.v;
   const itens = new Map(), est = o.estrutura||{}, sv = o.insumos?.serv||{}, cm = catMapa(o);
   for (const ym of Object.keys(o.itens||{}).filter(m=>m<=M).sort()) {
@@ -2219,7 +2231,7 @@ function calcInsumos(o, M){
       it.v += val; itens.set(key, it);
     }
   }
-  const grupos = new Map(), ov = o.familias||{}, semPreco = { M:{ n:0, v:0 }, S:{ n:0, v:0 } };
+  const grupos = new Map(), ov = ovT, semPreco = { M:{ n:0, v:0 }, S:{ n:0, v:0 } };
   for (const it of itens.values()) {
     const porUn = {}; it.compras.forEach(c => porUn[c.un] = (porUn[c.un]||0) + Math.abs(c.val));
     it.un = Object.entries(porUn).sort((a,b)=>b[1]-a[1])[0]?.[0] || '';
@@ -2365,7 +2377,7 @@ function insItem(o, it){
       </span>
     </button>
     ${aberto?`<div class="ins-cp">
-      ${podeEditar()?`<label class="ins-mv">Grupo <select data-insmover="${esc(it.key)}" aria-label="Mover para outro grupo">${['__auto', ...INS_GRUPOS[it.tipo], 'Outros', '__fora'].map(n=>`<option value="${esc(n)}"${n==='__auto'?(!(o.familias||{})[it.key]?' selected':''):((o.familias||{})[it.key]===n?' selected':'')}>${n==='__auto'?'Automático ('+esc(it.auto==='__fora'?'fora da análise':it.auto)+')':n==='__fora'?'Fora da análise':esc(n)}</option>`).join('')}</select></label>`:''}
+      ${podeEditar()?`<label class="ins-mv">Grupo <select data-insmover="${esc(it.key)}" aria-label="Mover para outro grupo">${['__auto', ...INS_GRUPOS[it.tipo], 'Outros', '__fora'].map(n=>`<option value="${esc(n)}"${n==='__auto'?(it.via!=='manual'?' selected':''):(it.via==='manual'&&it.grupo===n?' selected':'')}>${n==='__auto'?'Automático ('+esc(it.auto==='__fora'?'fora da análise':it.auto)+')':n==='__fora'?'Fora da análise':esc(n)}</option>`).join('')}</select></label>`:''}
       ${it.grupo==='__fora'&&it.motivo?`<p class="note"><b>Por que está fora:</b> ${esc(it.motivo)}.</p>`:''}
       ${it.fora.length?`<div class="ins-fora"><span class="h4">Fora do padrão · ${it.fora.length} compra(s) a mais de ${Math.round(INS_TOL*100)}% das compras da mesma época</span>
         ${it.fora.slice().sort((a,b)=>Math.abs(b.pu/b.ref-1)-Math.abs(a.pu/a.ref-1)).slice(0, (UI.insForaLim||{})[it.key]||5).map(c => insCompra(c, it, true)).join('')}
@@ -2848,7 +2860,7 @@ document.addEventListener('change', e => {
   if (t.id==='ordem') { UI.ordem = t.value; keepScroll(render); }
   if (t.id==='ordem-mes') { UI.ordemMes = t.value; keepScroll(render); }
   if (t.id==='an-cat') { UI.anCat = t.value; UI.anLim = 60; UI.anAberto = null; keepScroll(render); }
-  if (t.dataset.insmover) { const o2 = obra(); o2.familias ??= {}; if (t.value==='__auto') delete o2.familias[t.dataset.insmover]; else o2.familias[t.dataset.insmover] = t.value; UI.insCache = null; save(); toast('Item movido para '+(t.value==='__auto'?'o grupo automático':t.value==='__fora'?'fora da análise':t.value)+'.'); keepScroll(render); return; }
+  if (t.dataset.insmover) { const n = insMover(obra(), t.dataset.insmover, t.value); UI.insCache = null; save(); toast('Item movido para '+(t.value==='__auto'?'o grupo automático':t.value==='__fora'?'fora da análise':t.value)+(n>1?' em todas as obras':'')+'.'); keepScroll(render); return; }
   if (t.id==='agrupa-niv') { UI.gNivel = +t.value; keepScroll(render); }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
