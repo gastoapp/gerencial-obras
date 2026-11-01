@@ -654,7 +654,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 @media (min-width:721px) and (max-width:1250px){.st-desk .ver-tag{display:none}}
 @media (min-width:721px) and (max-width:1080px){header.top .top-row{flex-wrap:nowrap}.brand span{display:none}.ay-top{height:30px}.top-aux{margin-left:12px;padding-left:14px}nav.tabs a{padding-inline:8px}}
 /* insumos */
-.fx-bl{display:flex;flex-direction:column;gap:10px;margin-top:10px}.fx-r{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto 40px;gap:12px;align-items:center;font-size:13px}.fx-r b{font:500 13px var(--mono);white-space:nowrap}.fx-r em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}.cs small b.fx-fim{display:inline;font-size:inherit;font-weight:700}
+.fx-bl{display:flex;flex-direction:column;gap:6px;margin-top:10px}.fx-g{border-radius:8px}.fx-g.open{background:var(--surface2);padding-bottom:8px}button.fx-r{background:none;border:0;color:inherit;font:inherit;text-align:left;box-sizing:border-box;width:100%;cursor:pointer;padding:6px 8px;border-radius:8px}button.fx-r:hover{background:var(--surface2)}.fx-r span small{display:block;color:var(--muted);font-size:11px;margin-top:1px}.fx-its{display:flex;flex-direction:column;padding:0 10px}.fx-i{display:grid;grid-template-columns:minmax(0,1fr) 110px 110px;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:center}.fx-i.h{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:0}.fx-i span:nth-child(n+2),.fx-i b{text-align:right}.fx-i b{font:500 12.5px var(--mono);white-space:nowrap}.fx-i small{display:block;color:var(--muted);font-size:11px}.fx-its .chip{margin-top:6px}@media (max-width:720px){.fx-i{grid-template-columns:minmax(0,1fr) 84px 84px;gap:8px}.fx-i b{font-size:11.5px}}.fx-r{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto 40px;gap:12px;align-items:center;font-size:13px}.fx-r b{font:500 13px var(--mono);white-space:nowrap}.fx-r em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}.cs small b.fx-fim{display:inline;font-size:inherit;font-weight:700}
 @media (max-width:720px){.fx-r{grid-template-columns:minmax(0,1fr) auto 34px;row-gap:4px}.fx-r .mtrack{grid-column:1/-1;grid-row:2}}
 .ins-fam{overflow:visible}
 .ins-fam.open>.mc-head{position:sticky;top:calc(var(--top-h,0px) + env(safe-area-inset-top,0px));z-index:8;background:var(--surface);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
@@ -758,7 +758,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.12 · 01/11';
+const APP_VERSAO = 'v3.13 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1449,16 +1449,19 @@ const fixoInd = c => /^01\.01\.02/.test(c);
 function fixoCalc(o, M){
   if (!o.categorias.some(c => fixoInd(c.id))) return null;
   const meses = Object.keys(o.itens||{}).filter(m=>m<=M).sort(); if (!meses.length) return null;
-  const porM = {}, porB = {}; let gastoInd = 0;
-  for (const m of meses) { const pk = o.itens[m]; for (const r of pk.i) { if (!fixoInd(r[0])) continue; gastoInd += +r[8]||0; const d = norm(pk.s[r[3]]||'').toUpperCase(); if (FIXO_PROD.test(d)) continue; porM[m] = (porM[m]||0) + (+r[8]||0); const b = (FIXO_BL.find(([,rx])=>rx.test(d))||['Outros do indireto'])[0]; ((porB[b] ??= {})[m] = (porB[b][m]||0) + (+r[8]||0)); } }
-  const ult = meses.slice(-6), med = ult.reduce((s,m)=>s+(porM[m]||0),0)/ult.length;
+  const porM = {}, porB = {}, its = {}; let gastoInd = 0;
+  const ult = meses.slice(-6), u6 = new Set(ult);
+  for (const m of meses) { const pk = o.itens[m]; for (const r of pk.i) { if (!fixoInd(r[0])) continue; const v = +r[8]||0; gastoInd += v; const desc = String(pk.s[r[3]]||'').trim(), d = norm(desc).toUpperCase(); if (FIXO_PROD.test(d)) continue; porM[m] = (porM[m]||0) + v; const b = (FIXO_BL.find(([,rx])=>rx.test(d))||['Outros do indireto'])[0]; ((porB[b] ??= {})[m] = (porB[b][m]||0) + v);
+    if (u6.has(m)) { const it = ((its[b] ??= {})[desc] ??= { desc, t:0, mes:0, forn:{} }); it.t += v; if (m===M) it.mes += v; const fn = pk.s[r[4]] || '(sem fornecedor)'; it.forn[fn] = (it.forn[fn]||0) + v; } } }
+  const med = ult.reduce((s,m)=>s+(porM[m]||0),0)/ult.length;
   const orcInd = o.categorias.filter(c=>fixoInd(c.id)).reduce((s,c)=>s+(+c.eq||0)+(+c.mo||0)+(+c.mat||0),0);
   const A = o.avancos||{}, fk = Object.keys(A).filter(k=>A[k].fisico!=null && k<=M).sort();
   const serie = [...Array(12)].map((_,i)=>addMonths(M, i-11)).map(m => { const i = fk.indexOf(m), dv = i>0 ? A[m].fisico - A[fk[i-1]].fisico : null; return { m, fixo: porM[m]||0, pp: dv>0.001 ? (porM[m]||0)/(dv*100) : null }; });
   const fis = A[fk.at(-1)]?.fisico || 0, u = fk.slice(-4), ritmo = u.length>1 ? (A[u.at(-1)].fisico - A[u[0]].fisico)/(u.length-1) : null;
   const termino = fis >= 0.999 ? M : ritmo>0 ? addMonths(M, Math.ceil((1-fis)/ritmo - 1e-9)) : null;
   const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length]).filter(x=>x[1]>0.5).sort((a,b)=>b[1]-a[1]);
-  return { med, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos };
+  const itens = Object.fromEntries(Object.entries(its).map(([b,m]) => [b, Object.values(m).filter(x=>Math.abs(x.t)>0.5).map(x=>({ ...x, med:x.t/ult.length, forn:Object.entries(x.forn).sort((a,b)=>b[1]-a[1]) })).sort((a,b)=>b.t-a.t)]));
+  return { med, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos, itens, n:ult.length };
 }
 function fixoHtml(o, M){
   const F = fixoCalc(o, M); if (!F || !F.med) return '';
@@ -1481,7 +1484,12 @@ function fixoHtml(o, M){
     ${atraso?`<div class="banner">O término pelo ritmo de avanço está ${atraso} ${atraso===1?'mês':'meses'} depois do contrato: são <b>${money(atraso*F.med)}</b> a mais de custo fixo.</div>`:`<p class="note">Cada mês a mais de obra custa <b>${money(F.med)}</b> só para mantê-la aberta.</p>`}
     <div><span class="h4">Custo fixo mês a mês (R$ mil)</span><div class="chart" id="ch-fixo"></div></div>
     <details class="pv-det" id="fx-det"${UI.fxAberto?' open':''}><summary><span>Do que é feito o fixo<small>média dos últimos 6 meses · toque para ${UI.fxAberto?'fechar':'abrir'}</small></span><b>${money(F.med)}</b></summary>
-      <div class="fx-bl">${F.blocos.map(([b,v])=>`<div class="fx-r"><span>${esc(b)}</span><div class="mtrack"><div class="mfill acc" style="width:${(v/F.blocos[0][1]*100).toFixed(1)}%"></div></div><b>${money(v)}</b><em>${pct(v/F.med,0)}</em></div>`).join('')}</div>
+      <div class="fx-bl">${F.blocos.map(([b,v])=>{ const ab = UI.fxBl===b, its = F.itens[b]||[], lim = UI.fxTodos===b ? its.length : 8;
+        return `<div class="fx-g ${ab?'open':''}"><button class="fx-r" data-fxbl="${esc(b)}" aria-expanded="${ab}"><span>${esc(b)}<small>${its.length} item(ns) · toque para ${ab?'fechar':'ver'}</small></span><div class="mtrack"><div class="mfill acc" style="width:${(v/F.blocos[0][1]*100).toFixed(1)}%"></div></div><b>${money(v)}</b><em>${pct(v/F.med,0)}</em></button>
+        ${ab?`<div class="fx-its"><div class="fx-i h"><span>Item e fornecedor</span><span>Média/mês</span><span>${ymLabel(M)}</span></div>
+          ${its.slice(0, lim).map(x=>`<div class="fx-i"><span>${esc(x.desc)}<small>${x.forn.slice(0,2).map(([n])=>esc(n)).join(' · ')}${x.forn.length>2?` · +${x.forn.length-2}`:''}</small></span><b>${money(x.med)}</b><b class="${x.mes?'':'muted'}">${x.mes?money(x.mes):'—'}</b></div>`).join('')}
+          ${its.length>lim?`<button class="chip" data-fxtodos="${esc(b)}" style="align-self:center">Ver os outros ${its.length-lim} item(ns)</button>`:''}</div>`:''}</div>`; }).join('')}</div>
+      <p class="note muted" style="margin-top:8px">Média/mês: soma dos últimos ${F.n} meses ÷ ${F.n}.</p>
     </details>
   </section>`;
 }
@@ -2871,6 +2879,8 @@ document.addEventListener('click', e => {
   if (t.dataset.lancmes) { S.mes = t.dataset.lancmes; save(); render(); window.scrollTo({ top:0, behavior:'smooth' }); return; }
   if (t.dataset.irmes) { S.mes = t.dataset.irmes; save(); keepScroll(render); return; }
   if (t.dataset.instipo) { UI.insTipo = t.dataset.instipo; UI.insAberta = null; UI.insItem = null; keepScroll(render); return; }
+  if (t.dataset.fxbl) { UI.fxBl = UI.fxBl===t.dataset.fxbl ? null : t.dataset.fxbl; UI.fxTodos = null; keepScroll(render); return; }
+  if (t.dataset.fxtodos) { UI.fxTodos = t.dataset.fxtodos; keepScroll(render); return; }
   if (t.dataset.insfam) { const k = t.dataset.insfam, fecha = UI.insAberta===k; UI.insAberta = fecha ? null : k; UI.insItem = null; keepScroll(render); if (fecha) insVolta('[data-insfam="'+CSS.escape(k)+'"]', 0); return; }
   if (t.dataset.insforamais) { (UI.insForaLim ??= {})[t.dataset.insforamais] = 999; keepScroll(render); return; }
   if (t.dataset.inssub) { const k = t.dataset.inssub, fecha = UI.insSubAberto===k; UI.insSubAberto = fecha ? null : k; UI.insItem = null; keepScroll(render); if (fecha) insVolta('[data-inssub="'+CSS.escape(k)+'"]', 1); return; }
