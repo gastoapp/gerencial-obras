@@ -758,7 +758,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.15 · 01/11';
+const APP_VERSAO = 'v3.16 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1444,23 +1444,33 @@ function drawPrev(){
    (andaime, balancim, munck, escoras). Separado em blocos pelo nome do lançamento. */
 const mesesEntre = (a,b) => (+b.slice(0,4)*12 + +b.slice(5,7)) - (+a.slice(0,4)*12 + +a.slice(5,7));
 const FIXO_PROD = /ANDAIME|BALANCIM|MUNCK|ESCORA|SERRALHERIA/;
-const FIXO_BL = [["Equipe ADM e técnica",/FOLHA - ADM|ENGENHARIA CIVIL|BENEFICIO|PLANO DE|VALE TRANSP|ALIMENTA|CAFE|VIAGE|REFEIC|URGENCIA|ASSESSORIA ADM/],["Equipe de apoio à produção",/APOIO A PRODUCAO|VALE COMPRA|PREMIO/],["Equipamentos de prazo",/CREMALHE|LOCACAO DE EQUIP|MANUTENCAO DE EQUIP|PECAS|EQUIPAMENTO/],["Canteiro e consumos",/ENERGIA|AGUA|TELEFON|INTERNET|VIGILANCIA|LIMPEZA|CACAMBA|RESIDUO|PIPA|CATRACA|RADIO|COPIADORA|BARRACAO|AMBIENTAL|TOPOGRAF/],["Segurança do trabalho",/EXAMES|SEGURANCA DO TRAB|TELA FACHAD|BANDEJA|REDE DE SEG|UNIFORME|\bEPI\b/]];
+const FIXO_BL = [["Equipe ADM e técnica",/FOLHA - ADM|ENGENHARIA CIVIL|BENEFICIO|PLANO DE|VALE TRANSP|ALIMENTA|CAFE|VIAGE|REFEIC|URGENCIA|ASSESSORIA ADM/],["Equipe de apoio à produção",/APOIO A PRODUCAO|VALE COMPRA|PREMIO/],["Equipamentos de prazo",/CREMALHE|LOCACAO DE EQUIP|MANUTENCAO DE EQUIP|PECAS|EQUIPAMENTO/],["Canteiro e consumos",/ENERGIA|AGUA|TELEFON|INTERNET|VIGILANCIA|LIMPEZA|CACAMBA|RESIDUO|PIPA|CATRACA|RADIO|COPIADORA|BARRACAO|AMBIENTAL|TOPOGRAF/],["Bandejas e redes de proteção",/BANDEJA|REDES? DE (SEGURANCA|PROTECAO)/]];
 const fixoInd = c => /^01\.01\.02/.test(c);
 function fixoCalc(o, M){
   if (!o.categorias.some(c => fixoInd(c.id))) return null;
   const meses = Object.keys(o.itens||{}).filter(m=>m<=M).sort(); if (!meses.length) return null;
-  const porM = {}, porB = {}, its = {}; let gastoInd = 0;
-  const ult = meses.slice(-6), u6 = new Set(ult);
-  for (const m of meses) { const pk = o.itens[m]; for (const r of pk.i) { if (!fixoInd(r[0])) continue; const v = +r[8]||0; gastoInd += v; const desc = String(pk.s[r[3]]||'').trim(), d = norm(desc).toUpperCase(); if (FIXO_PROD.test(d)) continue; porM[m] = (porM[m]||0) + v; const b = (FIXO_BL.find(([,rx])=>rx.test(d))||['Outros do indireto'])[0]; ((porB[b] ??= {})[m] = (porB[b][m]||0) + v);
-    if (u6.has(m)) { const it = ((its[b] ??= {})[desc] ??= { desc, t:0, mes:0, forn:{} }); it.t += v; if (m===M) it.mes += v; const fn = pk.s[r[4]] || '(sem fornecedor)'; it.forn[fn] = (it.forn[fn]||0) + v; } } }
-  const med = ult.reduce((s,m)=>s+(porM[m]||0),0)/ult.length;
+  const m0 = meses[0]; let gastoInd = 0;
+  const IT = {};                       // item (bloco + nome) → valor por mês e fornecedores
+  for (const m of meses) { const pk = o.itens[m]; for (const r of pk.i) { if (!fixoInd(r[0])) continue; const v = +r[8]||0; gastoInd += v; const desc = String(pk.s[r[3]]||'').trim(), d = norm(desc).toUpperCase(); if (FIXO_PROD.test(d)) continue;
+    const b = FIXO_BL.find(([,rx])=>rx.test(d))?.[0]; if (!b) continue;      // fora dos blocos de custo fixo
+    const it = (IT[b+'|'+desc] ??= { b, desc, v:{}, forn:{} }); it.v[m] = (it.v[m]||0) + v; const fn = pk.s[r[4]] || '(sem fornecedor)'; ((it.forn[m] ??= {})[fn] = (it.forn[m][fn]||0) + v); } }
+  /* só é fixo o que aparece todo mês: em pelo menos 4 dos últimos 6 meses (conta de luz e água às vezes vêm com 1 mês de atraso) */
+  const janela = m => { const w = []; for (let i=5; i>=0; i--) { const x = addMonths(m, -i); if (x >= m0) w.push(x); } return w; };
+  const recorrente = (it, m) => { const w = janela(m), n = w.filter(x => Math.abs(it.v[x]||0) > 0.5).length; return n >= Math.ceil(w.length*2/3); };
+  const porM = {}, porB = {}, cache = {};
+  const fixoEm = m => cache[m] ??= Object.values(IT).filter(it => Math.abs(it.v[m]||0) > 0.5 && recorrente(it, m));
+  for (const m of new Set([...meses.slice(-12), ...[...Array(12)].map((_,i)=>addMonths(M, i-11))])) { if (m < m0 || m > M) continue; for (const it of fixoEm(m)) { porM[m] = (porM[m]||0) + it.v[m]; ((porB[it.b] ??= {})[m] = (porB[it.b][m]||0) + it.v[m]); } }
+  const ult = janela(M), med = ult.reduce((s,m)=>s+(porM[m]||0),0)/ult.length;
   const orcInd = o.categorias.filter(c=>fixoInd(c.id)).reduce((s,c)=>s+(+c.eq||0)+(+c.mo||0)+(+c.mat||0),0);
   const A = o.avancos||{}, fk = Object.keys(A).filter(k=>A[k].fisico!=null && k<=M).sort();
   const serie = [...Array(12)].map((_,i)=>addMonths(M, i-11)).map(m => { const i = fk.indexOf(m), dv = i>0 ? A[m].fisico - A[fk[i-1]].fisico : null; return { m, fixo: porM[m]||0, pp: dv>0.001 ? (porM[m]||0)/(dv*100) : null }; });
   const fis = A[fk.at(-1)]?.fisico || 0, u = fk.slice(-4), ritmo = u.length>1 ? (A[u.at(-1)].fisico - A[u[0]].fisico)/(u.length-1) : null;
   const termino = fis >= 0.999 ? M : ritmo>0 ? addMonths(M, Math.ceil((1-fis)/ritmo - 1e-9)) : null;
-  const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length, v[M]||0]).filter(x=>x[1]>0.5||x[2]>0.5).sort((a,b)=>b[2]-a[2] || b[1]-a[1]);
-  const itens = Object.fromEntries(Object.entries(its).map(([b,m]) => [b, Object.values(m).filter(x=>Math.abs(x.t)>0.5).map(x=>({ ...x, med:x.t/ult.length, forn:Object.entries(x.forn).sort((a,b)=>b[1]-a[1]) })).sort((a,b)=>b.mes-a.mes || b.t-a.t)]));
+  const blocos = Object.entries(porB).map(([b,v])=>[b, ult.reduce((s,m)=>s+(v[m]||0),0)/ult.length, v[M]||0]).filter(x=>x[2]>0.5).sort((a,b)=>b[2]-a[2] || b[1]-a[1]);
+  const itens = {};
+  for (const it of fixoEm(M)) { const fs = {}; ult.forEach(m => Object.entries(it.forn[m]||{}).forEach(([n,v]) => fs[n] = (fs[n]||0) + v));
+    (itens[it.b] ??= []).push({ desc:it.desc, mes:it.v[M], med: ult.reduce((s,m)=>s+(it.v[m]||0),0)/ult.length, forn:Object.entries(fs).sort((a,b)=>b[1]-a[1]) }); }
+  Object.values(itens).forEach(l => l.sort((a,b)=>b.mes-a.mes));
   return { med, mes: porM[M]||0, orcInd, gastoInd, serie, termino, fim:(o.fim||'').slice(0,7), blocos, itens, n:ult.length };
 }
 function fixoHtml(o, M){
@@ -1474,7 +1484,7 @@ function fixoHtml(o, M){
   const atraso = F.termino && F.fim && F.termino > F.fim ? mesesEntre(F.fim, F.termino) : 0;
   UI.fixoData = { F, M };
   return `<section class="panel p-fixo" aria-labelledby="t-fixo">
-    <div><h3 class="sub" id="t-fixo">Custo fixo</h3><p class="lead">O que custa manter a obra aberta: equipe, canteiro, equipamentos de prazo e segurança. Não entra andaime, balancim e munck, que seguem a produção.</p></div>
+    <div><h3 class="sub" id="t-fixo">Custo fixo</h3><p class="lead">O que se paga todo mês para manter a obra aberta: equipe, canteiro e consumos, equipamentos de prazo, bandejas e redes. Só conta o item que aparece em pelo menos 4 dos últimos 6 meses; o que é eventual fica fora.</p></div>
     <div class="cheque-stats">
       <div class="cs ${F.mes>F.med*1.15?'k-crit':'k-acc'}"><span>Custo fixo de ${ymLabel(M)}</span><b class="${F.mes>F.med*1.15?'t-crit':''}">${money(F.mes)}</b><small>média de 6 meses ${money(F.med)} (${F.med?(F.mes>=F.med?'+':'−')+pct(Math.abs(F.mes/F.med-1),0):'—'}) · ≈ ${money(F.med/30)} por dia</small></div>
       <div class="cs ${caro?'k-crit':''}"><span>Fixo para cada 1% de avanço</span><b class="${caro?'t-crit':''}">${atual?money(atual.pp):'—'}</b><small>${atual?ymLabel(M)+(ini&&ini!==atual?` · era ${money(ini.pp)} em ${ymLabel(ini.m)}`:''):'lance o avanço físico do mês'}</small></div>
