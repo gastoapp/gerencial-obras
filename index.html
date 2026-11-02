@@ -664,6 +664,8 @@ body.fora header.top,body.fora nav.bottom{display:none}
 @media (max-width:720px){.fx-r{grid-template-columns:minmax(0,1fr) auto 34px;row-gap:4px}.fx-r .mtrack{grid-column:1/-1;grid-row:2}}
 .hist-wrap{max-height:min(70vh,640px);overflow:auto}.hist-ed thead th{position:sticky;top:0;z-index:3;background:var(--surface2);vertical-align:bottom;white-space:normal;line-height:1.3;padding-top:10px;padding-bottom:10px;box-shadow:inset 0 -1px 0 var(--line)}.hist-ed thead th:first-child{z-index:4;text-align:left;padding-left:14px}.hist-ed thead th small{font-size:10px;letter-spacing:.06em;opacity:.75}.hist-ed td:first-child,.hist-ed th:first-child{min-width:96px;max-width:110px}.hist-ed thead th.n{min-width:96px}
 .hist-ed td{padding-top:3px;padding-bottom:3px}.hist-ed input.hc{width:100%;min-width:86px;box-sizing:border-box;background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 6px;font:500 12.5px var(--mono);color:var(--ink);text-align:right}.hist-ed input.hc:hover{border-color:var(--line)}.hist-ed input.hc:focus{outline:none;border-color:var(--s1);background:var(--surface2)}.hist-ed input.hc.salvo{border-color:var(--good);background:var(--good-bg)}.hist-ed input.hc::placeholder{color:var(--muted)}
+.cmp td small{display:block;color:var(--muted);font-size:11px}.cmp tr.grp td{background:var(--surface2);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-top:7px;padding-bottom:7px}.cmp td.n,.cmp th.n{min-width:120px}.cmp th small{font-size:10px;opacity:.8}
+@media (max-width:720px){.cmp{font-size:12px}.cmp td,.cmp th{padding:7px 6px}.cmp td.n,.cmp th.n{min-width:0}.cmp td:first-child{max-width:118px}.cmp td small{font-size:10px}}
 .ins-fam{overflow:visible}
 .ins-fam.open>.mc-head{position:sticky;top:calc(var(--top-h,0px) + env(safe-area-inset-top,0px));z-index:8;background:var(--surface);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
 .ins-fam .ins-sub{overflow:visible}
@@ -766,7 +768,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.31 · 01/11';
+const APP_VERSAO = 'v3.32 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1270,12 +1272,13 @@ function filhosHtml(o, r, kn){
 function kNivelSemCache(o, M, k, n){ const save_ = UI.nivCache, g = UI.gNivel; UI.gNivel = 0; const v = kNivel(o, M, k, n); UI.nivCache = save_; UI.gNivel = g; return v; }
 
 /* ---------- topo e rotas ---------- */
-const VIEWS = ['painel','categorias','analise','insumos','lancar','efetivo','orcamento'];
+const VIEWS = ['painel','categorias','analise','insumos','lancar','efetivo','orcamento','comparar'];
 const view = () => { const h = location.hash.replace('#',''); return VIEWS.includes(h) ? h : 'painel'; };
 function renderTop(){
   const so = document.getElementById('sel-obra');
   if (!obra()) { so.innerHTML = ''; document.getElementById('sel-mes').innerHTML = ''; return; }
-  so.innerHTML = Object.values(S.obras).map(o=>`<option value="${esc(o.id)}"${o.id===S.atual?' selected':''}>${esc(o.nome)}</option>`).join('');
+  const cmp = view()==='comparar';
+  so.innerHTML = Object.values(S.obras).map(o=>`<option value="${esc(o.id)}"${o.id===S.atual&&!cmp?' selected':''}>${esc(o.nome)}</option>`).join('') + (ehAdmin() && Object.keys(S.obras).length > 1 ? `<option value="__cmp"${cmp?' selected':''}>⇄ Comparar obras</option>` : '');
   const o = obra(); const ms = mesesObra(o);
   if (!S.mes || !ms.includes(S.mes)) S.mes = mesPadrao(o);
   if (!ms.includes(S.mes)) ms.push(S.mes);
@@ -1299,7 +1302,7 @@ function render(){
   const el = document.getElementById('view');
   if (!obra()) { el.innerHTML = `<div class="panel empty"><h2 class="sec">Nenhuma obra ainda</h2>${podeEditar()?`<p class="note">Comece pela Etherea com os dados da planilha de set/26 (escolha o arquivo <b>dados-iniciais.json</b> que está no seu computador), ou crie uma obra nova.</p><div class="toolbar" style="justify-content:center"><button class="btn" id="imp-eth">Carregar Etherea (planilha set/26)</button><button class="btn sec" id="btn-nova2">+ Criar obra</button></div>`:'<p class="note">Quem administra o app ainda não cadastrou obras.</p>'}</div>`; return; }
   const vv = view();
-  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, insumos:renderInsumos, orcamento:renderOrcamento, analise:renderAnalise})[view()](el);
+  ({painel:renderPainel, categorias:renderCategorias, lancar:renderLancar, efetivo:renderEfetivo, insumos:renderInsumos, orcamento:renderOrcamento, analise:renderAnalise, comparar:renderComparar})[view()](el);
   somenteLeitura(el, vv);
 }
 
@@ -1455,9 +1458,17 @@ function drawPrev(){
 const mesesEntre = (a,b) => (+b.slice(0,4)*12 + +b.slice(5,7)) - (+a.slice(0,4)*12 + +a.slice(5,7));
 const FIXO_PROD = /ANDAIME|BALANCIM|MUNCK|ESCORA|SERRALHERIA/;
 const FIXO_BL = [["Equipe ADM e técnica",/FOLHA - ADM|ENGENHARIA CIVIL|BENEFICIO|PLANO DE|VALE TRANSP|ALIMENTA|CAFE|VIAGE|REFEIC|URGENCIA|ASSESSORIA ADM/],["Equipe de apoio à produção",/APOIO A PRODUCAO|VALE COMPRA/],["Elevador cremalheira e grua",/CREMALHE|\bGRUA\b/],["Canteiro e consumos",/^(?!.*(PIPA|CACAMBA|RESIDUO|AMBIENTAL|BARRACAO|LOCACAO DE EQUIP)).*(ENERGIA ELETRICA|AGUA ENCANADA|SANEAMENTO|TELEFON|INTERNET|VIGILANCIA|LIMPEZA E CONSERV|CATRACA|RADIO DE COMUNIC|COPIADORA)/],["Bandejas e redes de proteção",/BANDEJA|REDES? DE (SEGURANCA|PROTECAO)/]];
-const fixoInd = c => /^01\.01\.02/.test(c);
+/* categorias de custo indireto: as que vêm antes da obra física (terraplenagem, contenção, estrutura, torre…) no código do orçamento.
+   Funciona com orçamentos de estruturas diferentes (Etherea 01.01.02.x, Ornella 01.01 a 01.05). Projetos ficam de fora. */
+const FX_CACHE = new WeakMap();
+function fixoCats(o){
+  const c0 = FX_CACHE.get(o); if (c0 && c0.n === o.categorias.length) return c0.s;
+  const fis = o.categorias.filter(c => /TERRAPLEN|FUNDAC|CONTENC|ESTRUTURA|INFRA|ESCAVA|TORRE|PERIFERIA|ALVENARIA|DEMOLI/.test(norm(c.nome||'').toUpperCase())).map(c=>c.id).sort()[0] || '99';
+  const s = new Set(o.categorias.filter(c => c.id < fis && !/PROJETO/.test(norm(c.nome||'').toUpperCase())).map(c=>c.id));
+  FX_CACHE.set(o, { n:o.categorias.length, s }); return s;
+}
 function fixoCalc(o, M){
-  if (!o.categorias.some(c => fixoInd(c.id))) return null;
+  const IND = fixoCats(o), fixoInd = c => IND.has(c); if (!IND.size) return null;
   const meses = Object.keys(o.itens||{}).filter(m=>m<=M).sort(); if (!meses.length) return null;
   const m0 = meses[0]; let gastoInd = 0;
   const IT = {};                       // item (bloco + nome) → valor por mês e fornecedores
@@ -2413,6 +2424,77 @@ function medPond(cs){ if (!cs.length) return null; const ord = cs.slice().sort((
 const dtC = c => (c.dia ? String(c.dia).padStart(2,'0')+'/' : '') + MES[+c.ym.slice(5)-1] + '/' + c.ym.slice(2,4);
 const puU = (v, un) => v==null ? '—' : brl2.format(v) + (un && un!=='VB' ? '/'+un : '');
 
+/* ---------- COMPARAR OBRAS (só administrador) ---------- */
+function cmpDados(o, M){
+  const ms = mesesObra(o), Mo = ms.filter(m=>m<=M).pop() || ms[ms.length-1];
+  const k = calc(o, Mo), av = avancoAte(o, Mo) || {}, ef = efetivoDoMes(o, Mo), F = fixoCalc(o, Mo);
+  const u6 = k.serie.slice(-6), g6 = u6.reduce((s,d)=>s+d.gasto,0)/(u6.length||1);
+  return { o, M:Mo, k, area:+o.area||0, fis:av.fisico??null, meta:(o.avancos||{})[av.ym]?.meta??null, ff:av.fisfin??null, efTot: ef.vazio?null:ef.tot, fixo:F?.med||null, g6 };
+}
+/* como a obra estava quando o físico dela chegou a f (interpola entre os dois meses) */
+function cmpFase(o, f){
+  const A = o.avancos||{}, ks = Object.keys(A).filter(k=>A[k].fisico!=null).sort();
+  const i = ks.findIndex(k => A[k].fisico >= f - 1e-9); if (i < 0) return null;
+  const m2 = ks[i], m1 = i>0 ? ks[i-1] : null, f1 = m1 ? A[m1].fisico : 0, f2 = A[m2].fisico;
+  const t = m1 && f2 > f1 ? Math.min(1, Math.max(0, (f-f1)/(f2-f1))) : 1;
+  const k = calc(o, m2), SR = Object.fromEntries(k.serie.map(d=>[d.ym, d])), ini = String(o.inicio||'').slice(0,7);
+  const lerp = (a, b) => a==null ? b : b==null ? a : a + (b-a)*t;
+  const custo = m => m ? (SR[m]?.acum ?? k.antes)/k.orcExe : null, saldo = m => m ? (SR[m]?.saldo ?? 0)/k.orcExe : null, prazo = m => m ? monthsBetween(ini, m).length/k.prazo : null;
+  const ref = t < 0.5 && m1 ? m1 : m2, ate = k.serie.filter(d=>d.ym<=ref).slice(-6), g6 = ate.reduce((s,d)=>s+d.gasto,0)/(ate.length||1);
+  const ef = efetivoDoMes(o, ref), F = fixoCalc(o, ref);
+  return { o, quando: m1 && t>0 && t<1 ? ymLabel(m1)+'–'+ymLabel(m2) : ymLabel(t===0&&m1?m1:m2), custo: lerp(custo(m1), custo(m2)), ff: lerp(A[m1]?.fisfin, A[m2].fisfin), prazo: lerp(prazo(m1), prazo(m2)), saldo: lerp(saldo(m1), saldo(m2)), g6: g6/k.orcExe, ef: ef.vazio?null:ef.tot, fixo: F?.med ? F.med/k.orcExe : null };
+}
+function renderComparar(el){
+  if (!ehAdmin()) { location.hash = '#painel'; return; }
+  const M = S.mes, D = Object.values(S.obras).filter(o => o.categorias?.length).map(o => cmpDados(o, M));
+  const p1 = v => v==null||!isFinite(v) ? '<span class="muted">—</span>' : pct(v,1), mi = v => nf2.format(v/1e6)+' mi';
+  const pp = (v, bomPos) => v==null||!isFinite(v) ? '<span class="muted">—</span>' : `<span class="${(bomPos ? v>=0 : v<=0) ? 't-good' : 't-crit'}">${v>=0?'+':'−'}${nf1.format(Math.abs(v*100))} p.p.</span>`;
+  const sm = t => `<small>${t}</small>`;
+  const L = [
+    ['Tamanho'],
+    ['Executivo', d => 'R$ '+mi(d.k.orcExe)],
+    ['Área construída', d => d.area ? d.area.toLocaleString('pt-BR')+' m²' : '<span class="muted">não cadastrada</span>'],
+    ['Executivo por m²', d => d.area ? fmtM2(d.k.orcExe/d.area) : '<span class="muted">—</span>'],
+    ['Custo por m² executado', d => d.area && d.fis ? fmtM2(d.k.incorrido/(d.area*d.fis))+sm('incorrido ÷ m² já executados') : '<span class="muted">—</span>'],
+    ['Andamento'],
+    ['Prazo decorrido', d => p1(d.k.corridos/d.k.prazo)+sm(`${d.k.corridos} de ${d.k.prazo} meses`)],
+    ['Físico', d => p1(d.fis)],
+    ['Físico × meta Project', d => d.fis!=null && d.meta!=null ? pp(d.fis-d.meta, true) : '<span class="muted">—</span>'],
+    ['Fís/fin', d => p1(d.ff)],
+    ['Efetivo', d => d.efTot!=null ? d.efTot+' pessoas'+(d.area?sm(nf1.format(d.efTot/d.area*1000)+' por 1.000 m²'):'') : '<span class="muted">não lançado</span>'],
+    ['Custo'],
+    ['Custo incorrido', d => p1(d.k.incorrido/d.k.orcExe)+sm('do executivo')],
+    ['Custo × físico', d => d.fis!=null ? pp(d.k.incorrido/d.k.orcExe - d.fis, false) : '<span class="muted">—</span>'],
+    ['Saldo do cheque', d => pp(d.k.saldoCheque/d.k.orcExe, true)+sm('do executivo')],
+    ['Gasto médio (6 meses)', d => p1(d.g6/d.k.orcExe)+sm('do executivo por mês')],
+    ['Custo fixo por mês', d => d.fixo ? money(d.fixo)+sm(pct(d.fixo/d.k.orcExe,2)+' do executivo'+(d.area?' · '+fmtM2(d.fixo/d.area):'')) : '<span class="muted">—</span>'],
+  ];
+  const t1 = `<div class="tbl-wrap"><table class="cmp"><thead><tr><th>Indicador</th>${D.map(d=>`<th class="n">${esc(d.o.nome)}${d.M!==M?`<br><small>${ymLabel(d.M)}</small>`:''}</th>`).join('')}</tr></thead><tbody>
+    ${L.map(r => r.length===1 ? `<tr class="grp"><td colspan="${D.length+1}">${r[0]}</td></tr>` : `<tr><td>${r[0]}</td>${D.map(d=>`<td class="n">${r[1](d)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  // mesma fase: obra base (a menos avançada, ou a escolhida) × as outras quando estavam no mesmo físico
+  const comFis = D.filter(d => d.fis!=null);
+  const base = comFis.find(d => d.o.id===UI.cmpBase) || comFis.slice().sort((a,b)=>a.fis-b.fis)[0];
+  let t2 = `<p class="note">Lance o avanço físico das obras para comparar na mesma fase.</p>`;
+  if (base) {
+    const outras = D.filter(d => d!==base).map(d => cmpFase(d.o, base.fis)).filter(Boolean);
+    const b = { custo: base.k.incorrido/base.k.orcExe, ff: base.ff, prazo: base.k.corridos/base.k.prazo, saldo: base.k.saldoCheque/base.k.orcExe, g6: base.g6/base.k.orcExe, ef: base.efTot, fixo: base.fixo ? base.fixo/base.k.orcExe : null };
+    const L2 = [['Custo gasto (% do executivo)', x=>x.custo, 'p', false], ['Fís/fin', x=>x.ff, 'p', null], ['Prazo decorrido', x=>x.prazo, 'p', false], ['Saldo do cheque (% do executivo)', x=>x.saldo, 's', true], ['Gasto médio dos 6 meses anteriores', x=>x.g6, 'm', false], ['Custo fixo por mês (% do executivo)', x=>x.fixo, 'f', false], ['Efetivo', x=>x.ef, 'e', null]];
+    const fmt = (v, tp) => v==null||!isFinite(v) ? '<span class="muted">—</span>' : tp==='e' ? v+' pessoas' : tp==='s' ? (v>=0?'+':'−')+pct(Math.abs(v),1) : tp==='m' ? pct(v,1)+'/mês' : tp==='f' ? pct(v,2)+'/mês' : pct(v,1);
+    const dif = (a, c, tp, bomPos) => a==null||c==null||!isFinite(a)||!isFinite(c) ? '<span class="muted">—</span>' : tp==='e' ? (a-c>0?'+':'')+(a-c)+' pessoas' : bomPos==null ? `${a-c>=0?'+':'−'}${nf1.format(Math.abs((a-c)*100))} p.p.` : pp(a-c, bomPos);
+    const um = outras.length===1 ? outras[0] : null;
+    t2 = `${comFis.length>2?`<label class="niv-g">Obra base <select id="cmp-base">${comFis.map(d=>`<option value="${esc(d.o.id)}"${d===base?' selected':''}>${esc(d.o.nome)}</option>`).join('')}</select></label>`:''}
+      <p class="lead">${esc(base.o.nome)} está com <b>${pct(base.fis,1)} de físico</b> em ${ymLabel(base.M)}. ${outras.length?outras.map(x=>`${esc(x.o.nome)} chegou nesse físico em <b>${x.quando}</b>`).join('; ')+'.':'Nenhuma outra obra chegou nesse físico ainda (ou não tem o histórico de avanço lançado).'}</p>
+      ${outras.length?`<div class="tbl-wrap"><table class="cmp"><thead><tr><th>Com ${pct(base.fis,1)} de físico</th>${outras.map(x=>`<th class="n">${esc(x.o.nome)}<br><small>${x.quando}</small></th>`).join('')}<th class="n">${esc(base.o.nome)}<br><small>${ymLabel(base.M)}</small></th>${um?'<th class="n">Diferença</th>':''}</tr></thead><tbody>
+        ${L2.map(([l, g, tp, bom]) => `<tr><td>${l}</td>${outras.map(x=>`<td class="n">${fmt(g(x), tp)}</td>`).join('')}<td class="n"><b>${fmt(g(b), tp)}</b></td>${um?`<td class="n">${dif(g(b), g(um), tp, bom)}</td>`:''}</tr>`).join('')}
+      </tbody></table></div>
+      ${um && isFinite(b.custo-um.custo) ? `<div class="banner" style="margin-top:12px">Na mesma fase, ${esc(base.o.nome)} gastou <b>${Math.abs((b.custo-um.custo)*100)<0.05?'o mesmo':nf1.format(Math.abs((b.custo-um.custo)*100))+' p.p. '+(b.custo<um.custo?'a menos':'a mais')}</b> do executivo que ${esc(um.o.nome)}${Math.abs(b.custo-um.custo)>=0.0005?` (≈ ${money(Math.abs(b.custo-um.custo)*base.k.orcExe)} na escala de ${esc(base.o.nome)})`:''}, com ${Math.abs(b.prazo-um.prazo)<0.01?'o mesmo % de prazo':nf1.format(Math.abs((b.prazo-um.prazo)*100))+' p.p. de prazo '+(b.prazo<um.prazo?'a menos':'a mais')}.</div>` : ''}`:''}`;
+  }
+  el.innerHTML = `
+  <div class="pg-title"><span class="eyebrow">Somente administrador · ${ymLabel(M)}</span><h2 class="sec">Comparar obras</h2><p class="lead">Números na mesma base (% do orçamento, % do prazo, por m²) para comparar obras de tamanhos e fases diferentes.</p></div>
+  <section class="panel"><h3 class="sub">1 · Lado a lado em ${ymLabel(M)}</h3>${t1}
+    <p class="note muted">Físico × meta: físico realizado menos a meta do Project. Custo × físico: % do executivo gasto menos o físico (positivo = gastando mais rápido do que avança). Obra sem lançamento no mês aparece com o último mês disponível.</p></section>
+  <section class="panel"><h3 class="sub">2 · Na mesma fase da obra</h3>${t2}</section>`;
+}
 function renderInsumos(el){
   const o = obra(), M = S.mes;
   const tipo = UI.insTipo || 'M';
@@ -2866,7 +2948,7 @@ function anSetupHtml(o, temIns, temV2){
 }
 
 /* ---------- eventos ---------- */
-document.getElementById('sel-obra').addEventListener('change', e => { if (!e.target.value) return; S.atual = e.target.value; S.mes = null; UI.aberto=null; UI.imp=null; save(); render(); });
+document.getElementById('sel-obra').addEventListener('change', e => { if (!e.target.value) return; if (e.target.value==='__cmp') { location.hash = '#comparar'; return; } if (view()==='comparar') location.hash = '#painel'; S.atual = e.target.value; S.mes = null; UI.aberto=null; UI.imp=null; save(); render(); });
 document.getElementById('sel-mes').addEventListener('change', e => { S.mes = e.target.value; save(); render(); });
 document.getElementById('btn-nova').addEventListener('click', abrirNovaObra);
 window.addEventListener('hashchange', () => { UI.confirm=null; UI.aberto=null; render(); window.scrollTo(0,0); });
@@ -2988,6 +3070,7 @@ document.addEventListener('change', e => {
   if (t.id==='an-cat') { UI.anCat = t.value; UI.anLim = 60; UI.anAberto = null; keepScroll(render); }
   if (t.dataset.insmover) { const n = insMover(obra(), t.dataset.insmover, t.value); UI.insCache = null; save(); toast('Item movido para '+(t.value==='__auto'?'o grupo automático':t.value==='__fora'?'fora da análise':t.value)+(n>1?' em todas as obras':'')+'.'); keepScroll(render); return; }
   if (t.id==='agrupa-niv') { UI.gNivel = +t.value; keepScroll(render); }
+  if (t.id==='cmp-base') { UI.cmpBase = t.value; keepScroll(render); return; }
   if (t.id==='hist-cat') { UI.histCat = t.value; keepScroll(render); }
   if (t.id==='arq' && t.files[0]) lerArquivo(t.files[0]);
   if (t.id==='arq-orc' && t.files[0]) lerOrcamento(t.files[0]);
