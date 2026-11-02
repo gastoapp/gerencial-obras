@@ -104,7 +104,7 @@ h3.sub{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:
 /* pills e chips */
 .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
 .pill::before{font-size:9px}
-.pill.crit{background:var(--crit-bg);color:var(--crit)}.pill.crit::before{content:"▲"}
+.pill.crit{background:var(--crit-bg);color:var(--crit)}.pill.crit::before{content:"▲"}.pill.crit.baixo::before{content:"▼"}
 .pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.warn::before{content:"◆"}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.good::before{content:"●"}
 .pill.none{background:var(--none-bg);color:var(--none)}.pill.none::before{content:"○"}
@@ -764,7 +764,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.24 · 01/11';
+const APP_VERSAO = 'v3.25 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1331,7 +1331,7 @@ function m2Html(o, k, a, viab){
 function metaRow(lbl, real, meta, lblMeta){
   if (real==null || meta==null) return `<div class="meta-row"><div class="mr-top"><b>${lbl}</b><span class="muted">não lançado</span></div></div>`;
   const d = real - meta, ok = d >= -0.0005;
-  return `<div class="meta-row"><div class="mr-top"><b>${lbl}</b><span class="pill ${ok?'good':'crit'}">${pp(d)}</span></div>
+  return `<div class="meta-row"><div class="mr-top"><b>${lbl}</b><span class="pill ${ok?'good':'crit baixo'}">${pp(d)}</span></div>
     <div class="mtrack"><div class="mfill ${ok?'good':'crit'}" style="width:${(Math.min(real,1)*100).toFixed(2)}%"></div><div class="mmark" style="left:${(Math.min(meta,1)*100).toFixed(2)}%"></div></div>
     <div class="mr-nums"><span>Realizado <b>${pct(real,2)}</b></span><span>${lblMeta} <b>${pct(meta,2)}</b></span></div></div>`;
 }
@@ -1544,7 +1544,7 @@ function renderPainel(el){
   <section class="hero" aria-label="Resumo do mês">
     <div class="h-main"><span class="lbl">Saldo do cheque · ${ymLabel(M)}</span><b class="${k.saldoCheque<0?'t-crit':'t-good'}">${money(k.saldoCheque)}</b>
       <small>${econ==null?'Lance o avanço para projetar o término':`Projeção no término: <b class="${econ>=0?'t-good':'t-crit'}">${econ>=0?'economia':'estouro'} de ${money(Math.abs(econ))}</b>`} · mês ${k.corridos} de ${k.prazo}</small>
-      <div class="h-chips"><span class="pill ${k.gastoMes>k.cheque?'crit':'good'}">Gasto do mês ${money(k.gastoMes)} · ${k.gastoMes>k.cheque?'acima':'abaixo'} do cheque</span>${a.meta!=null&&a.fisico!=null?`<span class="pill ${a.fisico>=a.meta?'good':'crit'}">Físico ${pp(a.fisico-a.meta)} da meta</span>`:''}</div>
+      <div class="h-chips"><span class="pill ${k.gastoMes>k.cheque?'crit':'good'}">Gasto do mês ${money(k.gastoMes)} · ${k.gastoMes>k.cheque?'acima':'abaixo'} do cheque</span>${a.meta!=null&&a.fisico!=null?`<span class="pill ${a.fisico>=a.meta?'good':'crit baixo'}">Físico ${pp(a.fisico-a.meta)} da meta</span>`:''}</div>
     </div>
     ${(() => { const falta = k.orcExe - k.incorrido, pm = restante ? falta/restante : null, est = falta < 0;
       return `<div class="h-main h-exe"><span class="lbl">Falta gastar até o executivo · ${ymLabel(M)}</span>
