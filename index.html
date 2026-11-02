@@ -666,6 +666,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 .hist-ed td{padding-top:3px;padding-bottom:3px}.hist-ed input.hc{width:100%;min-width:86px;box-sizing:border-box;background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 6px;font:500 12.5px var(--mono);color:var(--ink);text-align:right}.hist-ed input.hc:hover{border-color:var(--line)}.hist-ed input.hc:focus{outline:none;border-color:var(--s1);background:var(--surface2)}.hist-ed input.hc.salvo{border-color:var(--good);background:var(--good-bg)}.hist-ed input.hc::placeholder{color:var(--muted)}
 .cmp td small{display:block;color:var(--muted);font-size:11px}.cmp tr.grp td{background:var(--surface2);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-top:7px;padding-bottom:7px}.cmp td.n,.cmp th.n{min-width:120px}.cmp th small{font-size:10px;opacity:.8}
 @media (max-width:720px){.cmp{font-size:12px}.cmp td,.cmp th{padding:7px 6px}.cmp td.n,.cmp th.n{min-width:0}.cmp td:first-child{max-width:118px}.cmp td small{font-size:10px}}
+.pv-mais{margin-top:10px}.pv-mais[open]>summary{margin-bottom:10px}
 .ins-fam{overflow:visible}
 .ins-fam.open>.mc-head{position:sticky;top:calc(var(--top-h,0px) + env(safe-area-inset-top,0px));z-index:8;background:var(--surface);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
 .ins-fam .ins-sub{overflow:visible}
@@ -768,7 +769,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.33 · 01/11';
+const APP_VERSAO = 'v3.34 · 02/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1388,6 +1389,7 @@ function prevHtml(P){
     { s:'Linear', k:'Tendência linear', v:P.lin },
     P.j[6] && { s:'6 meses', k:'Ritmo de 6 meses', v:P.j[6].eac },
     P.j[3] && { s:'3 meses', k:'Ritmo de 3 meses', v:P.j[3].eac },
+    P.j[3] && { s:'3m + 1 mês', k:'Ritmo de 3 meses + 1 mês', v:P.j[3].eac + P.j[3].gasto, extra:true },
     { s:'Teto', k:'Teto por categoria', v:P.teto },
   ].filter(Boolean);
   UI.prevData = { P, met };
@@ -1405,9 +1407,10 @@ function prevHtml(P){
       ${P.viabCorr?`<span class="vcp ${vcp(prov[1])>=0?'good':'crit'}">Viab. corrigida: ${vcp(prov[1])>=0?'economia':'estouro'} de ${mm(Math.abs(P.viabCorr-prov[1]))} a ${mm(Math.abs(P.viabCorr-prov[0]))} (${pct(Math.abs(vcp(prov[1])),1)} a ${pct(Math.abs(vcp(prov[0])),1)})</span>`:''}</div></div>
     <div class="chart" id="ch-prev"></div>
     <div class="pv-leg"><span><i class="lg-band"></i>Faixa provável</span><span><i class="lg-dot good"></i>Abaixo do executivo</span><span><i class="lg-dot crit"></i>Acima do executivo</span><span>Valores em R$ mi</span></div>
+    <details class="pv-det pv-mais" id="pv-mais"${UI.pvMais?' open':''}><summary><span>Detalhes da previsão<small>tabela das previsões, custo por ponto de avanço e saldos · toque para ${UI.pvMais?'fechar':'abrir'}</small></span><b></b></summary>
     <div class="tbl-wrap pv-tbl"><table>
       <thead><tr><th>Previsão</th><th class="n">Custo final</th><th class="n">Economia s/ executivo</th><th class="n">Economia s/ viab. corr.</th></tr></thead>
-      <tbody>${met.map(m=>`<tr><td><b>${m.k}</b></td><td class="n">${mm(m.v)}</td><td class="n">${sg(eco(m.v), mm)}</td><td class="n">${P.viabCorr?`${sg(P.viabCorr-m.v, mm)}<small class="pv-pc">${sg(vcp(m.v), x=>pct(x,1))}</small>`:'—'}</td></tr>`).join('')}</tbody>
+      <tbody>${met.map(m=>`<tr><td><b>${m.k}</b>${m.extra?`<small class="pv-pc">conservador: soma 1 mês a mais de gasto no ritmo dos últimos 3 meses (${money(P.j[3].gasto)})</small>`:''}</td><td class="n">${mm(m.v)}</td><td class="n">${sg(eco(m.v), mm)}</td><td class="n">${P.viabCorr?`${sg(P.viabCorr-m.v, mm)}<small class="pv-pc">${sg(vcp(m.v), x=>pct(x,1))}</small>`:'—'}</td></tr>`).join('')}</tbody>
     </table></div>
     <p class="note muted">Negativo em vermelho = estouro. Executivo ${money(P.BAC)}${P.viabCorr?` · viabilidade corrigida ${money(P.viabCorr)}`:''}.</p>
     <div class="grid2 pv-sub">
@@ -1425,6 +1428,7 @@ function prevHtml(P){
         </details>
       </div>
     </div>
+    </details>
   </section>`;
 }
 
@@ -3049,7 +3053,7 @@ document.addEventListener('click', e => {
   if (t.id==='confirm-no') { UI.confirm=null; render(); return; }
   if (t.id==='delobra-ok') { NUVEM.apagar.push(o.id); delete S.obras[o.id]; S.atual = Object.keys(S.obras)[0]; S.mes=null; UI.confirm=null; save(); location.hash='#painel'; render(); return; }
 });
-document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = sm.textContent.replace(/toque para \w+$/, 'toque para '+(e.target.open?'fechar':'abrir')); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
+document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='pv-mais') { UI.pvMais = e.target.open; const sm = e.target.querySelector(':scope>summary small'); if (sm) sm.textContent = sm.textContent.replace(/toque para \w+$/, 'toque para '+(e.target.open?'fechar':'abrir')); } if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = sm.textContent.replace(/toque para \w+$/, 'toque para '+(e.target.open?'fechar':'abrir')); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
 document.addEventListener('keydown', e => {
   if (e.target.matches?.('input.hc') && e.key==='Enter') { e.preventDefault(); const r = +e.target.dataset.r + (e.shiftKey?-1:1), nx = document.querySelector(`input.hc[data-r="${r}"][data-c="${e.target.dataset.c}"]`); histSalvar(e.target); if (nx) { nx.focus(); nx.select(); } return; }
   if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
