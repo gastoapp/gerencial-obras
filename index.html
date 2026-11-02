@@ -662,6 +662,7 @@ body.fora header.top,body.fora nav.bottom{display:none}
 /* insumos */
 .fx-bl{display:flex;flex-direction:column;gap:6px;margin-top:10px}.fx-g{border-radius:8px}.fx-g.open{background:var(--surface2);padding-bottom:8px}button.fx-r{background:none;border:0;color:inherit;font:inherit;text-align:left;box-sizing:border-box;width:100%;cursor:pointer;padding:6px 8px;border-radius:8px}button.fx-r:hover{background:var(--surface2)}.fx-r span small{display:block;color:var(--muted);font-size:11px;margin-top:1px}.fx-its{display:flex;flex-direction:column;padding:0 10px}.fx-i{display:grid;grid-template-columns:minmax(0,1fr) 110px 110px;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:center}.fx-i.h{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:0}.fx-i span:nth-child(n+2),.fx-i b{text-align:right}.fx-i b{font:500 12.5px var(--mono);white-space:nowrap}.fx-i small{display:block;color:var(--muted);font-size:11px}.fx-its .chip{margin-top:6px}button.fx-ib{background:none;border:0;border-top:1px solid var(--line);color:inherit;font:inherit;text-align:left;width:100%;cursor:pointer}button.fx-ib:hover,button.fx-ib.open{background:color-mix(in oklab,var(--surface) 60%,var(--surface2))}.fx-sub{margin:0 0 6px 12px;padding:8px 10px;border-left:2px solid var(--accent,var(--s1));display:flex;flex-direction:column;background:color-mix(in oklab,var(--surface) 50%,transparent);border-radius:0 6px 6px 0}.fx-sub .fx-i{font-size:12px}.fx-sub .h4{margin-bottom:2px}@media (max-width:720px){.fx-i{grid-template-columns:minmax(0,1fr) 84px 84px;gap:8px}.fx-i b{font-size:11.5px}}.fx-r{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto 40px;gap:12px;align-items:center;font-size:13px}.fx-r b{font:500 13px var(--mono);white-space:nowrap}.fx-r em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}.cs small b.fx-fim{display:inline;font-size:inherit;font-weight:700}
 @media (max-width:720px){.fx-r{grid-template-columns:minmax(0,1fr) auto 34px;row-gap:4px}.fx-r .mtrack{grid-column:1/-1;grid-row:2}}
+.hist-ed td{padding-top:3px;padding-bottom:3px}.hist-ed input.hc{width:100%;min-width:86px;box-sizing:border-box;background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 6px;font:500 12.5px var(--mono);color:var(--ink);text-align:right}.hist-ed input.hc:hover{border-color:var(--line)}.hist-ed input.hc:focus{outline:none;border-color:var(--s1);background:var(--surface2)}.hist-ed input.hc.salvo{border-color:var(--good);background:var(--good-bg)}.hist-ed input.hc::placeholder{color:var(--muted)}
 .ins-fam{overflow:visible}
 .ins-fam.open>.mc-head{position:sticky;top:calc(var(--top-h,0px) + env(safe-area-inset-top,0px));z-index:8;background:var(--surface);border-radius:10px 10px 0 0;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
 .ins-fam .ins-sub{overflow:visible}
@@ -764,7 +765,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.27 · 01/11';
+const APP_VERSAO = 'v3.28 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2006,21 +2007,38 @@ function renderLancar(el){
   </section>`;
 }
 /* histórico do que foi lançado: meses nas linhas, dados nas colunas */
+const HIST_CAMPOS = [['fisico','Físico',1],['meta','Meta Project',1],['fisfin','Fís/fin',1],['finEst','Fís/fin c/ estoque',1],['estoque','Estoque',0],['forecast','Forecast',1],['execCorr','Executivo corr.',0],['viabCorr','Viab. corrigida',0]];
+const histFmt = (v, pc) => v==null || (!pc && !v) ? '' : (pc ? nf2.format(v*100) : Math.round(v).toLocaleString('pt-BR'));
 function histLancHtml(o, M){
   const A = o.avancos||{}, G = o.gasto||{};
-  const ms = [...new Set(Object.keys(A).concat(Object.keys(G)))].sort().reverse();
+  const ini = String(o.inicio||'').slice(0,7), fim = String(o.fim||'').slice(0,7);
+  const ms = [...new Set(Object.keys(A).concat(Object.keys(G), monthsBetween(ini, fim)))].filter(Boolean).sort().reverse();
   if (!ms.length) return '';
+  const ed = podeEditar();
   const p2 = v => v!=null ? pct(v,2) : '<span class="muted">—</span>';
   const rs = v => v ? money(v) : '<span class="muted">—</span>';
   const tg = m => Object.values(G[m]||{}).reduce((s,v)=>s+v[0]+v[1],0);
-  const cols = [['Gasto ERP', m=>rs(tg(m))], ['Físico', m=>p2(A[m]?.fisico)], ['Meta Project', m=>p2(A[m]?.meta)], ['Fís/fin', m=>p2(A[m]?.fisfin)], ['Fís/fin c/ estoque', m=>p2(A[m]?.finEst)], ['Estoque', m=>rs(A[m]?.estoque)], ['Forecast', m=>p2(A[m]?.forecast)], ['Executivo corr.', m=>rs(A[m]?.execCorr)], ['Viab. corrigida', m=>rs(A[m]?.viabCorr)]];
   return `<section class="panel">
     <h3 class="sub">3 · Histórico do que foi lançado</h3>
-    <p class="note">Um mês por linha, com o gasto importado do ERP e o avanço lançado. Toque num mês para abri-lo e corrigir.</p>
-    <div class="tbl-wrap"><table class="heat hl"><thead><tr><th>Mês</th>${cols.map(c=>`<th class="n">${c[0]}</th>`).join('')}</tr></thead><tbody>
-      ${ms.map(m=>`<tr class="${m===M?'on':''}"><td><button class="chip" data-lancmes="${m}">${ymLabel(m)}</button></td>${cols.map(c=>`<td class="n">${c[1](m)}</td>`).join('')}</tr>`).join('')}
+    <p class="note">${ed?'Edite direto na tabela: <b>Enter</b> desce para o mês de baixo, <b>Tab</b> vai para a coluna do lado. Salva sozinho ao sair da célula. Porcentagens em %, valores em R$.':'Um mês por linha, com o gasto importado do ERP e o avanço lançado.'}</p>
+    <div class="tbl-wrap"><table class="heat hl hist-ed"><thead><tr><th>Mês</th><th class="n">Gasto ERP</th>${HIST_CAMPOS.map(c=>`<th class="n">${c[1]}${c[2]?' (%)':' (R$)'}</th>`).join('')}</tr></thead><tbody>
+      ${ms.map((m,ri)=>`<tr class="${m===M?'on':''}"><td><button class="chip" data-lancmes="${m}">${ymLabel(m)}</button></td><td class="n">${rs(tg(m))}</td>${HIST_CAMPOS.map(([k,,pc],ci)=>`<td class="n">${ed?`<input class="hc" data-hm="${m}" data-hk="${k}" data-pc="${pc}" data-r="${ri}" data-c="${ci}" inputmode="decimal" value="${histFmt(A[m]?.[k], pc)}" aria-label="${ymLabel(m)} ${esc(k)}">`:(pc?p2(A[m]?.[k]):rs(A[m]?.[k]))}</td>`).join('')}</tr>`).join('')}
     </tbody></table></div>
   </section>`;
+}
+/* grava uma célula do histórico no mês dela */
+function histSalvar(inp){
+  const o = obra(), m = inp.dataset.hm, k = inp.dataset.hk, pc = inp.dataset.pc==='1', t = inp.value.trim();
+  const novo = t==='' ? null : (pc ? Math.round(parseNum(t)*1e6)/1e8 : parseNum(t));
+  if (t!=='' && !isFinite(novo)) { toast('Valor inválido em '+ymLabel(m)+'.'); inp.value = histFmt(o.avancos?.[m]?.[k], pc); return; }
+  const atual = o.avancos?.[m]?.[k] ?? null;
+  if (novo === atual) return;
+  const a = ((o.avancos ??= {})[m] ??= {});
+  if (novo==null) delete a[k]; else a[k] = novo;
+  if (!Object.keys(a).length) delete o.avancos[m];
+  inp.value = histFmt(novo, pc); inp.classList.add('salvo'); setTimeout(()=>inp.classList.remove('salvo'), 900);
+  if (m === S.mes) { const id = { fisico:'av-fis', meta:'av-meta', fisfin:'av-ff', finEst:'av-fe', estoque:'av-est', forecast:'av-fc', execCorr:'av-ec', viabCorr:'av-vc' }[k], el = document.getElementById(id); if (el) el.value = histFmt(novo, pc); }
+  save();
 }
 function impPreview(){
   const I = UI.imp; if (!I) return '';
@@ -2947,7 +2965,9 @@ document.addEventListener('click', e => {
   if (t.id==='delobra-ok') { NUVEM.apagar.push(o.id); delete S.obras[o.id]; S.atual = Object.keys(S.obras)[0]; S.mes=null; UI.confirm=null; save(); location.hash='#painel'; render(); return; }
 });
 document.addEventListener('toggle', e => { if (e.target.id==='pv-sald') UI.pvAberto = e.target.open; if (e.target.id==='fx-det') { UI.fxAberto = e.target.open; const sm = e.target.querySelector('summary small'); if (sm) sm.textContent = sm.textContent.replace(/toque para \w+$/, 'toque para '+(e.target.open?'fechar':'abrir')); } if (e.target.id==='mapa-gastos' && UI.mapaAberto !== e.target.open) { UI.mapaAberto = e.target.open; keepScroll(render); } }, true);
-document.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
+document.addEventListener('keydown', e => {
+  if (e.target.matches?.('input.hc') && e.key==='Enter') { e.preventDefault(); const r = +e.target.dataset.r + (e.shiftKey?-1:1), nx = document.querySelector(`input.hc[data-r="${r}"][data-c="${e.target.dataset.c}"]`); histSalvar(e.target); if (nx) { nx.focus(); nx.select(); } return; }
+  if ((e.key==='Enter'||e.key===' ') && e.target.matches('tr.row,.ccard')) { e.preventDefault(); e.target.click(); } if (e.key==='Escape') document.getElementById('modal-root').innerHTML=''; });
 document.addEventListener('input', e => {
   if (e.target.id==='busca') { UI.busca = e.target.value; clearTimeout(UI.bgT); UI.bgT = setTimeout(()=>{ const k = kNivel(obra(), S.mes, calc(obra(), S.mes)); const l = document.getElementById('cat-list'); if (l) { l.innerHTML = catList(k); if (UI.aberto) drawDetalhe(k); } }, 200); }
   if (e.target.id==='busca-mes') { UI.buscaMes = e.target.value; clearTimeout(UI.bmT); UI.bmT = setTimeout(()=>atualizarParte(renderCategorias, 'mes-res'), 250); }
@@ -2955,7 +2975,9 @@ document.addEventListener('input', e => {
   if (e.target.id==='an-busca') { UI.anBusca = e.target.value; UI.anLim = 40; clearTimeout(UI.anT); UI.anT = setTimeout(()=>atualizarParte(renderAnalise, 'an-res'), 250); }
   if (e.target.dataset.ef) { setEf(e.target.dataset.ef, parseInt(e.target.value)||0); }
 });
+document.addEventListener('focusin', e => { if (e.target.matches?.('input.hc')) setTimeout(()=>e.target.select(), 0); });
 document.addEventListener('change', e => {
+  if (e.target.matches?.('input.hc')) { histSalvar(e.target); return; }
   const t = e.target, o = obra();
   if (t.dataset.papel) { NUVEM.sb.from('go_membros').update({ papel: t.value }).eq('email', t.dataset.papel).then(({error}) => { if (error) toast(error.message); else { toast('Acesso alterado: '+PAPEL_TXT[t.value]+'.'); carregarMembros(); } }); return; }
   if (t.id==='ordem') { UI.ordem = t.value; keepScroll(render); }
