@@ -764,7 +764,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.26 · 01/11';
+const APP_VERSAO = 'v3.27 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1131,7 +1131,7 @@ function bars(el, data, opts={}){
 /* linhas: até 3 séries + referência, rótulo direto no fim, régua com dica */
 function lines(el, labels, series, opts={}){
   const W = Math.max(280, el.clientWidth || 600), H = opts.h || 240;
-  const mob = isMob(), padL = mob?46:58, padT = opts.mark!=null?20:16, padB = 26;
+  const mob = isMob(), padL = mob?46:58, padT = 16, padB = 26;
   const padR = mob ? 10 : 92;
   const all = series.flatMap(s=>s.values.filter(v=>v!=null)).concat(opts.ref!=null?[opts.ref]:[]);
   let mx = opts.max || (Math.max(...all, 0) * 1.06 || 1), lo0 = opts.zoom ? Math.max(0, Math.min(...all) - (Math.max(...all)-Math.min(...all))*0.12) : 0;   // zoom: eixo começa perto do menor valor para a variação aparecer
@@ -1142,8 +1142,9 @@ function lines(el, labels, series, opts={}){
   let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(opts.aria||'Gráfico de linhas')}">`;
   for (let t=bot; t<=top+1e-9; t+=step) s += `<line class="gl" x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}"/><text x="${padL-6}" y="${y(t)+4}" text-anchor="end">${esc((opts.fmtAxis||String)(t))}</text>`;
   const every = Math.ceil(n / (mob?6:12));
-  labels.forEach((l,i) => { if ((i%every===0 && n-1-i >= every*0.7) || i===n-1) s += `<text x="${x(i)}" y="${H-8}" text-anchor="${i===n-1?'end':'middle'}">${esc(l)}</text>`; });
-  if (opts.mark!=null && opts.mark>=0) s += `<line x1="${x(opts.mark)}" x2="${x(opts.mark)}" y1="${padT}" y2="${H-padB}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/><text x="${x(opts.mark)}" y="${padT-4}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${esc(labels[opts.mark])}</text>`;
+  const mk = opts.mark!=null && opts.mark>=0 ? opts.mark : null, perto = i => mk!=null && i!==mk && Math.abs(x(i)-x(mk)) < (mob?34:46);   // o mês marcado fica embaixo, no eixo; esconde o rótulo vizinho que encostaria nele
+  labels.forEach((l,i) => { if (i===mk || perto(i)) return; if ((i%every===0 && n-1-i >= every*0.7) || i===n-1) s += `<text x="${x(i)}" y="${H-8}" text-anchor="${i===n-1?'end':'middle'}">${esc(l)}</text>`; });
+  if (mk!=null) s += `<line x1="${x(mk)}" x2="${x(mk)}" y1="${padT}" y2="${H-padB}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/><text x="${x(mk)}" y="${H-8}" text-anchor="${mk===n-1?'end':mk===0?'start':'middle'}" style="fill:var(--ink);font-weight:700">${esc(labels[mk])}</text>`;
   if (opts.ref!=null) s += `<line x1="${padL}" x2="${W-padR}" y1="${y(opts.ref)}" y2="${y(opts.ref)}" stroke="var(--ink2)" stroke-width="1.2" stroke-dasharray="3 4"/><text x="${padL+4}" y="${y(opts.ref)-6}" style="fill:var(--ink2)">${esc(opts.refLabel||'')}</text>`;
   const ends = [];
   series.forEach(se => {
