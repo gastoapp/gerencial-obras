@@ -386,6 +386,8 @@ body{background:radial-gradient(1200px 600px at 50% -200px,#13244a 0%,var(--bg) 
 .h-main small{font-size:13px;color:var(--ink2)}
 .h-main small b{font:600 13px var(--body);color:var(--ink)}
 .h-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.h-exe{display:none}
+@media (min-width:1401px){.hero{grid-template-columns:auto minmax(0,1fr) auto;column-gap:28px}.h-exe{display:flex;padding-left:28px;border-left:1px solid #23365c}}
 .rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:0}
 @media (min-width:721px){.rings{min-width:330px}}
 .ring{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
@@ -762,7 +764,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.23 · 01/11';
+const APP_VERSAO = 'v3.24 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -1544,6 +1546,12 @@ function renderPainel(el){
       <small>${econ==null?'Lance o avanço para projetar o término':`Projeção no término: <b class="${econ>=0?'t-good':'t-crit'}">${econ>=0?'economia':'estouro'} de ${money(Math.abs(econ))}</b>`} · mês ${k.corridos} de ${k.prazo}</small>
       <div class="h-chips"><span class="pill ${k.gastoMes>k.cheque?'crit':'good'}">Gasto do mês ${money(k.gastoMes)} · ${k.gastoMes>k.cheque?'acima':'abaixo'} do cheque</span>${a.meta!=null&&a.fisico!=null?`<span class="pill ${a.fisico>=a.meta?'good':'crit'}">Físico ${pp(a.fisico-a.meta)} da meta</span>`:''}</div>
     </div>
+    ${(() => { const falta = k.orcExe - k.incorrido, pm = restante ? falta/restante : null, est = falta < 0;
+      return `<div class="h-main h-exe"><span class="lbl">Falta gastar até o executivo · ${ymLabel(M)}</span>
+        <b class="${est?'t-crit':'t-good'}">${est?'−':''}${money(Math.abs(falta))}</b>
+        <small>${est?`Executivo estourado em <b>${money(-falta)}</b>`:restante?`Dividido pelos ${restante} ${restante===1?'mês restante':'meses restantes'} (até ${ymLabel(fim)}): <b>${money(pm)} por mês</b>`:'Obra no último mês do contrato'}</small>
+        ${!est&&pm!=null?`<div class="h-chips"><span class="pill ${k.gastoMes>pm?'crit':'good'}">Gasto do mês ${money(k.gastoMes)} · ${k.gastoMes>pm?'acima':'abaixo'} do limite por mês</span></div>`:''}
+      </div>`; })()}
     <div class="rings">
       ${ringHtml('Físico', a.fisico, 'var(--s1)', am.fisMes!=null?'+'+pct(am.fisMes,2)+' no mês':'')}
       ${ringHtml('Fís/fin', a.fisfin, 'var(--s2)', am.ffMes!=null?'+'+pct(am.ffMes,2)+' no mês':'')}
