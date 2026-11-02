@@ -768,7 +768,7 @@ function deep(o){ return JSON.parse(JSON.stringify(o)); }
 const SEED_ITENS = { s:[], i:{} };      // na versão em nuvem os lançamentos vêm do banco
 const PREF = 'gerencial-obras-pref';    // só obra e mês escolhidos ficam no aparelho
 const NUVEM = { sb:null, user:null, papel:null, salvo:{}, mesesSujos:new Set(), apagar:[], salvando:false, erro:null, pendente:false };
-const APP_VERSAO = 'v3.32 · 01/11';
+const APP_VERSAO = 'v3.33 · 01/11';
 const AUTOR = 'By Engº Kaue Mannes';
 const LOGO_SVG = `<svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a52"/><stop offset="1" stop-color="#0a1120"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#lgB)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#1e3050" stroke-width="7" stroke-linecap="round" stroke-dasharray="160.2 213.6" transform="rotate(135 50 54)"/><circle cx="50" cy="54" r="34" fill="none" stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-dasharray="132 213.6" transform="rotate(135 50 54)"/><rect x="31" y="50" width="11" height="22" rx="1.5" fill="#8f6ee4"/><rect x="43" y="30" width="15" height="42" rx="1.5" fill="#e6edf7"/><rect x="59" y="42" width="11" height="30" rx="1.5" fill="#1aa3c4"/><rect x="45.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="34" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="40" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="46" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="52" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="58" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="45.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="51.5" y="64" width="3.6" height="3" rx=".6" fill="#132a52"/><rect x="28" y="72" width="45" height="2.6" rx="1.3" fill="#7f93b0"/></svg>`;
 const podeEditar = () => NUVEM.papel==='admin' || NUVEM.papel==='editor';
@@ -2459,12 +2459,12 @@ function renderComparar(el){
     ['Andamento'],
     ['Prazo decorrido', d => p1(d.k.corridos/d.k.prazo)+sm(`${d.k.corridos} de ${d.k.prazo} meses`)],
     ['Físico', d => p1(d.fis)],
-    ['Físico × meta Project', d => d.fis!=null && d.meta!=null ? pp(d.fis-d.meta, true) : '<span class="muted">—</span>'],
+    ['Físico × meta Project', d => d.fis!=null && d.meta!=null ? pp(d.fis-d.meta, true)+sm(`físico ${pct(d.fis,1)} − meta ${pct(d.meta,1)}`) : '<span class="muted">—</span>'],
     ['Fís/fin', d => p1(d.ff)],
     ['Efetivo', d => d.efTot!=null ? d.efTot+' pessoas'+(d.area?sm(nf1.format(d.efTot/d.area*1000)+' por 1.000 m²'):'') : '<span class="muted">não lançado</span>'],
     ['Custo'],
     ['Custo incorrido', d => p1(d.k.incorrido/d.k.orcExe)+sm('do executivo')],
-    ['Custo × físico', d => d.fis!=null ? pp(d.k.incorrido/d.k.orcExe - d.fis, false) : '<span class="muted">—</span>'],
+    ['Custo × físico', d => d.fis!=null ? pp(d.k.incorrido/d.k.orcExe - d.fis, false)+sm(`gasto ${pct(d.k.incorrido/d.k.orcExe,1)} − físico ${pct(d.fis,1)}`) : '<span class="muted">—</span>'],
     ['Saldo do cheque', d => pp(d.k.saldoCheque/d.k.orcExe, true)+sm('do executivo')],
     ['Gasto médio (6 meses)', d => p1(d.g6/d.k.orcExe)+sm('do executivo por mês')],
     ['Custo fixo por mês', d => d.fixo ? money(d.fixo)+sm(pct(d.fixo/d.k.orcExe,2)+' do executivo'+(d.area?' · '+fmtM2(d.fixo/d.area):'')) : '<span class="muted">—</span>'],
@@ -2492,7 +2492,7 @@ function renderComparar(el){
   el.innerHTML = `
   <div class="pg-title"><span class="eyebrow">Somente administrador · ${ymLabel(M)}</span><h2 class="sec">Comparar obras</h2><p class="lead">Números na mesma base (% do orçamento, % do prazo, por m²) para comparar obras de tamanhos e fases diferentes.</p></div>
   <section class="panel"><h3 class="sub">1 · Lado a lado em ${ymLabel(M)}</h3>${t1}
-    <p class="note muted">Físico × meta: físico realizado menos a meta do Project. Custo × físico: % do executivo gasto menos o físico (positivo = gastando mais rápido do que avança). Obra sem lançamento no mês aparece com o último mês disponível.</p></section>
+    <p class="note muted">Físico × meta: físico realizado menos a meta do Project. Custo × físico: % do executivo já gasto menos o físico. Negativo = a obra produziu mais do que gastou; positivo = o dinheiro está saindo mais rápido do que a obra anda (normal no começo, por mobilização, canteiro e estoque). Obra sem lançamento no mês aparece com o último mês disponível.</p></section>
   <section class="panel"><h3 class="sub">2 · Na mesma fase da obra</h3>${t2}</section>`;
 }
 function renderInsumos(el){
